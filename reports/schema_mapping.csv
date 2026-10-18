@@ -1,0 +1,22 @@
+﻿business_concept,tiktok_field,shopee_field,classification,evidence_or_condition
+order_identifier,Order ID,Mã đơn hàng,DIRECT,Storefront must namespace Shopee order IDs; check cross-source collisions.
+product_identifier,,SKU sản phẩm,AMBIGUOUS,TikTok SKU ID is a variant ID; Shopee product SKU is seller-supplied.
+sku_identifier,SKU ID,SKU phân loại hàng,AMBIGUOUS,Platform SKU ID and seller variant SKU are different key systems.
+quantity,Quantity,Số lượng,DIRECT,"Both represent unit count on source row, subject to return/cancel state."
+unit_price,SKU Unit Original Price,Giá gốc,AMBIGUOUS,Shopee original price may be unit-level; validate invoice examples.
+gross_item_amount,SKU Subtotal Before Discount,,DERIVED,TikTok explicit subtotal; Shopee candidate original price times quantity requires validation.
+seller_discount,SKU Seller Discount,Người bán trợ giá,AMBIGUOUS,Shopee seller subsidy and TikTok SKU discount need scope comparison.
+platform_discount,SKU Platform Discount,Được Shopee trợ giá,AMBIGUOUS,Subsidy and discount labels may have different settlement scope.
+net_item_amount,SKU Subtotal After Discount,Giá ưu đãi,AMBIGUOUS,TikTok subtotal vs Shopee promotional unit price; do not equate.
+buyer_payment,Order Amount,Tổng số tiền Người mua thanh toán,AMBIGUOUS,Order amount and buyer payment need reconciliation with shipping and refunds.
+shipping_buyer_charge,Shipping Fee After Discount,Phí vận chuyển mà người mua trả,AMBIGUOUS,TikTok after-discount fee vs Shopee buyer-paid fee.
+refund_amount,Order Refund Amount,,UNAVAILABLE,"Shopee has return status/quantity and return shipping fee, not verified cash refund."
+order_status,Order Status,Trạng Thái Đơn Hàng,TRANSFORM,Map native lifecycles after business review.
+order_date,Created Time,Ngày đặt hàng,DIRECT,Timestamp parsing/timezone must be fixed in contract.
+payment_date,Paid Time,Thời gian đơn hàng được thanh toán,DIRECT,Availability differs by status.
+shipping_date,Shipped Time,Ngày gửi hàng,AMBIGUOUS,Shopee send date vs TikTok shipped time.
+delivery_date,Delivered Time,Thời gian giao hàng,AMBIGUOUS,Shopee delivery time semantics need confirmation.
+storefront,,,DERIVED,Derive from source file identity; keep two Shopee stores distinct.
+sales_channel,,,DERIVED,Derive TikTok or Shopee from source file identity.
+warehouse,Warehouse Name,Tên kho hàng,AMBIGUOUS,Free-text location names require controlled mapping.
+destination_province,Province,Tỉnh/Thành phố,TRANSFORM,Normalize geography spelling; exclude detailed address.
