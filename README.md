@@ -1,6 +1,6 @@
 # Bibica E-Commerce Data Warehouse & DSS — Phase 1
 
-This local project contains reproducible source discovery and profiling only. The four prepared exports remain unchanged in `Data/Data_Source_Raw` and are excluded by `.gitignore`. No database, ETL pipeline, API, or frontend is created in this phase.
+This project contains reproducible source discovery and profiling only. The four prepared exports are included unchanged in `Data/Data_Source_Raw`. No database, ETL pipeline, API, or frontend is created in this phase.
 
 ## Run
 
