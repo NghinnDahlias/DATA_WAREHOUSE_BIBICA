@@ -1,0 +1,246 @@
+Project bibica_dw {
+  database_type: 'PostgreSQL'
+  Note: 'Candidate logical model. Do not run as production DDL before open decisions are resolved.'
+}
+
+Table dw.dim_channel {
+  channel_key bigint [pk]
+  channel_code text [not null, unique]
+  channel_name text [not null]
+}
+
+Table dw.dim_storefront {
+  storefront_key bigint [pk]
+  channel_key bigint [not null]
+  storefront_code text [not null, unique]
+  storefront_name text [not null]
+  product_line text
+}
+
+Table dw.dim_order_identity {
+  order_key bigint [pk]
+  channel_key bigint [not null]
+  storefront_key bigint [not null]
+  native_order_id text [not null]
+  order_namespace text [not null, unique]
+}
+
+Table dw.dim_date {
+  date_key integer [pk]
+  calendar_date date [not null, unique]
+  year smallint
+  quarter smallint
+  month smallint
+  day smallint
+}
+
+Table dw.dim_time {
+  time_key integer [pk]
+  native_time time
+  hour smallint
+  minute smallint
+  second smallint
+}
+
+Table dw.dim_source_product_sku {
+  source_product_sku_key bigint [pk]
+  channel_key bigint [not null]
+  storefront_key bigint [not null]
+  native_product_id text
+  native_sku_id text
+  seller_sku text
+  product_name text
+  variation_name text
+  product_line text
+  mapping_status text [not null]
+}
+
+Table dw.dim_warehouse {
+  warehouse_key bigint [pk]
+  storefront_key bigint [not null]
+  native_warehouse_name text [not null]
+  normalized_warehouse_name text
+  mapping_status text [not null]
+}
+
+Table dw.dim_province {
+  province_key bigint [pk]
+  native_province_name text [not null]
+  normalized_province_name text
+  mapping_status text [not null]
+}
+
+Table dw.dim_order_status {
+  order_status_key bigint [pk]
+  channel_key bigint [not null]
+  storefront_key bigint [not null]
+  native_status text [not null]
+  reviewed_status text
+  mapping_version text
+  source_timezone text
+  effective_from date
+  effective_to date
+}
+
+Table dw.dim_source_file {
+  source_file_key bigint [pk]
+  source_file_name text [not null]
+  source_sha256 text [not null]
+  sheet_name text [not null]
+  source_kind text [not null]
+}
+
+Table dw.dim_ingestion_batch {
+  ingestion_batch_key bigint [pk]
+  source_file_key bigint [not null]
+  batch_id text [not null, unique]
+  started_at timestamp [not null]
+  completed_at timestamp
+  load_status text [not null]
+}
+
+Table dw.fact_order_line_candidate {
+  order_line_key bigint [pk]
+  order_key bigint [not null]
+  channel_key bigint [not null]
+  storefront_key bigint [not null]
+  source_product_sku_key bigint
+  warehouse_key bigint
+  province_key bigint
+  order_status_key bigint
+  order_created_date_key integer
+  order_created_time_key integer
+  paid_date_key integer
+  paid_time_key integer
+  shipped_date_key integer
+  shipped_time_key integer
+  delivered_date_key integer
+  delivered_time_key integer
+  source_file_key bigint [not null]
+  ingestion_batch_key bigint [not null]
+  source_sheet_name text [not null]
+  physical_row_number integer [not null]
+  source_row_hash text [not null]
+  quantity numeric(18,4)
+  returned_quantity numeric(18,4)
+  unit_price_source numeric(19,4)
+  gross_item_amount_source numeric(19,4)
+  net_item_amount_source numeric(19,4)
+  seller_discount_source numeric(19,4)
+  platform_discount_source numeric(19,4)
+  shipping_buyer_charge_source numeric(19,4)
+  order_amount_source numeric(19,4)
+  source_row_quality_status text [not null]
+
+  Indexes {
+    (source_file_key, source_sheet_name, physical_row_number, ingestion_batch_key) [unique]
+  }
+}
+
+Table dw.fact_order_lifecycle_candidate {
+  order_lifecycle_key bigint [pk]
+  order_key bigint [not null, unique]
+  channel_key bigint [not null]
+  storefront_key bigint [not null]
+  order_status_key bigint
+  warehouse_key bigint
+  province_key bigint
+  created_date_key integer
+  created_time_key integer
+  paid_date_key integer
+  paid_time_key integer
+  shipped_date_key integer
+  shipped_time_key integer
+  delivered_date_key integer
+  delivered_time_key integer
+  cancelled_date_key integer
+  cancelled_time_key integer
+  source_file_key bigint [not null]
+  ingestion_batch_key bigint [not null]
+  order_row_count integer [not null]
+  order_amount_source numeric(19,4)
+  buyer_payment_source_1 numeric(19,4)
+  buyer_payment_source_2 numeric(19,4)
+  refund_amount_source numeric(19,4)
+  reconciliation_status text [not null]
+}
+
+Table dw.fact_review_candidate {
+  review_key bigint [pk]
+  order_key bigint
+  channel_key bigint [not null]
+  storefront_key bigint [not null]
+  review_date_key integer
+  review_time_key integer
+  source_file_key bigint [not null]
+  ingestion_batch_key bigint [not null]
+  source_sheet_name text [not null]
+  physical_row_number integer [not null]
+  source_row_hash text [not null]
+  source_product_id text
+  source_product_sku_key bigint
+  star_level smallint
+  has_review_text boolean [not null]
+  review_text_length integer
+  product_linkage_status text [not null]
+
+  Indexes {
+    (source_file_key, source_sheet_name, physical_row_number, ingestion_batch_key) [unique]
+  }
+}
+
+Ref: dw.dim_storefront.channel_key > dw.dim_channel.channel_key
+Ref: dw.dim_order_identity.channel_key > dw.dim_channel.channel_key
+Ref: dw.dim_order_identity.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.dim_source_product_sku.channel_key > dw.dim_channel.channel_key
+Ref: dw.dim_source_product_sku.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.dim_warehouse.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.dim_order_status.channel_key > dw.dim_channel.channel_key
+Ref: dw.dim_order_status.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.dim_ingestion_batch.source_file_key > dw.dim_source_file.source_file_key
+
+Ref: dw.fact_order_line_candidate.order_key > dw.dim_order_identity.order_key
+Ref: dw.fact_order_line_candidate.channel_key > dw.dim_channel.channel_key
+Ref: dw.fact_order_line_candidate.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.fact_order_line_candidate.source_product_sku_key > dw.dim_source_product_sku.source_product_sku_key
+Ref: dw.fact_order_line_candidate.warehouse_key > dw.dim_warehouse.warehouse_key
+Ref: dw.fact_order_line_candidate.province_key > dw.dim_province.province_key
+Ref: dw.fact_order_line_candidate.order_status_key > dw.dim_order_status.order_status_key
+Ref: dw.fact_order_line_candidate.order_created_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_line_candidate.order_created_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_line_candidate.paid_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_line_candidate.paid_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_line_candidate.shipped_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_line_candidate.shipped_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_line_candidate.delivered_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_line_candidate.delivered_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_line_candidate.source_file_key > dw.dim_source_file.source_file_key
+Ref: dw.fact_order_line_candidate.ingestion_batch_key > dw.dim_ingestion_batch.ingestion_batch_key
+
+Ref: dw.fact_order_lifecycle_candidate.order_key > dw.dim_order_identity.order_key
+Ref: dw.fact_order_lifecycle_candidate.channel_key > dw.dim_channel.channel_key
+Ref: dw.fact_order_lifecycle_candidate.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.fact_order_lifecycle_candidate.order_status_key > dw.dim_order_status.order_status_key
+Ref: dw.fact_order_lifecycle_candidate.warehouse_key > dw.dim_warehouse.warehouse_key
+Ref: dw.fact_order_lifecycle_candidate.province_key > dw.dim_province.province_key
+Ref: dw.fact_order_lifecycle_candidate.created_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_lifecycle_candidate.created_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_lifecycle_candidate.paid_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_lifecycle_candidate.paid_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_lifecycle_candidate.shipped_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_lifecycle_candidate.shipped_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_lifecycle_candidate.delivered_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_lifecycle_candidate.delivered_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_lifecycle_candidate.cancelled_date_key > dw.dim_date.date_key
+Ref: dw.fact_order_lifecycle_candidate.cancelled_time_key > dw.dim_time.time_key
+Ref: dw.fact_order_lifecycle_candidate.source_file_key > dw.dim_source_file.source_file_key
+Ref: dw.fact_order_lifecycle_candidate.ingestion_batch_key > dw.dim_ingestion_batch.ingestion_batch_key
+
+Ref: dw.fact_review_candidate.order_key > dw.dim_order_identity.order_key
+Ref: dw.fact_review_candidate.channel_key > dw.dim_channel.channel_key
+Ref: dw.fact_review_candidate.storefront_key > dw.dim_storefront.storefront_key
+Ref: dw.fact_review_candidate.review_date_key > dw.dim_date.date_key
+Ref: dw.fact_review_candidate.review_time_key > dw.dim_time.time_key
+Ref: dw.fact_review_candidate.source_file_key > dw.dim_source_file.source_file_key
+Ref: dw.fact_review_candidate.ingestion_batch_key > dw.dim_ingestion_batch.ingestion_batch_key
+Ref: dw.fact_review_candidate.source_product_sku_key > dw.dim_source_product_sku.source_product_sku_key

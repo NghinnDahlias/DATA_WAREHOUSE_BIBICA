@@ -25,3 +25,12 @@ Validation execution details are in `docs/validation.md`. Quality Gate 1 is COND
 - `docs/business/financial_definitions.md`, `docs/business/business_requirements.md`, `docs/architecture/modeling_readiness.md`
 - `docs/progress.md`, `docs/decisions.md`, `docs/validation.md`
 - `reports/source_inventory.json`, `reports/key_uniqueness.json`, `reports/data_quality.json`, `reports/schema_mapping.csv`, `reports/financial_reconciliation.json`, `reports/review_profile.json`
+
+## ETL design and implementation
+
+- Added `DW/documentation/etl_design.md` covering extract, typed staging contract,
+  transformation, PostgreSQL load, lineage, idempotency, validation and open
+  business decisions.
+- Added `DW/etl/run.py` with streaming `--dry-run` source validation and
+  transactional PostgreSQL `--load` mode.
+- Added `DW/etl/__init__.py` and the `psycopg` PostgreSQL driver dependency.
