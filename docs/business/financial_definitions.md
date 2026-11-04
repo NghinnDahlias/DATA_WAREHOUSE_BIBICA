@@ -1,3 +1,5 @@
+> HISTORICAL SNAPSHOT — Nội dung bên dưới là kết quả trước refinement04/11/2026. Trạng thái/schema/source hiện hành xem README.md và DW/07_documentation/implementation_status.md; evidence mới ở reports/etl_validation.json, processing_verification.json, reference_reconciliation.json. Các giả định tài chính cũ không thay measure_catalog hiện hành.
+
 # Financial definitions and reconciliation
 
 Source monetary labels are not a signed accounting contract. Keep the source field and its grain explicit. `reports/financial_reconciliation.json` contains row sums, one-value-per-order sums and repeated/conflicting order counts.

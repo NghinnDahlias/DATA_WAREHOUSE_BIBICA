@@ -57,7 +57,6 @@ WITH fact_agg AS (
         storefront_key,
         COUNT(*) AS order_count
     FROM dw.fact_order_lifecycle_candidate
-    WHERE reconciliation_status <> 'REVIEW_REQUIRED'
     GROUP BY channel_key, storefront_key
 )
 SELECT COUNT(*) AS violations
@@ -73,3 +72,9 @@ SELECT schemaname, matviewname, ispopulated
 FROM pg_matviews
 WHERE schemaname = 'mart'
 ORDER BY matviewname;
+
+DO $$ BEGIN
+ IF (SELECT count(*) FROM dw.fact_order_line_candidate)<>(SELECT sum(source_line_count) FROM mart.mv_item_units_monthly) THEN RAISE EXCEPTION 'OLAP line reconciliation failed'; END IF;
+ IF (SELECT count(*) FROM dw.fact_order_lifecycle_candidate)<>(SELECT sum(order_count) FROM mart.mv_order_counts_by_storefront) THEN RAISE EXCEPTION 'OLAP order reconciliation failed'; END IF;
+ IF (SELECT count(*) FROM dw.fact_review_candidate)<>(SELECT sum(rating_count) FROM mart.mv_tiktok_ratings_monthly) THEN RAISE EXCEPTION 'OLAP review reconciliation failed'; END IF;
+END $$;

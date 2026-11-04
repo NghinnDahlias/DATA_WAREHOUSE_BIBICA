@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "main_pytest": 119,
+  "frontend_tests": 5,
+  "browser_tests": 11,
+  "repo_unittest": 13,
+  "main_sql_checks": 21,
+  "main_layer_checks": 15,
+  "main_golden_fk": 18,
+  "repo_sql_checks": 16,
+  "repo_layer_checks": 11,
+  "repo_golden_fk": 56,
+  "cross_database_business_fingerprints_equal": true,
+  "raw_files_identical": [
+    "Shopee_Bibica.xlsx",
+    "Shopee_Quasure.xlsx",
+    "Tiktokshop_Bibica.csv",
+    "Tiktok_Rating_Bibica.xlsx"
+  ],
+  "no_raw_changes_or_staged_files_at_validation": true,
+  "geography_layouts": 6,
+  "actual_schema_tables": 13,
+  "archive_snapshots_regenerated": false,
+  "code_committed_or_pushed_at_validation": false
+}

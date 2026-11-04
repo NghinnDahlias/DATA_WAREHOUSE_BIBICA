@@ -1,121 +1,32 @@
-# Bibica E-Commerce DW - ETL Design
+# ETL / ELT hiện hành và vận hành
 
-## 1. Objective
+Giữ PostgreSQL, scoped dimensions/facts và COPY loader; sửa snapshot semantics và bổ sung contracts/quality/provenance.
 
-The ETL loads the four immutable exports into the PostgreSQL candidate warehouse
-without changing source files or publishing unverified financial KPIs.
+1. Kiểm đủ4native files trước khi thay dữ liệu; chọn orders hoặc Ratings, không đọc Nguon như reviews.
+2. Raw copy giữ nguyên bytes, manifest SHA256; native sources read-only. Silver giữ original decoded values, thêm canonical metadata; không thay ID bằng float, apostrophe hay Excel formula.
+3. Project từng record vào raw.source_row sanitized JSONB. Giữ source physical locator và original row hash. Product names giữ để phân loại/lineage, không lưu tên/địa chỉ/điện thoại người mua hoặc free review text.
+4. Cùng rule-based categorization cho3sales sources; kho alias nguồn và tỉnh spelling dictionary độc lập. Giữ native category/province/warehouse bên cạnh canonical fields.
+5. Ghi typed staging views và ops.quarantine: exact sales duplicates, semantic repeated reviews, invalid rows và reviews không có sales order. Raw luôn giữ đủ.
+6. Nạp dimensions → order identities → current facts, giữ surrogate keys thích hợp. Lifecycle gom một lần mỗi order; amount/refund mâu thuẫn NULL và CONFLICTING.
+7. Item/review current key source_code+physical_row_number. Source checksum đổi thì upsert snapshot, rút các locators bị xóa; không cộng hai phiên bản file. Lifecycle cập nhật status/money/dates/line count. Replay raw cùng SHA/parser version có0insert/0update.
+8. Ghép review SKU theo historical staging names, duy nhất trong order; Product Type1 không thay tên lịch sử. Product ID trong review không được giả làm SKU.
+9. Tính5OLAP MVs cùng transaction; đối soát source/quarantine→facts→marts bằng assertion có raise. Thiếu source/header hoặc lỗi giữa chừng rollback transaction; ops.etl_run ghi FAILED, CLI exit1. Không báo thành công phần dữ liệu thiếu.
+10. Golden export snapshot REPEATABLE READ, schema/types/PK/FK thật từ PostgreSQL. Verifier reload toàn bộ15bảng vào DB mới và kiểm fingerprints/FKs; chỉ DB đó được cleanup.
 
-## 2. Pipeline
+Concurrency: session advisory lock bảo vệ DDL trước data transaction; cùng khóa transaction bảo vệ source snapshots/transforms. OS file lock bảo vệ process exports. Native code đọc streaming XLSX/CSV và COPY records; riêng profiling giữ một số aggregate/set trong RAM. Chưa tuyên bố đã benchmark giới hạn memory/concurrency/crash recovery đầy đủ.
 
-```text
-Data/Data_Source_Raw
-        |
-        v
-Extract: CSV quoted parser / streaming XLSX
-        |
-        v
-Staging contract: typed values, source lineage, quality flags
-        |
-        v
-Transform: source mapping, namespace keys, date/time roles, restricted fields
-        |
-        v
-Load: dimensions -> order identity -> candidate facts
-        |
-        v
-Validation: row counts, uniqueness, FK, quality and reconciliation checks
-```
+DDL gốc có BEGIN/COMMIT nên migration chạy trước data transaction; đây không phải cam kết rollback schema DDL cùng dữ liệu. Dữ liệu source snapshots/facts/MVs được commit atomically.
 
-`DW/etl/extract/readers.py` implements source reading, header normalization,
-row lineage and row-level validation. `DW/etl/run.py` implements typed
-transformations and idempotent candidate-fact loading. Structural errors are
-reported per source; row errors are collected with file, sheet and physical
-row instead of stopping the complete batch. A physical staging table can be
-added when replay audit requires retaining every intermediate value.
-
-## 3. Source contracts
-
-| Source | Object | Grain | Storefront |
-|---|---|---|---|
-| `Tiktokshop_Bibica.csv` | order-line and lifecycle candidates | one non-empty physical row | Bibica TikTok Shop |
-| `Tiktokshop_Bibica_Rating.csv` | review candidate | one rating row | Bibica TikTok Shop |
-| `Shopee_Bibica.xlsx/orders` | order-line and lifecycle candidates | one non-empty physical row | Bibica Official Store |
-| `Shopee_Quasure.xlsx/orders` | order-line and lifecycle candidates | one non-empty physical row | Quasure specialized store |
-
-Required headers are validated by `src/profiling/config.py`. Missing headers
-fail the run; the ETL never guesses a replacement column.
-
-## 4. Lineage and idempotency
-
-Every load records:
-
-- source filename and SHA-256;
-- CSV or workbook sheet name;
-- physical source row number;
-- source row SHA-256;
-- ingestion batch ID.
-
-The fact uniqueness key is
-`source_file + sheet + physical_row_number + ingestion_batch`. A source row
-hash is diagnostic only: identical legitimate rows at different positions must
-not be collapsed.
-
-Use a stable `--batch-id` when replaying a batch. Re-running the same batch is
-safe because source-file, row and batch uniqueness constraints make inserts
-no-ops. A new batch intentionally creates a new lineage version. Storefront
-codes are explicit (`bibica_tiktok_shop`, `bibica_official_store`, and
-`quasure_specialized_store`); source `kind` is never used as a storefront.
-
-## 5. Transform rules
-
-1. Keep native order, SKU, product and status identifiers as text.
-2. Namespace orders as `channel|storefront|native_order_id`.
-3. Parse literal `-` as missing.
-4. Parse dates without inventing missing lifecycle milestones.
-5. Keep item-scoped and order-scoped amounts in separate source fields.
-6. Never sum `order_amount_source` from the line fact.
-7. Leave `shipping_buyer_charge_source` and `order_amount_source` NULL on
-the line fact. Keep Shopee `Giá gốc`/`Giá ưu đãi` out of gross/net item
-amounts; only TikTok's validated item-grain gross/net fields are loaded.
-8. Store only review presence and length in analytical facts; do not load raw
-review text, names, phone numbers, addresses or buyer messages.
-9. Keep product linkage as `ORDER_ONLY` until an approved SKU crosswalk exists.
-10. Populate warehouse, province and native order-status dimensions as
-`PROVISIONAL` mappings when no reviewed mapping is available.
-
-## 6. Load order
-
-1. Apply schema, dimension, fact and constraint DDL.
-2. Upsert `dim_channel` and `dim_storefront`.
-3. Upsert `dim_source_file` and create `dim_ingestion_batch`.
-4. Upsert order identity, source product/SKU, date and time dimensions.
-5. Insert order-line or review facts with `ON CONFLICT DO NOTHING`.
-6. Mark the ingestion batch `LOADED` with read/loaded counts.
-7. Commit the complete batch transaction. Any failure rolls back the batch.
-
-## 7. Operational commands
+## Lệnh
 
 ```powershell
 python -m DW.etl.run --dry-run
-python -m DW.etl.run --load --dsn "postgresql://user:password@localhost/bibica_dw"
-python -m DW.etl.run --load --dsn "$env:BIBICA_DSN" --batch-id bibica-replay-20261101
+python -m DW.etl.run --process --dsn "$env:BIBICA_DSN"
+python -m DW.etl.verify --dsn "$env:BIBICA_DSN" --rerun
+$env:BIBICA_TEST_DSN='postgresql://warehouse@127.0.0.1:55432/postgres'
+python -m unittest discover -s tests -v
 ```
 
-Install the PostgreSQL driver with `python -m pip install -r requirements.txt`.
+DSN phải trỏ DB riêng của repo. Xem README/.env.example. `--seed-silver` chỉ dành cache local đã kiểm chứng (xem DATA_LAYERS.md); mặc định đọc native files, chạy độc lập với project cha.
 
-## 8. Required post-load validation
-
-- Every source file has a matching `dim_source_file`.
-- Batch read count equals the number of non-empty source rows.
-- Fact physical-row keys are unique within a batch.
-- All fact foreign keys resolve.
-- No analytical table contains direct customer identifiers or raw review text.
-- Order-level measures are queried only from the lifecycle fact.
-- Duplicate and financial reconciliation flags remain visible for review.
-
-## 9. Deferred decisions
-
-The ETL intentionally does not solve repeated Shopee order-SKU meaning,
-Shopee payment semantics, reviewed lifecycle statuses, timestamp timezone,
-cross-platform SKU equivalence, or review-to-product linkage. These require
-business confirmation before production KPI publication.
+Giới hạn: đây là incremental theo **source snapshot/physical locator**, không phải CDC/event ingestion. Nếu source sắp xếp lại hàng, các locators được upsert theo snapshot mới; không khẳng định ổn định business line ID qua mọi reorder. Tồn kho, cost, settlement revenue, profit và causal promotion impact không được suy ra từ export.

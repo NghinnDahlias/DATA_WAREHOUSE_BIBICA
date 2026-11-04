@@ -116,13 +116,23 @@ def read_source(path):
     else:
         book = load_workbook(path, read_only=True, data_only=True)
         try:
-            for sheet in book:
+            selected=[book['orders']] if 'orders' in book.sheetnames else [book['Ratings']] if 'Ratings' in book.sheetnames else list(book)
+            for sheet in selected:
                 rows = sheet.iter_rows(values_only=True)
                 try:
                     header = [norm(x) for x in next(rows)]
                 except StopIteration:
                     continue
-                yield sheet.title, header, rows, {"format": "xlsx", "sheet": sheet.title}
+                if sheet.title=='Ratings' and 'web_scraper_order' in header:
+                    from DW.etl.ratings import project_scraped_rating
+                    names=list(FIELDS['review'].values())
+                    def projected(source_rows=rows,source_header=header):
+                        for values in source_rows:
+                            item=project_scraped_rating(dict(zip(source_header,values)))
+                            yield tuple(item.get(k) for k in names)
+                    yield sheet.title,names,projected(),{'format':'xlsx','sheet':sheet.title}
+                else:
+                    yield sheet.title, header, rows, {"format": "xlsx", "sheet": sheet.title}
         finally:
             book.close()
 

@@ -1,76 +1,27 @@
-# Bibica E-Commerce DW — Measure Catalog and KPI Safety
+# Measure catalog và grain hiện hành
 
-## 1. Measure classification
+| Measure | Nguồn/grain | Quy tắc |
+|---|---|---|
+| Orders | Lifecycle, một scoped order | COUNT(*); count theo warehouse/category là DISTINCT order và không cộng giữa nhóm |
+| Completed order payable | Lifecycle + canonical COMPLETED | SUM(order_amount_source), mỗi đơn một lần; không gọi net/settlement revenue |
+| Completed units | Accepted lines của order COMPLETED | SUM(quantity); không lấy duplicate/quarantine hoặc canceled lines làm completed sales |
+| List value | Accepted line | TikTok SKU subtotal before discount; Shopee original unit price×quantity; không phải payment |
+| Observed item payable | Accepted line | TikTok SKU subtotal after discount; Shopee cột uppercase Tổng số tiền Người mua thanh toán; giữ0/dương của gift |
+| Seller subsidy | Accepted line | Nguồn đã là tổng dòng, không nhân quantity; không suy causal impact |
+| Refund | Lifecycle | Một giá trị nhất quán/order hoặc NULL khi thiếu/mâu thuẫn; không mặc định NULL=0 |
+| Star mean / low ratio | Accepted review | AVG(star_level), COUNT(stars<=2)/COUNT(review); không nhân với sales rows |
+| Kho→tỉnh | Accepted line + scoped warehouse + customer province | Units/observed item value theo đúng line; không phân bổ tiền đơn tùy ý |
 
-| Measure | Fact | Scope | Additivity | Status |
-|---|---|---|---|---|
-| `quantity` | order line | source row/item | Additive after documented lifecycle filtering | Candidate |
-| `returned_quantity` | order line | source row/item | Additive within source/status scope | Candidate |
-| `unit_price_source` | order line | source field | Non-additive | Retain native |
-| `gross_item_amount_source` | order line | item/source | Additive only within validated source semantics | TikTok partially verified; Shopee unresolved |
-| `net_item_amount_source` | order line | item/source | Additive only within validated source semantics | Source-specific |
-| `seller_discount_source` | order line | source field | Source-scoped only | Partially verified |
-| `platform_discount_source` | order line | source field | Source-scoped only | Partially verified |
-| `shipping_buyer_charge_source` | order line/order source | source field | Do not cross-platform sum | Ambiguous |
-| `order_amount_source` | line and lifecycle candidates | order scope | Non-additive on line fact | Unresolved |
-| `buyer_payment_source_1` | lifecycle candidate | order/source | Non-additive until allocation/settlement semantics confirmed | Unresolved |
-| `buyer_payment_source_2` | lifecycle candidate | order/source | Non-additive until allocation/settlement semantics confirmed | Unresolved |
-| `refund_amount_source` | lifecycle candidate | source refund field | Source-specific; not cross-platform comparable | TikTok candidate only |
-| `star_level` | review | review row | Average/rate only; count rows separately | Candidate |
-| `has_review_text` | review | review row | Countable | Candidate |
-| `review_text_length` | review | review row | Descriptive only | Candidate |
+Native TikTok Product Category chỉ metadata. Canonical categories: Quà tặng/Bánh/Kẹo/Ngũ cốc; NULL/Unmapped chỉ audit. Tên Type1 Product và historical line có thể cho counts khác nhau, không cộng distinct SKUs/orders giữa category.
 
-## 2. Approved Phase 1/Phase 2 candidate outputs
+Đơn có tiền mâu thuẫn vẫn là một order, amount NULL/CONFLICTING và có bucket điều tra. Không loại đơn khỏi denominator chỉ vì amount mâu thuẫn. Không suy profit, conversion, ad ROI, inventory hoặc cross-platform customer identity.
 
-These outputs may be implemented with explicit source and status filters:
-
-* Distinct order counts by `(storefront, native_order_id)` namespace.
-* Item-unit volume by month, channel, storefront, and source SKU.
-* Cancellation/return incidence after a reviewed lifecycle denominator is approved.
-* Created-to-shipped and shipped-to-delivered durations only after Shopee timestamp semantics are approved.
-* Rating count and 1–2-star rate for TikTok ratings.
-* Exploratory complaint-theme candidates with manual validation labels.
-
-## 3. Restricted outputs
-
-Do not publish until business confirmation:
-
-* Paid revenue.
-* Net sales.
-* Gross merchandise value combined across platforms.
-* Cross-platform refund cash value.
-* Discount totals treated as accounting amounts.
-* Product-level review quality claims based only on the current proxy linkage.
-
-## 4. Safe aggregation examples
-
+Safe order-level example:
 ```sql
--- Distinct scoped orders: order-level fact, no line multiplication.
-SELECT storefront_key, COUNT(*) AS order_count
-FROM dw.fact_order_lifecycle_candidate
-WHERE reconciliation_status <> 'REVIEW_REQUIRED'
-GROUP BY storefront_key;
+SELECT s.storefront_code,COUNT(*) orders,
+ SUM(f.order_amount_source) FILTER(WHERE st.reviewed_status='COMPLETED') completed_order_payable
+FROM dw.fact_order_lifecycle_candidate f JOIN dw.dim_storefront s USING(storefront_key)
+JOIN dw.dim_order_status st USING(order_status_key) GROUP BY 1;
 ```
 
-```sql
--- Item units: line-level measure.
-SELECT storefront_key, order_created_date_key, SUM(quantity) AS item_units
-FROM dw.fact_order_line_candidate
-GROUP BY storefront_key, order_created_date_key;
-```
-
-```sql
--- Unsafe: repeated order amount at line grain.
--- SELECT SUM(order_amount_source) FROM dw.fact_order_line_candidate;
-```
-
-## 5. Required metadata in downstream marts
-
-Every financial or operational aggregate must retain:
-
-* source channel and storefront;
-* source field name or measure version;
-* lifecycle/status inclusion rule;
-* timezone/mapping version where relevant;
-* quality/reconciliation status;
-* a note when the measure is provisional.
+Không SUM order_amount_source từ line fact; hai line columns order_amount_source/shipping_buyer_charge_source được để NULL có chủ đích.

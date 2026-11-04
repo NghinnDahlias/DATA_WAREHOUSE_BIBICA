@@ -7,7 +7,6 @@ SELECT
     f.storefront_key,
     COUNT(*) AS order_count
 FROM dw.fact_order_lifecycle_candidate AS f
-WHERE f.reconciliation_status <> 'REVIEW_REQUIRED'
 GROUP BY f.channel_key, f.storefront_key
 ORDER BY f.channel_key, f.storefront_key;
 
@@ -62,3 +61,7 @@ SELECT
 FROM dw.fact_order_lifecycle_candidate AS f
 GROUP BY f.channel_key, f.storefront_key, f.reconciliation_status
 ORDER BY f.channel_key, f.storefront_key, f.reconciliation_status;
+
+-- Warehouse and category line-grain marts: distinct orders are not additive.
+SELECT * FROM mart.mv_warehouse_province ORDER BY orders DESC;
+SELECT * FROM mart.mv_category_performance ORDER BY completed_units DESC;

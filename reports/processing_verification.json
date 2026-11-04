@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "checks": {
+    "four_raw_bytes": true,
+    "shopee_bibica_silver": true,
+    "shopee_quasure_silver": true,
+    "tiktok_bibica_silver": true,
+    "ratings_silver": true,
+    "replay_zero_raw_writes": true,
+    "replay_fact_fingerprints": true,
+    "golden_hashes": true,
+    "golden_reload_counts": true,
+    "golden_reload_fact_fingerprints": true,
+    "golden_foreign_keys": true
+  },
+  "golden_tables": {
+    "dim_category": 4,
+    "dim_channel": 2,
+    "dim_date": 1153,
+    "dim_province": 282,
+    "dim_source_file": 4,
+    "dim_time": 59154,
+    "dim_ingestion_batch": 16,
+    "dim_storefront": 3,
+    "dim_order_identity": 127588,
+    "dim_order_status": 124,
+    "dim_source_product_sku": 1480,
+    "dim_warehouse": 6,
+    "fact_order_lifecycle_candidate": 127588,
+    "fact_order_line_candidate": 178517,
+    "fact_review_candidate": 5625
+  },
+  "foreign_keys": 56
+}

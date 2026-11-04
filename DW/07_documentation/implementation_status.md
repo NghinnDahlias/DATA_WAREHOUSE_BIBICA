@@ -1,50 +1,20 @@
-# Bibica DW - Phase 2 Implementation Status
+# Trạng thái Data Engineer & Database Architect — 04/11/2026
 
-## Status date
+| Hạng mục | Kết quả đã chạy |
+|---|---|
+| Galaxy/PostgreSQL | 12dims/3facts, 56FK; migration additive trên constellation gốc |
+| Full ETL nguồn hiện hành | 127588 orders / 178517 accepted lines / 5625 reviews |
+| Rating XLSX | Ratings only, lexical IDs,66semantic repeats +6invalid quarantined,4870historical SKU matches +755order-only |
+| Category |4business categories, name-only thống nhất3sources, native TikTok category metadata |
+| Kho/tỉnh |6warehouse members scoped theo shop,2warehouse city regions; customer province độc lập, alias controlled |
+| Duplicate/DQ |315sales duplicates,66review duplicates,6invalid; raw giữ đủ184529record |
+| Incremental | Fixture source update/rename/retraction/rollback PASS; full replay0raw insert/0update và fact fingerprints stable |
+| OLAP |5populated MVs; 16/16load/reconciliation gates PASS |
+| Raw/Silver/Golden |11/11verifier checks PASS;15Golden tables reload/FKs/fingerprints đã kiểm |
+| Automated tests |13/13unittest PASS khi bật BIBICA_TEST_DSN; không dùng8test profiling cũ thay cho loader tests |
 
-2026-11-04
+Đối chiếu bản DSS tham chiếu: `reports/reference_reconciliation.json` có fingerprints nghiệp vụ của127588orders,178517items và5625reviews; không so sánh surrogate keys giữa hai thiết kế khác nhau.
 
-## Technical implementation status
+Thông tin tiền: completed observed order payable9175209123VND; completed units168478. Đây không phải doanh thu thuần/lợi nhuận hay chứng nhận kế toán. Gift observed payments0/dương đều giữ nguyên.
 
-| Area | Status | Result |
-|---|---|---|
-| Galaxy schema | PASS | Facts, dimensions, grain, PK/FK and lineage model implemented |
-| PostgreSQL DW | PASS | Schemas, tables, indexes and facts loaded |
-| ETL/ELT | PASS | TikTok sales, TikTok ratings, Shopee Bibica and Shopee Quasure loaded |
-| Source normalization | PASS | Source-native SKU, warehouse, province, time and status retained/normalized |
-| Data quality | PASS with documented flags | Duplicate, repeated-line and timestamp flags retained without silent deletion |
-| Incremental/idempotent load | PASS | Replay batches are `REPLAYED`; no new fact rows inserted on replay |
-| OLAP queries | PASS | Safe order, item-unit and rating aggregations created |
-| Materialized views | PASS | 3/3 views populated |
-| OLAP validation | PASS | 0 restricted-column, negative-unit, rate, monthly-reconciliation or order-reconciliation violations |
-| Architecture/ETL documentation | COMPLETE | Runbook, data dictionary, limitations and validation report updated |
-
-## Materialized views
-
-- `mart.mv_order_counts_by_storefront`
-- `mart.mv_item_units_monthly`
-- `mart.mv_tiktok_ratings_monthly`
-
-## Financial safety boundary
-
-The technical pipeline does not publish paid revenue, net sales,
-cross-platform GMV, or cross-platform refund cash value. Source-native
-financial fields remain provisional/reconciliation fields until their business
-semantics are approved.
-
-## Final gates
-
-- **Technical Quality Gate: PASS**
-- **Business/KPI Gate: CONDITIONAL**
-
-The conditional status concerns business confirmation, not ETL or OLAP
-execution. Open decisions include financial/refund semantics, native
-lifecycle and timestamp interpretation, repeated order-SKU meaning,
-cross-platform SKU crosswalk, and review product linkage.
-
-## Validation references
-
-- [ETL and data-quality validation](../05_data_quality/results/Bibica_ETL_DQ_Validation_2026-11-04.md)
-- [Safe OLAP queries](../04_sql/olap/01_safe_olap_queries.sql)
-- [Materialized views](../04_sql/olap/02_materialized_views.sql)
-- [OLAP validation](../04_sql/olap/03_olap_validation.sql)
+Đã kiểm local với PostgreSQL18. Chưa chạy Docker/remote CI/cloud, crash recovery và load-test concurrency. Phạm vi repo không bao gồm frontend/API/DSS riêng. Lịch sử phát hành source/docs được ghi trong Git; dữ liệu dẫn xuất riêng tư không nằm trong commit.

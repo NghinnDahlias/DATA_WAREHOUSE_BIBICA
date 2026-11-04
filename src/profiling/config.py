@@ -2,7 +2,7 @@
 
 SOURCES = {
     "tiktok_sales": ("Tiktokshop_Bibica.csv", "tiktok", "Bibica TikTok Shop"),
-    "tiktok_reviews": ("Tiktokshop_Bibica_Rating.csv", "review", "Bibica TikTok Shop"),
+    "tiktok_reviews": ("Tiktok_Rating_Bibica.xlsx", "review", "Bibica TikTok Shop"),
     "shopee_bibica": ("Shopee_Bibica.xlsx", "shopee", "Bibica Official Store"),
     "shopee_quasure": ("Shopee_Quasure.xlsx", "shopee", "Quasure specialized store"),
 }
