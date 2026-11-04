@@ -26,10 +26,12 @@ Load: dimensions -> order identity -> candidate facts
 Validation: row counts, uniqueness, FK, quality and reconciliation checks
 ```
 
-The current Python runner implements extraction, typed transformations and
-idempotent candidate-fact loading. The staging contract is represented by the
-typed streaming boundary; a physical staging table can be added when replay
-audit requires retaining every intermediate value.
+`DW/etl/extract/readers.py` implements source reading, header normalization,
+row lineage and row-level validation. `DW/etl/run.py` implements typed
+transformations and idempotent candidate-fact loading. Structural errors are
+reported per source; row errors are collected with file, sheet and physical
+row instead of stopping the complete batch. A physical staging table can be
+added when replay audit requires retaining every intermediate value.
 
 ## 3. Source contracts
 
@@ -60,7 +62,9 @@ not be collapsed.
 
 Use a stable `--batch-id` when replaying a batch. Re-running the same batch is
 safe because source-file, row and batch uniqueness constraints make inserts
-no-ops. A new batch intentionally creates a new lineage version.
+no-ops. A new batch intentionally creates a new lineage version. Storefront
+codes are explicit (`bibica_tiktok_shop`, `bibica_official_store`, and
+`quasure_specialized_store`); source `kind` is never used as a storefront.
 
 ## 5. Transform rules
 
@@ -70,9 +74,14 @@ no-ops. A new batch intentionally creates a new lineage version.
 4. Parse dates without inventing missing lifecycle milestones.
 5. Keep item-scoped and order-scoped amounts in separate source fields.
 6. Never sum `order_amount_source` from the line fact.
-7. Store only review presence and length in analytical facts; do not load raw
-   review text, names, phone numbers, addresses or buyer messages.
-8. Keep product linkage as `ORDER_ONLY` until an approved SKU crosswalk exists.
+7. Leave `shipping_buyer_charge_source` and `order_amount_source` NULL on
+the line fact. Keep Shopee `Giá gốc`/`Giá ưu đãi` out of gross/net item
+amounts; only TikTok's validated item-grain gross/net fields are loaded.
+8. Store only review presence and length in analytical facts; do not load raw
+review text, names, phone numbers, addresses or buyer messages.
+9. Keep product linkage as `ORDER_ONLY` until an approved SKU crosswalk exists.
+10. Populate warehouse, province and native order-status dimensions as
+`PROVISIONAL` mappings when no reviewed mapping is available.
 
 ## 6. Load order
 

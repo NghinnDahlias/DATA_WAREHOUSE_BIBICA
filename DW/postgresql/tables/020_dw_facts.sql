@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS dw.fact_order_line_candidate (
     source_row_quality_status    text NOT NULL DEFAULT 'ACCEPTED',
     loaded_at                    timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT uq_fact_order_line_source_row
-        UNIQUE (source_file_key, source_sheet_name, physical_row_number, ingestion_batch_key),
+        UNIQUE (source_file_key, source_sheet_name, physical_row_number),
     CONSTRAINT ck_fact_order_line_source_hash
         CHECK (source_row_hash ~ '^[0-9a-fA-F]{64}$'),
     CONSTRAINT ck_fact_order_line_row_number CHECK (physical_row_number > 0),
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS dw.fact_review_candidate (
     review_quality_status   text NOT NULL DEFAULT 'ACCEPTED',
     loaded_at               timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT uq_fact_review_source_row
-        UNIQUE (source_file_key, source_sheet_name, physical_row_number, ingestion_batch_key),
+        UNIQUE (source_file_key, source_sheet_name, physical_row_number),
     CONSTRAINT ck_fact_review_source_hash
         CHECK (source_row_hash ~ '^[0-9a-fA-F]{64}$'),
     CONSTRAINT ck_fact_review_row_number CHECK (physical_row_number > 0),

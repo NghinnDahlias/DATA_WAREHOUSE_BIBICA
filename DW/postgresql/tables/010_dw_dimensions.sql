@@ -137,6 +137,8 @@ CREATE TABLE IF NOT EXISTS dw.dim_order_status (
     effective_from    date,
     effective_to      date,
     created_at        timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT uq_dim_order_status_key_scope
+        UNIQUE (order_status_key, channel_key, storefront_key),
     CONSTRAINT ck_dim_order_status_native_nonblank CHECK (btrim(native_status) <> ''),
     CONSTRAINT ck_dim_order_status_dates
         CHECK (effective_to IS NULL OR effective_from IS NULL OR effective_to >= effective_from),
@@ -185,5 +187,19 @@ CREATE TABLE IF NOT EXISTS dw.dim_ingestion_batch (
     CONSTRAINT fk_dim_ingestion_batch_source_file
         FOREIGN KEY (source_file_key) REFERENCES dw.dim_source_file(source_file_key)
 );
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'uq_dim_order_status_key_scope'
+          AND conrelid = 'dw.dim_order_status'::regclass
+    ) THEN
+        ALTER TABLE dw.dim_order_status
+            ADD CONSTRAINT uq_dim_order_status_key_scope
+            UNIQUE (order_status_key, channel_key, storefront_key);
+    END IF;
+END $$;
 
 COMMIT;
