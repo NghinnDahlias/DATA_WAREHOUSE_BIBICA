@@ -1,0 +1,1904 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Bibica DW & DSS API",
+    "description": "Galaxy PostgreSQL riêng của repo. Tiền VND, giờ Việt Nam.",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/kpi-contract": {
+      "get": {
+        "summary": "Kpi Contract",
+        "operationId": "kpi_contract_api_v1_kpi_contract_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/meta": {
+      "get": {
+        "summary": "Meta",
+        "operationId": "meta_api_v1_meta_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/overview/kpis": {
+      "get": {
+        "summary": "Kpis",
+        "operationId": "kpis_api_v1_overview_kpis_get",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Date"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "shopee_bibica",
+                    "shopee_quasure",
+                    "tiktok_bibica"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          },
+          {
+            "name": "store",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "bibica_official_store",
+                    "quasure_specialized_store",
+                    "bibica_tiktok_shop"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Store"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Bánh",
+                    "Kẹo",
+                    "Ngũ cốc",
+                    "Quà tặng"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "name": "warehouse_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Key"
+            }
+          },
+          {
+            "name": "warehouse_region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Hà Nội",
+                    "Hồ Chí Minh"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Region"
+            }
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Province"
+            }
+          },
+          {
+            "name": "product_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Key"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "COMPLETED",
+                    "DELIVERED",
+                    "CANCELED",
+                    "PROCESSING",
+                    "UNPAID",
+                    "RETURNED",
+                    "UNKNOWN"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/{dimension}": {
+      "get": {
+        "summary": "Analytics",
+        "operationId": "analytics_api_v1_analytics__dimension__get",
+        "parameters": [
+          {
+            "name": "dimension",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "source",
+                "store",
+                "status",
+                "month",
+                "category",
+                "province",
+                "warehouse",
+                "warehouse_region",
+                "product"
+              ],
+              "type": "string",
+              "title": "Dimension"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Date"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "shopee_bibica",
+                    "shopee_quasure",
+                    "tiktok_bibica"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          },
+          {
+            "name": "store",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "bibica_official_store",
+                    "quasure_specialized_store",
+                    "bibica_tiktok_shop"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Store"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Bánh",
+                    "Kẹo",
+                    "Ngũ cốc",
+                    "Quà tặng"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "name": "warehouse_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Key"
+            }
+          },
+          {
+            "name": "warehouse_region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Hà Nội",
+                    "Hồ Chí Minh"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Region"
+            }
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Province"
+            }
+          },
+          {
+            "name": "product_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Key"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "COMPLETED",
+                    "DELIVERED",
+                    "CANCELED",
+                    "PROCESSING",
+                    "UNPAID",
+                    "RETURNED",
+                    "UNKNOWN"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "summary": "Products",
+        "operationId": "products_api_v1_products_get",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Date"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "shopee_bibica",
+                    "shopee_quasure",
+                    "tiktok_bibica"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          },
+          {
+            "name": "store",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "bibica_official_store",
+                    "quasure_specialized_store",
+                    "bibica_tiktok_shop"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Store"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Bánh",
+                    "Kẹo",
+                    "Ngũ cốc",
+                    "Quà tặng"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "name": "warehouse_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Key"
+            }
+          },
+          {
+            "name": "warehouse_region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Hà Nội",
+                    "Hồ Chí Minh"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Region"
+            }
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Province"
+            }
+          },
+          {
+            "name": "product_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Key"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "COMPLETED",
+                    "DELIVERED",
+                    "CANCELED",
+                    "PROCESSING",
+                    "UNPAID",
+                    "RETURNED",
+                    "UNKNOWN"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 150,
+              "default": "",
+              "title": "Search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/quality": {
+      "get": {
+        "summary": "Quality",
+        "operationId": "quality_api_v1_quality_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/delivery": {
+      "get": {
+        "summary": "Delivery",
+        "operationId": "delivery_api_v1_operations_delivery_get",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Date"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "shopee_bibica",
+                    "shopee_quasure",
+                    "tiktok_bibica"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          },
+          {
+            "name": "store",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "bibica_official_store",
+                    "quasure_specialized_store",
+                    "bibica_tiktok_shop"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Store"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Bánh",
+                    "Kẹo",
+                    "Ngũ cốc",
+                    "Quà tặng"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category"
+            }
+          },
+          {
+            "name": "warehouse_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Key"
+            }
+          },
+          {
+            "name": "warehouse_region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "Hà Nội",
+                    "Hồ Chí Minh"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Warehouse Region"
+            }
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Province"
+            }
+          },
+          {
+            "name": "product_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product Key"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "COMPLETED",
+                    "DELIVERED",
+                    "CANCELED",
+                    "PROCESSING",
+                    "UNPAID",
+                    "RETURNED",
+                    "UNKNOWN"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dss/allocate": {
+      "post": {
+        "tags": [
+          "DSS"
+        ],
+        "summary": "Allocate",
+        "operationId": "allocate_api_v1_dss_allocate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dss/shelf-life": {
+      "post": {
+        "tags": [
+          "DSS"
+        ],
+        "summary": "Shelf Life",
+        "operationId": "shelf_life_api_v1_dss_shelf_life_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShelfRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dss/what-if": {
+      "post": {
+        "tags": [
+          "DSS"
+        ],
+        "summary": "What If",
+        "operationId": "what_if_api_v1_dss_what_if_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WhatIfRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dss/sensitivity": {
+      "post": {
+        "tags": [
+          "DSS"
+        ],
+        "summary": "Sensitivity",
+        "operationId": "sensitivity_api_v1_dss_sensitivity_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SensitivityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dss/risk": {
+      "get": {
+        "tags": [
+          "DSS"
+        ],
+        "summary": "Risk",
+        "operationId": "risk_api_v1_dss_risk_get",
+        "parameters": [
+          {
+            "name": "store",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "bibica_official_store",
+                "quasure_specialized_store",
+                "bibica_tiktok_shop"
+              ],
+              "type": "string",
+              "title": "Store"
+            }
+          },
+          {
+            "name": "as_of",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "As Of"
+            }
+          },
+          {
+            "name": "history_start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "History Start"
+            }
+          },
+          {
+            "name": "late_threshold_days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 365,
+              "exclusiveMinimum": 0,
+              "default": 5,
+              "title": "Late Threshold Days"
+            }
+          },
+          {
+            "name": "low_star_max",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 3,
+              "minimum": 1,
+              "default": 2,
+              "title": "Low Star Max"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100000,
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AllocationRequest": {
+        "properties": {
+          "store": {
+            "type": "string",
+            "enum": [
+              "bibica_official_store",
+              "quasure_specialized_store",
+              "bibica_tiktok_shop"
+            ],
+            "title": "Store"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "history_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "History Start"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/Demand"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Orders"
+          },
+          "scenario": {
+            "$ref": "#/components/schemas/Scenario"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "store",
+          "as_of",
+          "orders"
+        ],
+        "title": "AllocationRequest"
+      },
+      "BreakfastException": {
+        "properties": {
+          "warehouse_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Warehouse Key"
+          },
+          "product_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Product Key"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "HN_STOCKOUT_TRANSFER",
+              "APPROVED_ECOMMERCE_EXCEPTION"
+            ],
+            "title": "Reason"
+          },
+          "evidence_ref": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 3,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]+$",
+            "title": "Evidence Ref"
+          },
+          "ecommerce_stock_confirmed": {
+            "type": "boolean",
+            "const": true,
+            "title": "Ecommerce Stock Confirmed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "warehouse_key",
+          "product_key",
+          "reason",
+          "evidence_ref",
+          "ecommerce_stock_confirmed"
+        ],
+        "title": "BreakfastException"
+      },
+      "Demand": {
+        "properties": {
+          "order_ref": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,39}$",
+            "title": "Order Ref"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Province"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "order_ref",
+          "province",
+          "items"
+        ],
+        "title": "Demand"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Item": {
+        "properties": {
+          "product_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Product Key"
+          },
+          "quantity": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "product_key",
+          "quantity"
+        ],
+        "title": "Item"
+      },
+      "RiskWeights": {
+        "properties": {
+          "cancellation": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Cancellation",
+            "default": 0.4
+          },
+          "late_delivery": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Late Delivery",
+            "default": 0.4
+          },
+          "low_review": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Low Review",
+            "default": 0.2
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "RiskWeights"
+      },
+      "Scenario": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Label",
+            "default": "Kịch bản"
+          },
+          "stock_mode": {
+            "type": "string",
+            "enum": [
+              "required",
+              "assume_available"
+            ],
+            "title": "Stock Mode",
+            "default": "required"
+          },
+          "stocks": {
+            "items": {
+              "$ref": "#/components/schemas/Stock"
+            },
+            "type": "array",
+            "maxItems": 2000,
+            "title": "Stocks"
+          },
+          "capacity_orders": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Capacity Orders"
+          },
+          "extra_delay_days": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Extra Delay Days"
+          },
+          "max_delivery_days": {
+            "type": "number",
+            "maximum": 365.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Delivery Days",
+            "default": 7
+          },
+          "late_threshold_days": {
+            "type": "number",
+            "maximum": 365.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Late Threshold Days",
+            "default": 5
+          },
+          "min_remaining_days": {
+            "type": "number",
+            "maximum": 365.0,
+            "minimum": 0.0,
+            "title": "Min Remaining Days",
+            "default": 1
+          },
+          "max_risk_score": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Max Risk Score",
+            "default": 100
+          },
+          "min_route_samples": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Min Route Samples",
+            "default": 20
+          },
+          "prior_strength": {
+            "type": "number",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Prior Strength",
+            "default": 20
+          },
+          "risk_weight": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Risk Weight",
+            "default": 0.7
+          },
+          "risk_weights": {
+            "$ref": "#/components/schemas/RiskWeights"
+          },
+          "low_star_max": {
+            "type": "integer",
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Low Star Max",
+            "default": 2
+          },
+          "breakfast_exceptions": {
+            "items": {
+              "$ref": "#/components/schemas/BreakfastException"
+            },
+            "type": "array",
+            "maxItems": 1000,
+            "title": "Breakfast Exceptions"
+          },
+          "breakfast_product_keys": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "maxItems": 1000,
+            "title": "Breakfast Product Keys"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "Scenario"
+      },
+      "SensitivityRequest": {
+        "properties": {
+          "store": {
+            "type": "string",
+            "enum": [
+              "bibica_official_store",
+              "quasure_specialized_store",
+              "bibica_tiktok_shop"
+            ],
+            "title": "Store"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "history_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "History Start"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/Demand"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Orders"
+          },
+          "baseline": {
+            "$ref": "#/components/schemas/Scenario"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Scenario"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "minItems": 1,
+            "title": "Alternatives"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "store",
+          "as_of",
+          "orders",
+          "alternatives"
+        ],
+        "title": "SensitivityRequest"
+      },
+      "ShelfRequest": {
+        "properties": {
+          "store": {
+            "type": "string",
+            "enum": [
+              "bibica_official_store",
+              "quasure_specialized_store",
+              "bibica_tiktok_shop"
+            ],
+            "title": "Store"
+          },
+          "product_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Product Key"
+          },
+          "warehouse_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Warehouse Key"
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Province"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "remaining_shelf_days": {
+            "type": "number",
+            "maximum": 3650.0,
+            "minimum": 0.0,
+            "title": "Remaining Shelf Days"
+          },
+          "min_remaining_days": {
+            "type": "number",
+            "maximum": 365.0,
+            "minimum": 0.0,
+            "title": "Min Remaining Days",
+            "default": 1
+          },
+          "extra_delay_days": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": 0.0,
+            "title": "Extra Delay Days",
+            "default": 0
+          },
+          "min_route_samples": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Min Route Samples",
+            "default": 20
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "store",
+          "product_key",
+          "warehouse_key",
+          "province",
+          "as_of",
+          "remaining_shelf_days"
+        ],
+        "title": "ShelfRequest"
+      },
+      "Stock": {
+        "properties": {
+          "warehouse_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Warehouse Key"
+          },
+          "product_key": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Product Key"
+          },
+          "units": {
+            "type": "integer",
+            "maximum": 10000000.0,
+            "minimum": 0.0,
+            "title": "Units"
+          },
+          "remaining_shelf_days": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 3650.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Shelf Days"
+          },
+          "stock_scope": {
+            "type": "string",
+            "enum": [
+              "ECOMMERCE",
+              "WHOLESALE",
+              "UNVERIFIED"
+            ],
+            "title": "Stock Scope",
+            "default": "UNVERIFIED"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "warehouse_key",
+          "product_key",
+          "units"
+        ],
+        "title": "Stock"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WhatIfRequest": {
+        "properties": {
+          "store": {
+            "type": "string",
+            "enum": [
+              "bibica_official_store",
+              "quasure_specialized_store",
+              "bibica_tiktok_shop"
+            ],
+            "title": "Store"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "history_start": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "History Start"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/Demand"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Orders"
+          },
+          "baseline": {
+            "$ref": "#/components/schemas/Scenario"
+          },
+          "alternative": {
+            "$ref": "#/components/schemas/Scenario"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "store",
+          "as_of",
+          "orders",
+          "alternative"
+        ],
+        "title": "WhatIfRequest"
+      }
+    }
+  }
+}

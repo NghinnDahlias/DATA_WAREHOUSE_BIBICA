@@ -25,3 +25,9 @@ Tiền cấp đơn chỉ ở lifecycle; tiền dòng là list value/observed ite
 5marts: order counts, item units monthly, ratings monthly, warehouse→province và category performance. Rebuild/refresh nằm cùng transaction ETL; gates dừng commit khi sai. Distinct orders giữa kho/category không cộng được.
 
 DDL và indices gốc được giữ; migration030 bổ sung. DBML và data dictionary lấy từ Golden schema JSON hiện thực. `DB.png` là ảnh thiết kế trước refinement và không phải sơ đồ hiện hành.
+
+## API và DSS Phase2 — 05/11/2026
+
+Migration040 nối DW bằng analytics.v_orders/v_items/v_reviews và dss.v_route_orders. Read models không phụ thuộc các MVs có thể được rebuild trong ETL. FastAPI src/api dùng DBrepo read-only snapshot, gọi src/dss cho phân bổ nguyên đơn, historical risk và shelf-life/what-if scenario. HTTP loopback8001, chưa có frontend riêng.
+
+Tồn kho/HSD/năng lực là inputs có nhãn giả định, không thêm vào Galaxy như quan sát nguồn. Chiều kho theo shop và tỉnh khách tiếp tục độc lập. Tài liệu hợp đồng, thuật toán, vận hành và đánh giá ở docs/ của repo root, evidence mới trong reports/phase2_*.json. ETL có ANALYZE để giữ planner statistics sau load. Không cần hoặc import schema/source code từ dự án cha.

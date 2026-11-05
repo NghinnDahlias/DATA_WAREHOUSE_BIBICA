@@ -23,7 +23,7 @@ def project(key,locator,row):
         c.update(canonical_category=cat.canonical_category,category_rule=cat.rule,category_mapping_status=cat.status,
             category_mapping_method=cat.mapping_method,category_keyword_conflict=cat.keyword_conflict,customer_province=province(c['province']))
         c['product_nk']=c['sku'] or 'name:'+hashlib.md5((c['product_name']+'/'+(c['variant'] or '')).encode('utf8')).hexdigest()
-        tt=key=='tiktok_bibica';c['shipped']=date(row.get('Shipped Time' if tt else 'Ngày gửi hàng'))
+        tt=key=='tiktok_bibica';c['shipped']=date(row.get('Shipped Time' if tt else 'Ngày gửi hàng'))
         for name,header in [('payment_upper','Tổng số tiền Người mua thanh toán'),('payment_lower','Tổng số tiền người mua thanh toán'),('list_unit_price','SKU Unit Original Price' if tt else 'Giá gốc')]:
             v=money(row.get(header));c[name]=str(v) if v is not None else None
     return c

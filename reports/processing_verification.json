@@ -20,7 +20,7 @@
     "dim_province": 282,
     "dim_source_file": 4,
     "dim_time": 59154,
-    "dim_ingestion_batch": 16,
+    "dim_ingestion_batch": 36,
     "dim_storefront": 3,
     "dim_order_identity": 127588,
     "dim_order_status": 124,

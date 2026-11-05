@@ -1,0 +1,1007 @@
+{
+  "status": "SERIAL_MITIGATION_VERIFIED",
+  "executed_at": "2026-11-05T15:38:00.847000+00:00",
+  "queries_per_mode": 24,
+  "workers": 4,
+  "serial_mismatches": 0,
+  "parallel_mismatches": 12,
+  "results": [
+    {
+      "mode": 2,
+      "probe": 0,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 1,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 2,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "canceled_orders": {
+          "expected": "5620",
+          "actual": "5621"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49473"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64830.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5579989203.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040576387.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539151346.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539151346.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5579989203.0000"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16718220212955802748"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662229197686137530"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 3,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33624"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21538"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3544342772.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33624"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793589018.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21538"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49486"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64843.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580678271.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3597457888.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44703.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5041216082.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539200719.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539200719.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580678271.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129705.126659856997"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16714251724958363074"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09661920878004328876"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 4,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3543779352.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793025598.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49474"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64831.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580037537.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3596817154.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44691.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040618395.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539157672.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539157672.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580037537.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129691.010308320951"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16715245969900660282"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662258872363567758"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 5,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 6,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 7,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3543777595.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49474"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64831.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580106237.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040678275.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539166492.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539166492.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580106237.0000"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16715245969900660282"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662297976066293306"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 8,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 9,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 10,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3543835178.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793081424.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49475"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64832.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580130577.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3596910194.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44692.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040696370.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539172737.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539172737.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580130577.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129693.602526002972"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16715245969900660282"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662367744983326758"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 11,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "canceled_orders": {
+          "expected": "5620",
+          "actual": "5621"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49476"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64836.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580214481.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040797651.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539155360.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539155360.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580214481.0000"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16718220212955802748"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09661911058002575009"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 12,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 13,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 14,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 15,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3543864889.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793111135.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49473"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64830.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580166149.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3596945766.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44690.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040732195.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539172484.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539172484.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580166149.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129694.982122956909"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16715245969900660282"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662301616173615478"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 16,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3543888703.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793134949.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49475"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64832.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580176843.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3596956460.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44692.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040755567.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539159806.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539159806.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580176843.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129696.087899331352"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16715245969900660282"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662055901979950925"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 17,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33623"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21537"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3543955607.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33623"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793201853.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21537"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49475"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64832.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580275107.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3597054724.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44692.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040838693.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539174944.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539174944.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580275107.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129693.172354552630"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16714748832644320852"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662157038165537884"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 18,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "canceled_orders": {
+          "expected": "5620",
+          "actual": "5621"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49473"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64830.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580108837.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040680615.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539166752.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539166752.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580108837.0000"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16718220212955802748"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662298133415421768"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 19,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 20,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "canceled_orders": {
+          "expected": "5620",
+          "actual": "5621"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49474"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64831.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580086037.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040663015.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539161552.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539161552.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580086037.0000"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16718220212955802748"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662244424637354386"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 21,
+      "mismatch": {}
+    },
+    {
+      "mode": 2,
+      "probe": 22,
+      "mismatch": {
+        "orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_orders": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "booked_payable": {
+          "expected": "3543698019.0000",
+          "actual": "3544159809.0000"
+        },
+        "payable_observed_orders": {
+          "expected": "33621",
+          "actual": "33622"
+        },
+        "completed_payable": {
+          "expected": "2792944265.0000",
+          "actual": "2793406055.0000"
+        },
+        "completed_orders_with_payable": {
+          "expected": "21535",
+          "actual": "21536"
+        },
+        "accepted_lines": {
+          "expected": "49471",
+          "actual": "49476"
+        },
+        "units": {
+          "expected": "64828.0000",
+          "actual": "64833.0000"
+        },
+        "gross_item_value": {
+          "expected": "5579940037.0000",
+          "actual": "5580408228.0000"
+        },
+        "completed_gross_item_value": {
+          "expected": "3596719654.0000",
+          "actual": "3597187845.0000"
+        },
+        "completed_units": {
+          "expected": "44688.0000",
+          "actual": "44693.0000"
+        },
+        "observed_item_payable": {
+          "expected": "5040528695.0000",
+          "actual": "5040955269.0000"
+        },
+        "seller_discount": {
+          "expected": "539149872.0000",
+          "actual": "539191489.0000"
+        },
+        "paired_discount": {
+          "expected": "539149872.0000",
+          "actual": "539191489.0000"
+        },
+        "paired_gross": {
+          "expected": "5579940037.0000",
+          "actual": "5580408228.0000"
+        },
+        "completed_aov": {
+          "expected": "129693.255862549338",
+          "actual": "129708.676402303120"
+        },
+        "cancellation_rate": {
+          "expected": "0.16715743136730019928",
+          "actual": "0.16715245969900660282"
+        },
+        "seller_discount_rate": {
+          "expected": "0.09662287917521576765",
+          "actual": "0.09662223030468945829"
+        }
+      }
+    },
+    {
+      "mode": 2,
+      "probe": 23,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 0,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 1,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 2,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 3,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 4,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 5,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 6,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 7,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 8,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 9,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 10,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 11,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 12,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 13,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 14,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 15,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 16,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 17,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 18,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 19,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 20,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 21,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 22,
+      "mismatch": {}
+    },
+    {
+      "mode": 0,
+      "probe": 23,
+      "mismatch": {}
+    }
+  ],
+  "scope": "Session-only read-only experiments. Underlying PostgreSQL parallel plan cause is not yet established. API runs with per-gather parallel workers disabled."
+}

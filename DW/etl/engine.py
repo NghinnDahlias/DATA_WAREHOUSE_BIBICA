@@ -9,7 +9,8 @@ from .sources import SCOPES,preflight,records,project,require_headers
 from .facts import load_facts
 from .validation import validate,olap_checks
 
-DDL_FILES=[ROOT/'DW/postgresql/schemas/001_create_schemas.sql',ROOT/'DW/postgresql/tables/010_dw_dimensions.sql',ROOT/'DW/postgresql/tables/020_dw_facts.sql',ROOT/'DW/postgresql/constraints_indexes/constraints_indexes.sql',ROOT/'DW/postgresql/tables/030_canonical_operations.sql']
+DDL_FILES=[ROOT/'DW/postgresql/schemas/001_create_schemas.sql',ROOT/'DW/postgresql/tables/010_dw_dimensions.sql',ROOT/'DW/postgresql/tables/020_dw_facts.sql',ROOT/'DW/postgresql/constraints_indexes/constraints_indexes.sql',ROOT/'DW/postgresql/tables/030_canonical_operations.sql',ROOT/'DW/postgresql/tables/040_api_dss.sql']
+ANALYZE_SQL='ANALYZE dw.dim_category,dw.dim_channel,dw.dim_storefront,dw.dim_order_status,dw.dim_warehouse,dw.dim_province,dw.dim_source_product_sku,dw.dim_date,dw.dim_time,dw.fact_order_line_candidate,dw.fact_order_lifecycle_candidate,dw.fact_review_candidate'
 
 def dump(path,value):
     path.parent.mkdir(parents=True,exist_ok=True)
@@ -80,7 +81,7 @@ def load_postgres(data_dir,dsn,batch_id=None,*,process_dir=None,seed_silver=None
             for key,(filename,_,_) in SOURCES.items():
                 path=data_dir/filename;sha=checksum(path)
                 old=c.execute('SELECT * FROM ops.source_current WHERE source_code=%s',(key,)).fetchone()
-                version=parser_version(key)+'|repo-current-v2'
+                version=parser_version(key)+('|repo-current-v3-shipped' if key.startswith('shopee_') else '|repo-current-v2')
                 unchanged=old and old['sha256']==sha and old['parser_version']==version
                 n=old['row_count'] if unchanged else 0
                 need_export=process_dir and not(process_dir/'Silver'/(path.stem+'.csv')).exists()
@@ -91,6 +92,7 @@ def load_postgres(data_dir,dsn,batch_id=None,*,process_dir=None,seed_silver=None
                 c.execute('INSERT INTO ops.source_current VALUES(%s,%s,%s,%s,%s,%s) ON CONFLICT(source_code) DO UPDATE SET source_file_key=excluded.source_file_key,sha256=excluded.sha256,parser_version=excluded.parser_version,row_count=excluded.row_count,run_id=excluded.run_id',(key,sf,sha,version,n,run_id))
                 c.execute("UPDATE dw.dim_ingestion_batch SET load_status=%s,completed_at=now(),row_count_loaded=%s WHERE ingestion_batch_key=%s",('REPLAYED' if unchanged else 'LOADED',0 if unchanged else n,bk))
             c.execute((ROOT/'DW/etl/transform.sql').read_text(encoding='utf8'));load_facts(c);checks=validate(c)
+            c.execute(ANALYZE_SQL)
             c.execute((ROOT/'DW/04_sql/olap/02_materialized_views.sql').read_text(encoding='utf8'));checks.update(olap_checks(c))
             counts=c.execute('SELECT (SELECT count(*) FROM dw.fact_order_lifecycle_candidate) orders,(SELECT count(*) FROM dw.fact_order_line_candidate) items,(SELECT count(*) FROM dw.fact_review_candidate) reviews').fetchone()
             quarantine=c.execute('SELECT source_code,reason,count(*) records FROM ops.quarantine GROUP BY 1,2 ORDER BY 1,2').fetchall()

@@ -1,0 +1,120 @@
+test_breakfast_defaults_to_hanoi_even_if_hcm_duration_is_lower (tests.test_dss_business.BreakfastBusinessTests.test_breakfast_defaults_to_hanoi_even_if_hcm_duration_is_lower) ... FAIL
+test_documented_ecommerce_exception_allows_hcm (tests.test_dss_business.BreakfastBusinessTests.test_documented_ecommerce_exception_allows_hcm) ... ok
+test_exception_does_not_override_wholesale_stock_or_shelf_life (tests.test_dss_business.BreakfastBusinessTests.test_exception_does_not_override_wholesale_stock_or_shelf_life) ... FAIL
+test_exception_requires_explicit_evidence_and_true_confirmation (tests.test_dss_business.BreakfastBusinessTests.test_exception_requires_explicit_evidence_and_true_confirmation) ... ok
+test_hanoi_stockout_does_not_invent_southern_exception (tests.test_dss_business.BreakfastBusinessTests.test_hanoi_stockout_does_not_invent_southern_exception) ... FAIL
+test_name_policy_distinguishes_explicit_breakfast_from_brand (tests.test_dss_business.BreakfastBusinessTests.test_name_policy_distinguishes_explicit_breakfast_from_brand) ... ok
+test_reordered_orders_warehouses_and_resources_preserve_mapping (tests.test_dss_business.OptimizerOracleTests.test_reordered_orders_warehouses_and_resources_preserve_mapping) ... FAIL
+test_seeded_cases_match_independent_exhaustive_oracle (tests.test_dss_business.OptimizerOracleTests.test_seeded_cases_match_independent_exhaustive_oracle) ... ok
+test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) ...
+  test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[nan, 0, 1], status=0, gap=0) ... FAIL
+  test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[-1, 0, 2], status=0, gap=0) ... FAIL
+  test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[1, 0, 0], status=1, gap=0.1) ... FAIL
+  test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[1, 0, 0], status=0, gap=0.1) ... FAIL
+test_solver_timeout_with_feasible_incumbent_is_not_optimal (tests.test_dss_business.OptimizerOracleTests.test_solver_timeout_with_feasible_incumbent_is_not_optimal) ... ok
+test_review_weight_sensitivity_does_not_claim_probability (tests.test_dss_business.RiskInterpretationTests.test_review_weight_sensitivity_does_not_claim_probability) ... ok
+test_reviews_missing_differ_from_zero_bad_reviews (tests.test_dss_business.RiskInterpretationTests.test_reviews_missing_differ_from_zero_bad_reviews) ... ok
+test_balanced_split_is_not_an_objective (tests.test_dss_business.WarehouseBusinessTests.test_balanced_split_is_not_an_objective) ... ok
+test_capacity_applies_to_full_batch (tests.test_dss_business.WarehouseBusinessTests.test_capacity_applies_to_full_batch) ... ok
+test_network_shortage_does_not_oversell_stock (tests.test_dss_business.WarehouseBusinessTests.test_network_shortage_does_not_oversell_stock) ... ok
+test_northern_customer_can_legitimately_ship_from_south (tests.test_dss_business.WarehouseBusinessTests.test_northern_customer_can_legitimately_ship_from_south) ... ok
+test_whole_mixed_order_cannot_split_stock_across_warehouses (tests.test_dss_business.WarehouseBusinessTests.test_whole_mixed_order_cannot_split_stock_across_warehouses) ... ok
+test_wholesale_stock_cannot_be_used_for_ecommerce (tests.test_dss_business.WarehouseBusinessTests.test_wholesale_stock_cannot_be_used_for_ecommerce) ... FAIL
+
+======================================================================
+FAIL: test_breakfast_defaults_to_hanoi_even_if_hcm_duration_is_lower (tests.test_dss_business.BreakfastBusinessTests.test_breakfast_defaults_to_hanoi_even_if_hcm_duration_is_lower)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 158, in test_breakfast_defaults_to_hanoi_even_if_hcm_duration_is_lower
+    self.assertEqual(result['summary']['warehouse_orders'],{1:2})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {2: 2} != {1: 2}
+- {2: 2}
+?  ^
+
++ {1: 2}
+?  ^
+
+
+======================================================================
+FAIL: test_exception_does_not_override_wholesale_stock_or_shelf_life (tests.test_dss_business.BreakfastBusinessTests.test_exception_does_not_override_wholesale_stock_or_shelf_life)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 183, in test_exception_does_not_override_wholesale_stock_or_shelf_life
+    self.assertEqual(result['summary']['assigned_orders'],0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_hanoi_stockout_does_not_invent_southern_exception (tests.test_dss_business.BreakfastBusinessTests.test_hanoi_stockout_does_not_invent_southern_exception)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 166, in test_hanoi_stockout_does_not_invent_southern_exception
+    self.assertEqual(result['summary']['assigned_orders'],0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_reordered_orders_warehouses_and_resources_preserve_mapping (tests.test_dss_business.OptimizerOracleTests.test_reordered_orders_warehouses_and_resources_preserve_mapping)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 216, in test_reordered_orders_warehouses_and_resources_preserve_mapping
+    self.assertEqual(allocation_map(original),allocation_map(changed))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'C': None, 'A': 2, 'B': 1} != {'B': None, 'A': 1, 'C': 2}
+- {'A': 2, 'B': 1, 'C': None}
+?       ^       ^       ^^^^
+
++ {'A': 1, 'B': None, 'C': 2}
+?       ^       ^^^^       ^
+
+
+======================================================================
+FAIL: test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[nan, 0, 1], status=0, gap=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 233, in test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected
+    with patch('src.dss.allocation.milp',return_value=result),self.assertRaises(RuntimeError):
+                                                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[-1, 0, 2], status=0, gap=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 233, in test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected
+    with patch('src.dss.allocation.milp',return_value=result),self.assertRaises(RuntimeError):
+                                                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[1, 0, 0], status=1, gap=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 233, in test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected
+    with patch('src.dss.allocation.milp',return_value=result),self.assertRaises(RuntimeError):
+                                                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected (tests.test_dss_business.OptimizerOracleTests.test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected) (vector=[1, 0, 0], status=0, gap=0.1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 233, in test_solver_nonfinite_bounds_and_nonoptimal_gap_rejected
+    with patch('src.dss.allocation.milp',return_value=result),self.assertRaises(RuntimeError):
+                                                              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_wholesale_stock_cannot_be_used_for_ecommerce (tests.test_dss_business.WarehouseBusinessTests.test_wholesale_stock_cannot_be_used_for_ecommerce)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Datawarehouse\DATA_WAREHOUSE_BIBICA\tests\test_dss_business.py", line 143, in test_wholesale_stock_cannot_be_used_for_ecommerce
+    self.assertEqual(result['summary']['assigned_orders'],0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.072s
+
+FAILED (failures=9)

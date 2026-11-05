@@ -1,0 +1,403 @@
+{
+  "status": "PASS",
+  "executed_at": "2026-11-05T15:41:08.271250+00:00",
+  "audit_version": "2026-11-05-review-mentions-v1",
+  "checks": {
+    "native_rating_hash_matches_loaded_source": true,
+    "native_rating_source_count_matches": true,
+    "every_accepted_review_tagged_once": true,
+    "accepted_stars_match_native_projection": true,
+    "one_review_per_dimension_grouping": true,
+    "no_order_join_fanout": true,
+    "no_orphan_review_orders": true,
+    "threshold_counts_nested": true,
+    "source_review_absence_is_unavailable": true,
+    "negative_denominator_is_reviews": true,
+    "source_bytes_unchanged_after_read": true
+  },
+  "threshold_sensitivity": [
+    {
+      "threshold": 1,
+      "reviews": 5625,
+      "negative_reviews": 194,
+      "fraction": 0.03448888888888889,
+      "wilson_95_interval": [
+        0.030028879305976128,
+        0.03958428384443695
+      ],
+      "mean_stars": 4.668266666666667,
+      "sparse_cohort": false,
+      "order_cluster_bootstrap_95_interval": [
+        0.029156626584045473,
+        0.039979211087420044
+      ]
+    },
+    {
+      "threshold": 2,
+      "reviews": 5625,
+      "negative_reviews": 262,
+      "fraction": 0.04657777777777778,
+      "wilson_95_interval": [
+        0.04137336204750662,
+        0.05240107851584208
+      ],
+      "mean_stars": 4.668266666666667,
+      "sparse_cohort": false,
+      "order_cluster_bootstrap_95_interval": [
+        0.04029653765047459,
+        0.05279366079428125
+      ]
+    },
+    {
+      "threshold": 3,
+      "reviews": 5625,
+      "negative_reviews": 448,
+      "fraction": 0.07964444444444445,
+      "wilson_95_interval": [
+        0.0728526597197128,
+        0.08700998082607744
+      ],
+      "mean_stars": 4.668266666666667,
+      "sparse_cohort": false,
+      "order_cluster_bootstrap_95_interval": [
+        0.07147898986695188,
+        0.08778462639734226
+      ]
+    }
+  ],
+  "star_counts": {
+    "1": 194,
+    "2": 68,
+    "3": 186,
+    "4": 514,
+    "5": 4663
+  },
+  "source_coverage": [
+    {
+      "source_code": "shopee_bibica",
+      "platform": "shopee",
+      "store": "bibica_official_store",
+      "orders": 54015,
+      "reviews": null,
+      "reviewed_orders": null,
+      "observed_review_order_coverage": null,
+      "review_status": "UNAVAILABLE_NO_REVIEW_EXPORT"
+    },
+    {
+      "source_code": "shopee_quasure",
+      "platform": "shopee",
+      "store": "quasure_specialized_store",
+      "orders": 9829,
+      "reviews": null,
+      "reviewed_orders": null,
+      "observed_review_order_coverage": null,
+      "review_status": "UNAVAILABLE_NO_REVIEW_EXPORT"
+    },
+    {
+      "source_code": "tiktok_bibica",
+      "platform": "tiktok",
+      "store": "bibica_tiktok_shop",
+      "orders": 63744,
+      "reviews": 5625,
+      "reviewed_orders": 4661,
+      "observed_review_order_coverage": "0.07312060742971887550",
+      "review_status": "AVAILABLE_SELF_SELECTED_SAMPLE"
+    }
+  ],
+  "order_review_multiplicity": [
+    {
+      "reviews_per_order": 1,
+      "reviewed_orders": 4031
+    },
+    {
+      "reviews_per_order": 2,
+      "reviewed_orders": 413
+    },
+    {
+      "reviews_per_order": 3,
+      "reviewed_orders": 149
+    },
+    {
+      "reviews_per_order": 4,
+      "reviewed_orders": 38
+    },
+    {
+      "reviews_per_order": 5,
+      "reviewed_orders": 19
+    },
+    {
+      "reviews_per_order": 6,
+      "reviewed_orders": 8
+    },
+    {
+      "reviews_per_order": 8,
+      "reviewed_orders": 2
+    },
+    {
+      "reviews_per_order": 10,
+      "reviewed_orders": 1
+    }
+  ],
+  "join_audit": {
+    "accepted_reviews": 5625,
+    "reviews_order_join": 5625,
+    "naive_order_item_join_rows": 8993,
+    "unlinked_product_reviews": 755,
+    "orphan_order_reviews": 0
+  },
+  "content_summary": {
+    "reviews": 5625,
+    "text_present_reviews": 4315,
+    "unknown_or_no_explicit_issue_reviews": 5463,
+    "multilabel_reviews": 9,
+    "safety_signal_reviews": 11,
+    "high_star_safety_signal_reviews": 0,
+    "negative_without_explicit_issue_label": 195,
+    "negative_without_text": 31,
+    "unknown_or_ambiguous_province": 6,
+    "ambiguous_warehouse": 0
+  },
+  "content_labels": [
+    {
+      "label": "delivery_delay_mention",
+      "mentions": 5,
+      "negative_le2_mentions": 0,
+      "high_star_mentions": 5
+    },
+    {
+      "label": "missing_items_mention",
+      "mentions": 22,
+      "negative_le2_mentions": 12,
+      "high_star_mentions": 6
+    },
+    {
+      "label": "packaging_damage_mention",
+      "mentions": 55,
+      "negative_le2_mentions": 19,
+      "high_star_mentions": 23
+    },
+    {
+      "label": "product_breakage_mention",
+      "mentions": 16,
+      "negative_le2_mentions": 8,
+      "high_star_mentions": 3
+    },
+    {
+      "label": "replacement_dispatch_claim",
+      "mentions": 1,
+      "negative_le2_mentions": 1,
+      "high_star_mentions": 0
+    },
+    {
+      "label": "resolution_confirmed_claim",
+      "mentions": 1,
+      "negative_le2_mentions": 0,
+      "high_star_mentions": 1
+    },
+    {
+      "label": "short_shelf_life_mention",
+      "mentions": 10,
+      "negative_le2_mentions": 2,
+      "high_star_mentions": 2
+    },
+    {
+      "label": "spoilage_or_expired_mention",
+      "mentions": 11,
+      "negative_le2_mentions": 8,
+      "high_star_mentions": 0
+    },
+    {
+      "label": "taste_or_texture_mention",
+      "mentions": 41,
+      "negative_le2_mentions": 16,
+      "high_star_mentions": 19
+    },
+    {
+      "label": "wrong_items_mention",
+      "mentions": 9,
+      "negative_le2_mentions": 4,
+      "high_star_mentions": 3
+    }
+  ],
+  "severity_by_stars": [
+    {
+      "severity": "FULFILLMENT_DAMAGE_SIGNAL",
+      "reviews": 100,
+      "star1": 30,
+      "star2": 13,
+      "star3": 24,
+      "star4": 12,
+      "star5": 21
+    },
+    {
+      "severity": "OTHER_EXPLICIT_MENTION",
+      "reviews": 51,
+      "star1": 8,
+      "star2": 8,
+      "star3": 9,
+      "star4": 10,
+      "star5": 16
+    },
+    {
+      "severity": "SAFETY_SIGNAL_REQUIRES_REVIEW",
+      "reviews": 11,
+      "star1": 8,
+      "star2": 0,
+      "star3": 3,
+      "star4": 0,
+      "star5": 0
+    },
+    {
+      "severity": "UNKNOWN",
+      "reviews": 5463,
+      "star1": 148,
+      "star2": 47,
+      "star3": 150,
+      "star4": 492,
+      "star5": 4626
+    }
+  ],
+  "dimension_group_totals": {
+    "category": 5625,
+    "category_duration": 5625,
+    "category_province": 5625,
+    "category_warehouse": 5625,
+    "category_warehouse_province": 5625,
+    "delivery_duration": 5625,
+    "order_month": 5625,
+    "platform": 5625,
+    "product": 5625,
+    "product_warehouse": 5625,
+    "province": 5625,
+    "review_month": 5625,
+    "source": 5625,
+    "store": 5625,
+    "warehouse": 5625,
+    "warehouse_duration": 5625,
+    "warehouse_province": 5625
+  },
+  "shop_catalog_mapping": [
+    {
+      "storefront_code": "bibica_official_store",
+      "channel_code": "shopee",
+      "catalog_skus": 663,
+      "quasure_named_skus": 87,
+      "pleasure_named_skus": 0
+    },
+    {
+      "storefront_code": "bibica_tiktok_shop",
+      "channel_code": "tiktok",
+      "catalog_skus": 731,
+      "quasure_named_skus": 127,
+      "pleasure_named_skus": 0
+    },
+    {
+      "storefront_code": "quasure_specialized_store",
+      "channel_code": "shopee",
+      "catalog_skus": 86,
+      "quasure_named_skus": 82,
+      "pleasure_named_skus": 0
+    }
+  ],
+  "explicit_breakfast_name_observations": [
+    {
+      "source_code": "shopee_bibica",
+      "warehouse_region": "Hà Nội",
+      "accepted_lines": 47,
+      "orders": 47,
+      "historical_skus": 5,
+      "units": "59.0000"
+    },
+    {
+      "source_code": "shopee_bibica",
+      "warehouse_region": "Hồ Chí Minh",
+      "accepted_lines": 469,
+      "orders": 382,
+      "historical_skus": 16,
+      "units": "732.0000"
+    },
+    {
+      "source_code": "tiktok_bibica",
+      "warehouse_region": "Hà Nội",
+      "accepted_lines": 115,
+      "orders": 109,
+      "historical_skus": 12,
+      "units": "137.0000"
+    },
+    {
+      "source_code": "tiktok_bibica",
+      "warehouse_region": "Hồ Chí Minh",
+      "accepted_lines": 1275,
+      "orders": 995,
+      "historical_skus": 23,
+      "units": "1747.0000"
+    }
+  ],
+  "review_date_coherence": {
+    "reviews_before_order": 0,
+    "earliest_review": "2023-08-24",
+    "latest_review": "2026-10-17",
+    "earliest_reviewed_order": "2023-08-22",
+    "latest_reviewed_order": "2026-10-15"
+  },
+  "operational_service_metrics": {
+    "complaint_incidence": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    },
+    "replacement_promised_count": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    },
+    "replacement_dispatched_count": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    },
+    "replacement_received_count": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    },
+    "replacement_resolved_count": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    },
+    "replacement_resolution_rate": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    },
+    "customer_level_complaint_rate": {
+      "status": "UNAVAILABLE",
+      "value": null,
+      "reason": "No typed complaint, replacement, shipment or resolution event history in supplied sources"
+    }
+  },
+  "label_quality": {
+    "status": "UNVALIDATED_HEURISTIC",
+    "module_regression_tests": 19,
+    "real_data_precision_recall": "UNAVAILABLE_NO_INDEPENDENT_HUMAN_LABELS",
+    "method": "Conservative exact mentions, Unicode normalization, local negation suppression, multi-label, unknown retained",
+    "seller_reply_history": "Not parsed as operational events. Only customer review_text projection is tagged.",
+    "source_text_persisted_in_report": false
+  },
+  "customer_dimension": {
+    "status": "UNAVAILABLE",
+    "reason": "No verified privacy-preserving stable customer key or cross-source identity contract. Raw buyer labels are not resolved identities."
+  },
+  "causal_conclusion": "No causal attribution of defects to warehouse, carrier or distance. Ratings and durations are observational/self-selected.",
+  "uncertainty_method": {
+    "wilson": "Approximate review-level IID interval, not population satisfaction certainty.",
+    "bootstrap": "2000 deterministic order-cluster resamples, seed20261105, retaining review multiplicity within order.",
+    "remaining_limitations": "Self-selection, temporal dependence, unknown export completeness and unvalidated cause labels remain."
+  },
+  "replacement_conclusion": "Mention/dispatch/receipt/resolution claims are separate text signals. None confirms typed operational completion.",
+  "geography_conclusion": "Warehouse association uses unique matched-product warehouse or unique order warehouse. Ambiguity stays explicit. Province is independently normalized.",
+  "shop_naming_conclusion": "Current source storefront is Quasure. Pleasure naming in business background is not silently substituted without an approved alias/mapping.",
+  "content_feature_digest": "7e26a802e3c0ab7e7d611d49df7349ee7d50cb922520d3a6842442cae1464585",
+  "native_rating_sha256": "07ae718047f3fe1f7d17d417e0261203bfb4c1d048368afe29d0a892c46e5893"
+}

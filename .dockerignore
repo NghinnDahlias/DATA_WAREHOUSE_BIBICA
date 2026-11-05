@@ -4,3 +4,4 @@ data process
 Data/Data_Source_Raw
 .env
 __pycache__
+.venv

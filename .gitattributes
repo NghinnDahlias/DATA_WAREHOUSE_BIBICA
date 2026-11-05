@@ -1,1 +1,14 @@
 Data/** -text
+# Preserve QA snapshot bytes so their recorded SHA256 values survive Git checkout.
+reports/phase2*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+reports/phase2_assessment/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+reports/etl_validation.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+reports/processing_verification.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Keep verified source code identical across Windows and Linux checkouts.
+src/api/*.py text eol=lf
+src/dss/*.py text eol=lf
+scripts/*.py text eol=lf
+tests/*.py text eol=lf
+DW/etl/engine.py text eol=lf
+DW/etl/sources.py text eol=lf
+DW/postgresql/tables/040_api_dss.sql text eol=lf

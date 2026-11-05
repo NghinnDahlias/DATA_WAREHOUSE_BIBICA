@@ -1,0 +1,267 @@
+{
+  "status": "PASS",
+  "executed_at": "2026-11-05T15:32:26.640759+00:00",
+  "port": 8001,
+  "checks": {
+    "repository_database_ready": true,
+    "bibica_official_store_allocation": true,
+    "bibica_official_store_scope": true,
+    "bibica_official_store_observed_risk": true,
+    "bibica_official_store_shelf_evidence": true,
+    "quasure_specialized_store_allocation": true,
+    "quasure_specialized_store_scope": true,
+    "quasure_specialized_store_observed_risk": true,
+    "quasure_specialized_store_shelf_evidence": true,
+    "bibica_tiktok_shop_allocation": true,
+    "bibica_tiktok_shop_scope": true,
+    "bibica_tiktok_shop_observed_risk": true,
+    "bibica_tiktok_shop_shelf_evidence": true,
+    "live_what_if_changes_assignment": true,
+    "api_readonly_kpis_unchanged": true,
+    "all_http_200": true
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "seconds": 0.0309
+    },
+    {
+      "method": "GET",
+      "path": "/docs",
+      "status": 200,
+      "seconds": 0.001
+    },
+    {
+      "method": "GET",
+      "path": "/openapi.json",
+      "status": 200,
+      "seconds": 0.0513
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/meta",
+      "status": 200,
+      "seconds": 0.1787
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/overview/kpis",
+      "status": 200,
+      "seconds": 0.8009
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/kpi-contract",
+      "status": 200,
+      "seconds": 0.0018
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/quality",
+      "status": 200,
+      "seconds": 0.0418
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/operations/delivery",
+      "status": 200,
+      "seconds": 0.4731
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/source",
+      "status": 200,
+      "seconds": 0.4202
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/store",
+      "status": 200,
+      "seconds": 0.4442
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/status",
+      "status": 200,
+      "seconds": 0.3963
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/month",
+      "status": 200,
+      "seconds": 0.4707
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/category",
+      "status": 200,
+      "seconds": 0.7961
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/province",
+      "status": 200,
+      "seconds": 0.8285
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/warehouse",
+      "status": 200,
+      "seconds": 0.6615
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/warehouse_region",
+      "status": 200,
+      "seconds": 0.8143
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/analytics/product",
+      "status": 200,
+      "seconds": 0.7075
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/products",
+      "status": 200,
+      "seconds": 0.4177
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/allocate",
+      "status": 200,
+      "seconds": 0.7052
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dss/risk",
+      "status": 200,
+      "seconds": 0.6873
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/shelf-life",
+      "status": 200,
+      "seconds": 0.9611
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/products",
+      "status": 200,
+      "seconds": 0.2477
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/allocate",
+      "status": 200,
+      "seconds": 0.4054
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dss/risk",
+      "status": 200,
+      "seconds": 0.5291
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/shelf-life",
+      "status": 200,
+      "seconds": 0.5023
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/products",
+      "status": 200,
+      "seconds": 0.4333
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/allocate",
+      "status": 200,
+      "seconds": 0.8307
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/dss/risk",
+      "status": 200,
+      "seconds": 0.9376
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/shelf-life",
+      "status": 200,
+      "seconds": 0.9638
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/what-if",
+      "status": 200,
+      "seconds": 1.8148
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/dss/sensitivity",
+      "status": 200,
+      "seconds": 1.605
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/overview/kpis",
+      "status": 200,
+      "seconds": 0.7779
+    }
+  ],
+  "store_summaries": [
+    {
+      "store": "bibica_official_store",
+      "allocation": {
+        "requested_orders": 2,
+        "assigned_orders": 2,
+        "unassigned_orders": 0,
+        "warehouse_orders": {
+          "5": 1,
+          "1": 1
+        },
+        "mean_risk_score": 9.349854990354643,
+        "mean_p90_scenario_days": 4.121527777777778,
+        "objective_cost": 0.3075348746268698
+      },
+      "risk_components_available": 0.8
+    },
+    {
+      "store": "quasure_specialized_store",
+      "allocation": {
+        "requested_orders": 2,
+        "assigned_orders": 2,
+        "unassigned_orders": 0,
+        "warehouse_orders": {
+          "4": 1,
+          "6": 1
+        },
+        "mean_risk_score": 8.92095259466951,
+        "mean_p90_scenario_days": 4.147534722222222,
+        "objective_cost": 0.30264482442061125
+      },
+      "risk_components_available": 0.8
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "allocation": {
+        "requested_orders": 2,
+        "assigned_orders": 2,
+        "unassigned_orders": 0,
+        "warehouse_orders": {
+          "3": 1,
+          "2": 1
+        },
+        "mean_risk_score": 7.092430077648736,
+        "mean_p90_scenario_days": 1.3829108796296297,
+        "objective_cost": 0.15856163021406644
+      },
+      "risk_components_available": 1.0
+    }
+  ]
+}

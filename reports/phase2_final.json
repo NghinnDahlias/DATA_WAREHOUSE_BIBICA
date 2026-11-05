@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "executed_at": "2026-11-05T14:51:40.853724+00:00",
+  "client_date": "2026-11-05",
+  "scope": "All eight Phase2 backend/DSS deliverables, local repository only",
+  "completed_items": {
+    "1": {
+      "status": "PASS",
+      "name": "PostgreSQL API"
+    },
+    "2": {
+      "status": "PASS",
+      "name": "KPI Contract"
+    },
+    "3": {
+      "status": "PASS",
+      "name": "Whole-order HN/HCM allocation"
+    },
+    "4": {
+      "status": "PASS",
+      "name": "Breakfast shelf-life scenario"
+    },
+    "5": {
+      "status": "PASS",
+      "name": "Historical fulfillment risk scoring"
+    },
+    "6": {
+      "status": "PASS",
+      "name": "What-if and sensitivity"
+    },
+    "7": {
+      "status": "PASS",
+      "name": "Unit/API/integration tests"
+    },
+    "8": {
+      "status": "PASS",
+      "name": "Algorithm/runbook/evaluation documentation"
+    }
+  },
+  "evidence": [
+    "phase2_tests.json",
+    "phase2_verification.json",
+    "phase2_live_http.json",
+    "etl_validation.json",
+    "processing_verification.json"
+  ],
+  "unit_tests": 61,
+  "full_data_checks": 18,
+  "live_http_requests": 32,
+  "live_http_checks": 16,
+  "etl_olap_checks": 16,
+  "private_layer_checks": 11,
+  "schema": {
+    "foreign_keys": 56,
+    "tables": 15
+  },
+  "counts": {
+    "orders": 127588,
+    "items": 178517,
+    "reviews": 5625
+  },
+  "completed_payable": "9175209123.0000",
+  "completed_units": "168478.0000",
+  "raw_bytes_unchanged": true,
+  "business_fingerprints_unchanged": true,
+  "private_layers_ignored": true,
+  "staged_files": 0,
+  "compiled_python": true,
+  "git_diff_check": true,
+  "head_and_remote": "8865cf42358d6601a56625301bb319792191b832",
+  "phase2_committed_or_pushed": false,
+  "api_url": "http://127.0.0.1:8001/docs",
+  "limitations": [
+    "Inventory, expiry, capacity, demand and added delays are scenario inputs.",
+    "Rule risk is not a calibrated failure/spoilage probability.",
+    "Shopee completion time is a proxy, cancellation is a current snapshot.",
+    "No Docker/cloud/remoteCI/browser/concurrent-load/crash-recovery execution in this scope."
+  ],
+  "superseded_by": "reports/phase2_acceptance.json",
+  "scope_note": "Historical implementation snapshot. Current business readiness is CONDITIONAL_ACCEPTANCE in the superseding report."
+}

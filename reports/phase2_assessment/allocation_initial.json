@@ -1,0 +1,1645 @@
+{
+  "status": "FAIL",
+  "executed_at": "2026-11-05T15:16:44.456920+00:00",
+  "checks": {
+    "bibica_official_store_0": true,
+    "bibica_official_store_1": true,
+    "bibica_official_store_2": true,
+    "bibica_official_store_3": true,
+    "bibica_official_store_4": true,
+    "bibica_official_store_5": true,
+    "bibica_official_store_6": true,
+    "bibica_official_store_7": true,
+    "bibica_official_store_8": true,
+    "bibica_official_store_9": true,
+    "bibica_official_store_10": true,
+    "bibica_official_store_11": true,
+    "bibica_official_store_12": true,
+    "bibica_official_store_13": true,
+    "bibica_official_store_14": true,
+    "bibica_official_store_15": true,
+    "bibica_official_store_16": true,
+    "bibica_official_store_17": true,
+    "bibica_official_store_18": true,
+    "bibica_official_store_19": true,
+    "bibica_official_store_20": true,
+    "bibica_official_store_21": true,
+    "bibica_official_store_22": true,
+    "bibica_official_store_23": true,
+    "bibica_official_store_24": true,
+    "bibica_official_store_25": true,
+    "bibica_official_store_26": true,
+    "bibica_official_store_27": true,
+    "bibica_official_store_28": true,
+    "bibica_official_store_29": true,
+    "bibica_tiktok_shop_0": true,
+    "bibica_tiktok_shop_1": true,
+    "bibica_tiktok_shop_2": true,
+    "bibica_tiktok_shop_3": true,
+    "bibica_tiktok_shop_4": true,
+    "bibica_tiktok_shop_5": true,
+    "bibica_tiktok_shop_6": true,
+    "bibica_tiktok_shop_7": true,
+    "bibica_tiktok_shop_8": true,
+    "bibica_tiktok_shop_9": true,
+    "bibica_tiktok_shop_10": true,
+    "bibica_tiktok_shop_11": true,
+    "bibica_tiktok_shop_12": true,
+    "bibica_tiktok_shop_13": true,
+    "bibica_tiktok_shop_14": true,
+    "bibica_tiktok_shop_15": true,
+    "bibica_tiktok_shop_16": true,
+    "bibica_tiktok_shop_17": true,
+    "bibica_tiktok_shop_18": true,
+    "bibica_tiktok_shop_19": true,
+    "bibica_tiktok_shop_20": true,
+    "bibica_tiktok_shop_21": true,
+    "bibica_tiktok_shop_22": true,
+    "bibica_tiktok_shop_23": true,
+    "bibica_tiktok_shop_24": true,
+    "bibica_tiktok_shop_25": true,
+    "bibica_tiktok_shop_26": true,
+    "bibica_tiktok_shop_27": true,
+    "bibica_tiktok_shop_28": true,
+    "bibica_tiktok_shop_29": true,
+    "quasure_specialized_store_0": true,
+    "quasure_specialized_store_1": true,
+    "quasure_specialized_store_2": true,
+    "quasure_specialized_store_3": true,
+    "quasure_specialized_store_4": true,
+    "quasure_specialized_store_5": true,
+    "quasure_specialized_store_6": true,
+    "quasure_specialized_store_7": true,
+    "quasure_specialized_store_8": true,
+    "quasure_specialized_store_9": true,
+    "quasure_specialized_store_10": true,
+    "quasure_specialized_store_11": true,
+    "quasure_specialized_store_12": true,
+    "quasure_specialized_store_13": true,
+    "quasure_specialized_store_14": true,
+    "quasure_specialized_store_15": true,
+    "quasure_specialized_store_16": true,
+    "quasure_specialized_store_17": true,
+    "quasure_specialized_store_18": true,
+    "quasure_specialized_store_19": true,
+    "quasure_specialized_store_20": true,
+    "quasure_specialized_store_21": true,
+    "quasure_specialized_store_22": true,
+    "quasure_specialized_store_23": true,
+    "quasure_specialized_store_24": true,
+    "quasure_specialized_store_25": true,
+    "quasure_specialized_store_26": true,
+    "quasure_specialized_store_27": true,
+    "quasure_specialized_store_28": true,
+    "quasure_specialized_store_29": true,
+    "business_test_suite": false,
+    "optimizer_not_worse_than_feasible_greedy_on_served_count": true,
+    "all_three_shops": true
+  },
+  "scenario_cases": 90,
+  "unit_tests": 18,
+  "unit_failures": 9,
+  "unit_errors": 0,
+  "unit_skips": 0,
+  "elapsed_seconds": 5.24,
+  "served_improvement_over_greedy_cases": 6,
+  "cases": [
+    {
+      "store": "bibica_official_store",
+      "case": 0,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.6728311752516047,
+      "oracle_objective_cost": 0.6728311752516047,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 1,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 2,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.162156177384638,
+      "oracle_objective_cost": 0.162156177384638,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 2,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.8759712984917017,
+      "oracle_objective_cost": 0.8759712984917017,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 3,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 4,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.5106749978669668,
+      "oracle_objective_cost": 0.5106749978669668,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 5,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.14537869724223176,
+      "oracle_objective_cost": 0.14537869724223176,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 6,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.6728311752516047,
+      "oracle_objective_cost": 0.6728311752516047,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 7,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 0,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 8,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.29137341926286053,
+      "oracle_objective_cost": 0.29137341926286053,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 9,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.3075348746268698,
+      "oracle_objective_cost": 0.3075348746268698,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 10,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 11,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.5106749978669668,
+      "oracle_objective_cost": 0.5106749978669668,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 12,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.162156177384638,
+      "oracle_objective_cost": 0.162156177384638,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 13,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.324312354769276,
+      "oracle_objective_cost": 0.324312354769276,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 14,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.46969105201150774,
+      "oracle_objective_cost": 0.46969105201150774,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 15,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.3075348746268698,
+      "oracle_objective_cost": 0.3075348746268698,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 16,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 0,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 17,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.8188258972722335,
+      "oracle_objective_cost": 0.8188258972722335,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 18,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.73059260124947,
+      "oracle_objective_cost": 0.73059260124947,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 19,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 20,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 2,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.365296300624735,
+      "oracle_objective_cost": 0.365296300624735,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 21,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.8188258972722335,
+      "oracle_objective_cost": 0.8188258972722335,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 22,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.3075348746268698,
+      "oracle_objective_cost": 0.3075348746268698,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 23,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.324312354769276,
+      "oracle_objective_cost": 0.324312354769276,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 24,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.3075348746268698,
+      "oracle_objective_cost": 0.3075348746268698,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 25,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.46969105201150774,
+      "oracle_objective_cost": 0.46969105201150774,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 26,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 27,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.14537869724223176,
+      "oracle_objective_cost": 0.14537869724223176,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 28,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 0,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_official_store",
+      "case": 29,
+      "product_keys": [
+        1,
+        2
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 0,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.29337620949287996,
+      "oracle_objective_cost": 0.29337620949287996,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 1,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 2,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.22292510952311997,
+      "oracle_objective_cost": 0.22292510952311997,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 3,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.07045109996975997,
+      "oracle_objective_cost": 0.07045109996975997,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 4,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.34015061209097913,
+      "oracle_objective_cost": 0.34015061209097913,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 5,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.08807535346251039,
+      "oracle_objective_cost": 0.08807535346251039,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 6,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.21194666767403747,
+      "oracle_objective_cost": 0.21194666767403747,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 7,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.17615070692502077,
+      "oracle_objective_cost": 0.17615070692502077,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 8,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.15852645343227034,
+      "oracle_objective_cost": 0.15852645343227034,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 9,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.17615070692502077,
+      "oracle_objective_cost": 0.17615070692502077,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 10,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.07045109996975997,
+      "oracle_objective_cost": 0.07045109996975997,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 11,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.15852645343227034,
+      "oracle_objective_cost": 0.15852645343227034,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 12,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 0,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 13,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.1348497560606096,
+      "oracle_objective_cost": 0.1348497560606096,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 14,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 15,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.24660180689478073,
+      "oracle_objective_cost": 0.24660180689478073,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 16,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.24660180689478073,
+      "oracle_objective_cost": 0.24660180689478073,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 17,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.15852645343227034,
+      "oracle_objective_cost": 0.15852645343227034,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 18,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.34679642373464703,
+      "oracle_objective_cost": 0.34679642373464703,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 19,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.17615070692502077,
+      "oracle_objective_cost": 0.17615070692502077,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 20,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 21,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.15852645343227034,
+      "oracle_objective_cost": 0.15852645343227034,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 22,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.08807535346251039,
+      "oracle_objective_cost": 0.08807535346251039,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 23,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.07045109996975997,
+      "oracle_objective_cost": 0.07045109996975997,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 24,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.08807535346251039,
+      "oracle_objective_cost": 0.08807535346251039,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 25,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.15852645343227034,
+      "oracle_objective_cost": 0.15852645343227034,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 26,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.20530085603036957,
+      "oracle_objective_cost": 0.20530085603036957,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 27,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 1,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.12387131421152707,
+      "oracle_objective_cost": 0.12387131421152707,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 28,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 2,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.07045109996975997,
+      "oracle_objective_cost": 0.07045109996975997,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "bibica_tiktok_shop",
+      "case": 29,
+      "product_keys": [
+        757,
+        759
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.29337620949287996,
+      "oracle_objective_cost": 0.29337620949287996,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 0,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 1,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.4638322653083615,
+      "oracle_objective_cost": 0.4638322653083615,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 2,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.30264482442061125,
+      "oracle_objective_cost": 0.30264482442061125,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 3,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.5043535389291143,
+      "oracle_objective_cost": 0.5043535389291143,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 4,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 5,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 2,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 6,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 7,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.30264482442061125,
+      "oracle_objective_cost": 0.30264482442061125,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 8,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.5043535389291143,
+      "oracle_objective_cost": 0.5043535389291143,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 9,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.6655409798168646,
+      "oracle_objective_cost": 0.6655409798168646,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 10,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 0,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 11,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 5,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.8672496943253676,
+      "oracle_objective_cost": 0.8672496943253676,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 12,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 13,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.843686377436109,
+      "oracle_objective_cost": 0.843686377436109,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 14,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.30264482442061125,
+      "oracle_objective_cost": 0.30264482442061125,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 15,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 2,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 16,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.14145738353286097,
+      "oracle_objective_cost": 0.14145738353286097,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 17,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 1,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.31960278115210544,
+      "oracle_objective_cost": 0.31960278115210544,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 18,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 19,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.6419776629276059,
+      "oracle_objective_cost": 0.6419776629276059,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 20,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 21,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 2,
+      "assigned_orders": 0,
+      "oracle_assigned_orders": 0,
+      "objective_cost": 0,
+      "oracle_objective_cost": 0,
+      "greedy_baseline_assigned": 0,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 22,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.5240835962840036,
+      "oracle_objective_cost": 0.5240835962840036,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 23,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 24,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 3,
+      "oracle_assigned_orders": 3,
+      "objective_cost": 0.4638322653083615,
+      "oracle_objective_cost": 0.4638322653083615,
+      "greedy_baseline_assigned": 3,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 25,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.30264482442061125,
+      "oracle_objective_cost": 0.30264482442061125,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 26,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 4,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 27,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.5043535389291143,
+      "oracle_objective_cost": 0.5043535389291143,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 28,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 3,
+      "assigned_orders": 1,
+      "oracle_assigned_orders": 1,
+      "objective_cost": 0.16118744088775028,
+      "oracle_objective_cost": 0.16118744088775028,
+      "greedy_baseline_assigned": 1,
+      "oracle_equal": true,
+      "resources_valid": true
+    },
+    {
+      "store": "quasure_specialized_store",
+      "case": 29,
+      "product_keys": [
+        665,
+        666
+      ],
+      "candidate_routes": 6,
+      "feasible_candidate_routes": 6,
+      "assigned_orders": 2,
+      "oracle_assigned_orders": 2,
+      "objective_cost": 0.32237488177550055,
+      "oracle_objective_cost": 0.32237488177550055,
+      "greedy_baseline_assigned": 2,
+      "oracle_equal": true,
+      "resources_valid": true
+    }
+  ],
+  "limitations": [
+    "Inventory, remaining life, capacities and incoming demands are synthetic scenario inputs.",
+    "Historical route evidence is observed data, not a randomized warehouse comparison.",
+    "No measured revenue, profit, avoided damage or real stock-out benefit is claimed.",
+    "Oracle validates assignment optimization over eligible routes. Business eligibility has separate unit tests.",
+    "A low-star threshold or risk weight is a stated scenario choice, not a calibrated business optimum."
+  ]
+}

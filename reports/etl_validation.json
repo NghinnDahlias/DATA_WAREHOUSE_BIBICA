@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "run_id": "etl-113c948c0037",
+  "run_id": "verify-replay-cd9756d55f10",
   "source_counts": {
     "shopee_bibica": 86796,
     "shopee_quasure": 14725,

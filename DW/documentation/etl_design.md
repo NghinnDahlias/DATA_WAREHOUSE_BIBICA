@@ -30,3 +30,11 @@ python -m unittest discover -s tests -v
 DSN phải trỏ DB riêng của repo. Xem README/.env.example. `--seed-silver` chỉ dành cache local đã kiểm chứng (xem DATA_LAYERS.md); mặc định đọc native files, chạy độc lập với project cha.
 
 Giới hạn: đây là incremental theo **source snapshot/physical locator**, không phải CDC/event ingestion. Nếu source sắp xếp lại hàng, các locators được upsert theo snapshot mới; không khẳng định ổn định business line ID qua mọi reorder. Tồn kho, cost, settlement revenue, profit và causal promotion impact không được suy ra từ export.
+
+## Backend/DSS bổ sung05/11/2026
+
+Migration040 chỉ thêm analytics/dss views và read indices. Engine nạp migration này cùng các DDL hiện hành trước data transaction. Không tạo dimension/fact thay thế hoặc phụ thuộc vào schema của cha. API dùng read-only REPEATABLE READ, không đọc file nguồn trong request.
+
+Shopee header `Ngày gửi hàng` được sửa từ literal decomposed Unicode sang NFC tương ứng reader. Version hai nguồn Shopee nay có suffix repo-current-v3-shipped. TikTok và rating giữ suffix repo-current-v2 và rating ID parser riêng. Nạp lại88498raw projections phục hồi trường shipped, không thay original raw bytes, category, money, quantity, status hoặc IDs. Fingerprints nghiệp vụ cũ và toàn bộ test mới xác nhận các trường đó không đổi, shipped là trường bổ sung được sửa có chủ đích.
+
+Full replay sau sửa0insert/0update và15Golden tables/56FK đã reload kiểm lại. DSS dùng shipped→recorded delivery với chronology guard, không dùng created time thay ngày xuất kho. Hạn dùng/tồn kho/capacity vẫn là scenario inputs. Contract/runbook/đánh giá ở docs/KPI_CONTRACT.md, API_RUNBOOK.md, DSS_ALGORITHMS.md, DSS_EVALUATION.md của repo.

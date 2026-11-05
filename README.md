@@ -1,6 +1,8 @@
-# Bibica — PostgreSQL Galaxy DW & ETL
+# Bibica — PostgreSQL Galaxy DW, API & DSS
 
-Phần Data Engineer & Database Architect, cập nhật 04/11/2026. Giữ constellation gốc và bổ sung migration: **12 dimension + 3 fact, 56 FK**, persistent sanitized raw/typed staging, canonical Category, kho xuất hàng và tỉnh khách nhận, current snapshot upsert và OLAP refresh có kiểm chứng.
+DW/ETL giữ constellation gốc **12 dimension + 3 fact, 56 FK**. Phase2 backend/DSS cập nhật05/11/2026 bổ sung API PostgreSQL, KPI Contract, phân bổ kho HN/HCM, mô phỏng hạn dùng, risk scoring và what-if. Dữ liệu gốc/Silver/Golden riêng tư giữ ở local.
+
+Kiểm toán nghiệp vụ mới mở rộng114tests,90scenario oracle,68cohort KPI và phân tích rating đa chiều. Kết luận readiness có điều kiện cho DSS phân tích/mô phỏng được ghi trong [báo cáo nghiệm thu](docs/QA/PHASE2_ACCEPTANCE.md). Các snapshot61tests trước đó là lịch sử. Bánh ăn sáng mặc địnhHN, ngoại lệHCM cần xác nhận scenario scopedSKU/kho. Giữ guard truy vấn tuần tự theo API_RUNBOOK để tránh sai lệch đã tái hiện ở local parallel query mode.
 
 Kết quả full-data: **127588 orders, 178517 accepted item lines, 5625 reviews**. Raw184529record:178832sales +5697rating. Quarantine315exact sales duplicates +66semantic repeated reviews +6invalid reviews. Các số này là snapshot đã chạy, không phải hằng số trong ETL.
 
@@ -12,6 +14,7 @@ Python3.12+ và PostgreSQL16+; install `python -m pip install -r requirements.tx
 $env:BIBICA_DSN='postgresql://warehouse@127.0.0.1:55432/bibica_repo'
 python -m DW.etl.run --process --dsn "$env:BIBICA_DSN"
 python -m DW.etl.verify --dsn "$env:BIBICA_DSN" --rerun
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_api.ps1
 ```
 
 Trong workspace hiện tại có thể thay `python` bằng `..\.venv\Scripts\python.exe -X utf8`. Đó chỉ là interpreter; source code không import hoặc phụ thuộc project cha. Bản kiểm chứng local dùng database `bibica_repo` trên port55432.
@@ -36,9 +39,10 @@ $env:BIBICA_TEST_DSN='postgresql://warehouse@127.0.0.1:55432/postgres'
 python -m unittest discover -s tests -v
 ```
 
-13tests đã chạy PASS, gồm8profiling cũ và5tests hợp đồng/DB mới; DB tests chỉ tạo/xóa database ngẫu nhiên của chính test. Thiếu BIBICA_TEST_DSN thì3DB tests SKIP, không gọi là PASS. Full ETL có16gates; private layer/reload verifier có11checks. Đọc `reports/etl_validation.json`, `processing_verification.json`, `reference_reconciliation.json` để xem bằng chứng hiện hành.
+13tests DW cũ được giữ nguyên, bổ sung unit DSS và API/integration. Chạy `python scripts/run_tests.py` để ghi report mới ở reports/phase2_tests.json/log. Thiếu BIBICA_TEST_DSN thì DB tests SKIP, report PARTIAL. Full ETL có16gates, private layer/reload verifier có11checks. Full API/DSS đối soát bằng `python scripts/verify_phase2.py`, đọc reports/phase2_verification.json và docs/DSS_EVALUATION.md.
 
 - [Kiến trúc](DW/architecture/architecture_overview.md), [Galaxy](DW/architecture/1_galaxy_schema/galaxy_schema_candidate.md), [DBML](DW/architecture/2_erd/galaxy_schema.dbml), [Dictionary](DW/architecture/data_dictionary/data_dictionary.md).
 - [ETL runbook](DW/documentation/etl_design.md), [Data layers](DW/documentation/DATA_LAYERS.md), [Category & Geography](DW/documentation/CANONICAL_GEOGRAPHY.md), [trạng thái nghiệm thu](DW/07_documentation/implementation_status.md).
+- [API runbook](docs/API_RUNBOOK.md), [KPI Contract](docs/KPI_CONTRACT.md), [Thuật toán DSS](docs/DSS_ALGORITHMS.md), [Đánh giá thực nghiệm](docs/DSS_EVALUATION.md), [trạng thái Phase2](docs/PROJECT_STATE.md).
 
-Repo này hoàn thiện phạm vi DW/ETL/OLAP; không tuyên bố có frontend, API hay DSS riêng. Không chạy Docker/cloud/remote CI trong lần kiểm chứng này. Các tài liệu Phase1 và ảnh DB.png cũ là lịch sử, không thay bằng chứng cho schema hiện hành.
+API local tại http://127.0.0.1:8001/docs. Không có frontend riêng trong phạm vi Phase2 này. DSS nhận nhu cầu/tồn kho/năng lực/HSD kịch bản và trả conditional assignments, không gọi tồn kho giả định là dữ liệu thực. Đọc API_RUNBOOK và DSS_ALGORITHMS để chạy demo và hiểu các giới hạn. Docker/cloud/remote CI chưa chạy. Các tài liệu Phase1 và ảnh DB.png cũ là lịch sử, không thay bằng chứng cho schema hiện hành.

@@ -1,0 +1,15 @@
+# Quyết định Phase2 — 05/11/2026
+
+9. Kiểm toán nghiệp vụ bổ sung dùng background đã được người dùng chốt, giữ dữ liệu lịch sử và thêm HN-default/explicitHCMexception cho breakfast proposals. Nguồn ghiHCMnhiều hơnHN nên không suy wholesale/stockout/nhãnđảo để giải thích. ManualSKUoverride vàsource-scopedstore/warehouse giữ rõ.
+10. Tách gift khỏi historicalcommercial scoring cohort nhưng cho mixedfulfillment giữ đủgiftSKU khi có stockECOMMERCE minh thị. Không tự bỏgiftkhỏi nguyênđơn hoặc ép tiền gift0. Unmapped/gift-onlymanualreview.
+11. Fix malformed/nonoptimal solver result vàcanonical variable/resource order sau test tái hiện. Reviewnegative threshold được cấu hình1/2/3, historicalSKUwarehouse linkage tránh nhân review, knownfuturecancel/delivery timestamps được loại trong scoring. Customer/complaint/replacement stages thiếu nguồn công bốUNAVAILABLE.
+12. Tái hiện SQLnondeterminism trên localparallelquery mode2 với12/24mismatch, mode0khớp24/24. Giữ sessionAPI max_parallel_workers_per_gather=0, không thay globalPostgreSQL. Underlyingrootcause còn mở, nghiệmthu có điều kiện trên supportedruntime đã retest. Không tái gán toàn bộ mismatch cho công cụ test.
+
+1. Giữ Galaxy và toàn bộ scoped keys/index/ETL tốt sẵn có. Chỉ thêm read views/index migration040, src/api và src/dss trong repo, không import code của cha. Backend dùng port8001 và DBbibica_repo, read-only transactions để tách rõ runtime.
+2. KPI Contract dùng cùng M01–M16 đã đối soát của dự án tham chiếu. Order money chỉ lifecycle, line filters ở same-line EXISTS, review tổng hợp riêng. Không công bố net revenue/profit hay mixed-source delivery mean gây sai ngữ nghĩa.
+3. Phục hồi Shopee shipped time bằng exact NFC header từ original columns, version bump riêng hai nguồn và reload bằng cache chính repo đã xác minh hashes. Không sửa raw/native bytes hoặc parser ID rating. Business fingerprints được kiểm nguyên vẹn, shipped coverage được kiểm riêng.
+4. Binary MILP cho nguyên đơn với lexicographic served-count trước cost vì batch nhỏ và hai kho mỗi shop. Hard aggregate resource constraints giữ consistency, all-unassigned luôn là phương án khả thi. Solver cần optimum certificate và post-check constraints. Không gọi API thao tác kho thực.
+5. Route statistics cùng shop/kho/tỉnh với warehouse fallback có nhãn rõ, risk index có factors và missing-data weights. Stock/expiry/capacity/delay là scenario inputs. Không suy stock/HSD từ tên, không biến historical fractions thành calibrated probabilities.
+6. Temporal holdout chỉ kiểm duration, không gắn predictive accuracy cho snapshot cancellation/review score thiếu label thời điểm. Train outcomes đều đã ghi nhận trước cutoff. P90coverage thấp hơn90%được công bố nguyên trạng.
+7. Thêm ANALYZE sau load/upgrade vì timeout thực đã tái hiện do cardinality nhỏ chưa có statistics. Không tắt planner safeguards hoặc tăng timeout để che lỗi. Thêm regression và chạy lại cả fixture/full-data/reload.
+8. Toàn bộ Phase2 giữ local, chưa có quyền commit/push mới. Tests/evidence được chạy mới, không kế thừa PASS cũ. Các báo cáo PRIVATE layers tiếp tục ignored, report API/DSS chỉ có aggregate/hash/catalog và các nhu cầu DEMO.
