@@ -13,6 +13,8 @@ from .kpi_contract import VERSION, contract
 from .models import Filters, PageFilters, ProductFilters
 from . import repository
 
+from .review_themes import fetch_review_themes
+
 app = FastAPI(title='Bibica DW & DSS API', version='2.0.0', description='Galaxy PostgreSQL riêng của repo. Tiền VND, giờ Việt Nam.')
 FilterQuery = Annotated[Filters, Query()]
 
@@ -98,6 +100,11 @@ def delivery(filters: FilterQuery):
         rows = repository.delivery(c, filters)
     return envelope(rows, warnings=['Shopee completion time là proxy. TikTok Delivered Time là ghi nhận giao. Không gộp các nguồn thành SLA vận chuyển.'])
 
+@app.get('/api/v1/customer/review-themes')
+def customer_review_themes(filters: FilterQuery):
+    with snapshot() as c:
+        data = fetch_review_themes(c, filters)
+    return envelope(data, filters=filters.model_dump(mode='json'))
 
 from .dss_routes import router as dss_router
 app.include_router(dss_router)
