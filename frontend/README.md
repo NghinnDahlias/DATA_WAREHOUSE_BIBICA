@@ -6,6 +6,7 @@ Giao diện phân tích dữ liệu bán lẻ Bibica gồm 5 màn hình, sử d�
 
 ```powershell
 # 1. Khởi chạy Backend (repo DW & DSS của nhóm)
+py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8001
 
