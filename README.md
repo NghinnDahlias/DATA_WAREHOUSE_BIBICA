@@ -1,4 +1,6 @@
-# Bibica — PostgreSQL Galaxy DW, API & DSS
+# Bibica — PostgreSQL Galaxy DW, API, DSS & React BI
+
+Phase3 được cập nhật từ origin/main commit `96941fb` ngày09/11/2026, kèm sửa lỗi và kiểm chứng local. React gồm Overview, Sales, Warehouse, Customer Experience và DSS Simulation. Lệnh chạy, bộ lọc, refresh review themes và kiểm thử tại [Phase3 runbook](docs/PHASE3_RUNBOOK.md); kết quả thực tế tại [Phase3 acceptance](docs/QA/PHASE3_ACCEPTANCE.md). Các thay đổi kiểm thử/sửa lỗi hiện hành chưa commit/push.
 
 DW/ETL giữ constellation gốc **12 dimension + 3 fact, 56 FK**. Phase2 backend/DSS cập nhật05/11/2026 bổ sung API PostgreSQL, KPI Contract, phân bổ kho HN/HCM, mô phỏng hạn dùng, risk scoring và what-if. Dữ liệu gốc/Silver/Golden riêng tư giữ ở local.
 
@@ -45,4 +47,4 @@ python -m unittest discover -s tests -v
 - [ETL runbook](DW/documentation/etl_design.md), [Data layers](DW/documentation/DATA_LAYERS.md), [Category & Geography](DW/documentation/CANONICAL_GEOGRAPHY.md), [trạng thái nghiệm thu](DW/07_documentation/implementation_status.md).
 - [API runbook](docs/API_RUNBOOK.md), [KPI Contract](docs/KPI_CONTRACT.md), [Thuật toán DSS](docs/DSS_ALGORITHMS.md), [Đánh giá thực nghiệm](docs/DSS_EVALUATION.md), [trạng thái Phase2](docs/PROJECT_STATE.md).
 
-API local tại http://127.0.0.1:8001/docs. Không có frontend riêng trong phạm vi Phase2 này. DSS nhận nhu cầu/tồn kho/năng lực/HSD kịch bản và trả conditional assignments, không gọi tồn kho giả định là dữ liệu thực. Đọc API_RUNBOOK và DSS_ALGORITHMS để chạy demo và hiểu các giới hạn. Docker/cloud/remote CI chưa chạy. Các tài liệu Phase1 và ảnh DB.png cũ là lịch sử, không thay bằng chứng cho schema hiện hành.
+API local tại http://127.0.0.1:8001/docs. Phase3 React BI chạy riêng tại http://127.0.0.1:5174, xem docs/PHASE3_RUNBOOK.md và docs/QA/PHASE3_ACCEPTANCE.md. Ghi chú Phase2 không có frontend là phạm vi lịch sử. DSS nhận nhu cầu/tồn kho/năng lực/HSD kịch bản và trả conditional assignments, không gọi tồn kho giả định là dữ liệu thực. Đọc API_RUNBOOK và DSS_ALGORITHMS để chạy demo và hiểu các giới hạn. Docker/cloud/remote CI chưa chạy. Các tài liệu Phase1 và ảnh DB.png cũ là lịch sử, không thay bằng chứng cho schema hiện hành.

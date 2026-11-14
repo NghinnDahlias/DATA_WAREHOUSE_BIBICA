@@ -8,7 +8,7 @@ const http = axios.create({ baseURL: '/api/v1', timeout: 90000 })
 
 // Các khóa luôn giữ nguyên là chuỗi (mã, nhãn, băm)
 const KEEP = new Set(['group_value', 'order_ref', 'evidence_ref', 'sha256', 'source_code', 'storefront_code',
-  'store', 'province', 'route_province', 'canonical_status', 'database'])
+  'store', 'province', 'route_province', 'canonical_status', 'database', 'native_sku_id', 'seller_sku', 'variation_name'])
 const NUMERIC = /^-?\d+(\.\d+)?$/
 
 export function toNumbers(x, key) {
@@ -61,8 +61,12 @@ export const SOURCES = Object.fromEntries(Object.entries(STORES).map(([k, v]) =>
 export function filterParams(f, extra = {}) {
   const p = { start_date: f.from, end_date: f.to }
   if (f.store && f.store !== 'all') p.store = f.store
+  if (f.channel && f.channel !== 'all') p.channel = f.channel.toUpperCase()
+  if (f.warehouse && f.warehouse !== 'all') p.warehouse_key = Number(f.warehouse)
   if (f.region && f.region !== 'all') p.warehouse_region = f.region
   if (f.category && f.category !== 'all') p.category = f.category
+  if (f.province && f.province !== 'all') p.province = f.province
+  if (f.status && f.status !== 'all') p.status = f.status
   if (f.product) p.product_key = f.product.key
   return { ...p, ...extra }
 }
@@ -86,6 +90,10 @@ export async function getMeta() {
 // ------------------------------------------------------------ KPI
 export async function getKpis(f, extra = {}) {
   const { data: r, meta } = await call('get', '/overview/kpis', { params: filterParams(f, extra) })
+  return mapKpis(r, meta)
+}
+
+export function mapKpis(r, meta = {}) {
   return {
     orders: r.orders, completedOrders: r.completed_orders, canceledOrders: r.canceled_orders,
     unknownStatusOrders: r.unknown_status_orders, payableObservedOrders: r.payable_observed_orders,
@@ -98,6 +106,20 @@ export async function getKpis(f, extra = {}) {
     reviewOrderCoverage: r.review_order_coverage, tiktokOrders: r.tiktok_orders,
     availability: meta.metric_availability ?? {}, policies: meta.warnings ?? [],
   }
+}
+
+export async function getOverviewDashboard(f) {
+  const { data, meta } = await call('get', '/overview/dashboard', {params: filterParams(f)})
+  const periods = [...new Set(data.monthly.map(r => r.period))].sort()
+  const names = [...new Set(data.monthly.map(r => STORES[r.storefront_code]?.label ?? r.storefront_code))]
+  const monthly = periods.map(period => {
+    const rows=data.monthly.filter(r=>r.period===period)
+    const known=rows.filter(r=>r.completed_payable!=null)
+    return {period,total:known.length?known.reduce((a,r)=>a+r.completed_payable,0):null,
+      orders:rows.reduce((a,r)=>a+r.orders,0),
+      ...Object.fromEntries(names.map(name=>[name,rows.find(r=>(STORES[r.storefront_code]?.label??r.storefront_code)===name)?.completed_payable??null]))}
+  })
+  return {...data,kpis:mapKpis(data.kpis,meta),monthly,names}
 }
 
 // ------------------------------------------------------------ breakdown
@@ -121,7 +143,7 @@ export async function getAllBreakdown(dim, f, onProgress) {
 
 // groupBy: 'store' (mỗi cửa hàng một đường) hoặc 'channel' (TikTok / Shopee, gộp 2 cửa hàng Shopee)
 export async function getMonthlyBySource(f, groupBy = 'store') {
-  const sources = f.store && f.store !== 'all' ? [STORES[f.store].source] : Object.keys(SOURCES)
+  const sources = f.store && f.store !== 'all' ? [STORES[f.store].source] : Object.keys(SOURCES).filter((s) => !f.channel || f.channel === 'all' || SOURCES[s].channel.toUpperCase() === f.channel.toUpperCase())
   const base = { ...f, store: 'all' }
   const results = await Promise.all(sources.map((s) => getBreakdown('month', base, { extra: { source: s } })))
   const labelOf = (src) => (groupBy === 'channel' ? SOURCES[src].channel : SOURCES[src].label)
@@ -130,17 +152,17 @@ export async function getMonthlyBySource(f, groupBy = 'store') {
     const label = labelOf(sources[i])
     res.rows.forEach((r) => {
       const row = (byPeriod[r.group_value] ??= { period: r.group_value })
-      const cur = row[label] ?? { orders: 0, revenue: 0, canceled: 0 }
+      const cur = row[label] ?? { orders: 0, revenue: null, canceled: 0 }
       row[label] = {
         orders: cur.orders + r.orders,
-        revenue: cur.revenue + (r.completed_payable ?? 0),
+        revenue: r.completed_payable == null ? cur.revenue : (cur.revenue ?? 0) + r.completed_payable,
         canceled: cur.canceled + r.canceled_orders,
       }
     })
   })
   const names = [...new Set(sources.map(labelOf))]
   const rows = Object.values(byPeriod).sort((a, b) => a.period.localeCompare(b.period))
-  const series = (m) => rows.map((r) => ({ period: r.period, ...Object.fromEntries(names.map((n) => [n, r[n]?.[m] ?? 0])) }))
+  const series = (m) => rows.map((r) => ({ period: r.period, ...Object.fromEntries(names.map((n) => [n, r[n]?.[m] ?? null])) }))
   return { names, revenue: series('revenue'), orders: series('orders'), canceled: series('canceled') }
 }
 
@@ -149,9 +171,10 @@ export async function getDelivery(f) {
   return { rows: data, warnings: meta.warnings ?? [] }
 }
 
-export async function searchProducts(f, search, limit = 20) {
-  const { data } = await call('get', '/products', { params: filterParams(f, { search, limit }) })
-  return data.map((p) => ({ key: p.product_key, label: p.product_name, categories: p.historical_categories, units: p.completed_units }))
+export async function searchProducts(f, search, limit = 20, offset = 0) {
+  const { data } = await call('get', '/products', { params: filterParams(f, { search, limit, offset, sort: 'orders' }) })
+  return data.map((p) => ({ key: p.product_key, label: p.product_name, categories: p.historical_categories, units: p.completed_units,
+    store: p.storefront_code, sku: p.native_sku_id, variation: p.variation_name, orders: p.orders, total: p.total_products }))
 }
 
 export async function getAllProducts(f) {

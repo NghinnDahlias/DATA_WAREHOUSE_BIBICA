@@ -1,0 +1,293 @@
+/* Compact shell and flexible filters. Keep content reachable at narrow widths. */
+.shell.rail-collapsed { grid-template-columns: 64px minmax(0, 1fr); }
+.shell.rail-expanded { grid-template-columns: 240px minmax(0, 1fr); }
+.rail { padding: 16px 8px; gap: 18px; }
+.brand-mark { border: 0; cursor: pointer; }
+.rail-collapsed .brand > div, .rail-collapsed .nav-item > span, .rail-collapsed .rail-foot { display: none; }
+.rail-collapsed .nav-item { justify-content: center; padding: 12px; }
+.main { padding: 16px 20px 28px; }
+.main-col:has(.filterbar) .filterbar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px;
+  padding: 8px 20px; position: relative; box-shadow: none;
+}
+.main-col:has(.filterbar) .filterbar > * { grid-area: auto !important; min-width: 0; }
+.main-col:has(.filterbar) .filterbar > .field { flex: 1 1 120px; max-width: 210px; }
+.main-col:has(.filterbar) .filterbar .field select,
+.main-col:has(.filterbar) .filterbar .field input { width: 100%; min-width: 0; height: 32px; }
+.main-col:has(.filterbar) .filterbar > .picker { flex: 1 1 180px; max-width: 280px; }
+.main-col:has(.filterbar) .filterbar > .presets { flex: 0 1 auto; min-height: 32px; }
+.main-col:has(.filterbar) .filterbar > .date-field { flex: 0 0 146px; }
+.main-col:has(.filterbar) .filterbar > .presets { flex: 0 0 300px; }
+.main-col:has(.filterbar) .filterbar > .field:has(select[aria-label="Cửa hàng"]) { flex-basis: 185px; }
+.filter-disclosure { display: none; }
+.main-col:has(.filterbar) .filterbar > .reset { width: auto; height: 32px; margin: 0; }
+.page-head h1 { font-size: 24px; }
+.body { margin-top: 12px; }
+.section { margin-top: 20px; }
+.headline { font-size: 13px; }
+.retail-overview { gap: 18px; }
+.retail-hero { display: none; }
+.retail-kpi-section, .retail-chart-section, .retail-analysis-section, .retail-quality-section { padding: 14px; }
+.retail-section-heading { margin-bottom: 10px; }
+.retail-eyebrow, .sales-eyebrow, .sales-card-index, .dss-eyebrow { display: none; }
+.sales-performance { gap: 18px; }
+.sales-performance > .sales-kpi-block .kpi, .kpi { padding: 10px 12px; }
+.sales-performance > .sales-kpi-block .kpi-value, .kpi-value { font-size: 22px; }
+.table-wrap, .rt-table-wrap { max-width: 100%; overflow-x: auto; }
+.notice { margin-top: 10px; }
+.dss-hero { padding: 14px; }
+.dss-page { border: 0; margin: 0; padding: 0; min-width: 0; }
+
+/* One workspace viewport. Tabs select content; long lists keep their own scroll. */
+.shell { height: 100dvh; overflow: hidden; }
+.main-col { height: 100dvh; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.main { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+.filterbar, .page-head, .kpis, .view-tabs { flex-shrink: 0; }
+.page-head { margin-bottom: 8px; }
+.page-head h1 { margin: 0; }
+.main > .body { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; margin-top: 0; }
+.retail-overview, .sales-performance, .customer-experience { flex: 1; height: 100%; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.view-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; margin: 4px 0; background: #eae4e9; border-radius: 8px; }
+.view-tabs button { border: 0; background: transparent; color: #624451; padding: 7px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.view-tabs button[aria-selected="true"] { background: #fff; color: var(--burgundy); box-shadow: 0 1px 3px #32132015; font-weight: 600; }
+.view-tabs button:focus-visible { outline: 2px solid var(--raspberry); }
+.view-panel { flex: 1; min-height: 0; min-width: 0; overflow: auto; padding: 0 2px 2px; }
+.view-panel > .section:first-child, .view-panel > .cols > .section { margin-top: 0; }
+.retail-kpi-section { padding: 0; flex: none; }
+.retail-kpi-section .retail-section-heading, .sales-block-heading { display: none; }
+.retail-overview .retail-kpi-wrap { padding: 0; }
+.retail-overview .retail-kpi-wrap .kpi { padding: 10px 12px; }
+.retail-overview .retail-kpi-wrap .kpi-value { font-size: 22px; }
+.retail-chart-section { height: 100%; min-height: 260px; display: flex; flex-direction: column; }
+.retail-chart-frame { flex: 1; min-height: 180px; }
+.retail-section-heading h2 { font-size: 16px; }
+.retail-section-heading p, .retail-chart-unit { font-size: 12px; }
+.retail-analysis-grid { gap: 16px; }
+.retail-analysis-card { padding: 14px; }
+.retail-footnote, .sales-footnote { flex: none; font-size: 11px; margin: 0; max-width: none; }
+.sales-analysis-grid[data-view="stores"] > :nth-child(n+3),
+.sales-analysis-grid[data-view="mix"] > :nth-child(-n+2) { display: none; }
+.sales-trend-card, .sales-trend-card > .section { height: 100%; min-height: 280px; display: flex; flex-direction: column; }
+.sales-trend-card { padding: 12px; }
+.sales-trend-card .section { margin: 0; }
+.sales-trend-card .sales-chart-frame { flex: 1; min-height: 180px; display: flex; flex-direction: column; }
+.sales-trend-card .chart.hero { height: 100%; min-height: 180px; flex: 1; }
+.sales-chart-note { margin: 6px 0 0; }
+.sales-analysis-card, .sales-detail-card { padding: 14px; }
+.sales-analysis-card .section, .sales-detail-card .section { margin-top: 0; }
+.customer-ratings-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; }
+.customer-ratings-grid > .section { margin-top: 0; }
+.customer-ratings-grid .chart { height: 300px; }
+.view-panel .chart.short { height: 140px; }
+.view-panel .table-wrap td, .view-panel .table-wrap th { padding: 8px 10px; }
+.table-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 6px; font-size: 12px; }
+.table-pagination button { border: 1px solid var(--line); border-radius: 4px; background: white; padding: 3px 10px; cursor: pointer; }
+.view-panel .rt-dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.view-panel .rt-stats, .view-panel .rt-summary, .view-panel .rt-method { grid-column: 1 / -1; }
+.view-panel .rt-stat-card { padding: 10px 12px; min-height: 0; }
+.view-panel .rt-stat-value { font-size: 22px; margin: 4px 0; }
+.view-panel .rt-panel { padding: 12px; }
+.view-panel .rt-table-wrap { max-height: 270px; overflow: auto; }
+.view-panel .rt-bars { gap: 8px; }
+.view-panel .rt-panel-heading { margin-bottom: 10px; }
+.view-panel .rt-method { padding: 10px 12px; }
+.view-panel .rt-method p { margin: 4px 0; font-size: 12px; }
+.dss-page { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+.dss-page > .section { flex: none; margin-top: 0; }
+.dss-page > .section .section-head, .dss-context-note, .dss-hero .headline, .dss-hero-meta { display: none; }
+.dss-page .dss-hero { flex: none; margin: 0; padding: 0; border: 0; background: none; }
+.dss-context-grid { gap: 8px; }
+.dss-page .view-panel > .section { margin: 0; }
+.dss-page .view-panel .section-head p { max-width: 100ch; }
+.dss-page .dss-execute { flex: none; order: 99; margin: 0; padding: 8px 12px; }
+.dss-execute > div:first-child { display: none; }
+.dss-page .scen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.dss-page .scen-edit { min-width: 0; padding: 12px; max-height: calc(100dvh - 300px); overflow: auto; }
+.dss-page .wh-grid, .dss-page .scen-edit .two { grid-template-columns: 1fr 1fr; gap: 8px; }
+.dss-page .param, .dss-page .wh-box { min-width: 0; }
+.dss-page .param-top { flex-wrap: wrap; }
+.dss-page .scen-edit .stock-row { display: flex; flex-wrap: wrap; }
+.dss-results { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.dss-result-body { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+.dss-warnings { flex: none; font-size: 12px; margin-top: 4px; }
+.dss-warnings[open] { max-height: 100px; overflow: auto; }
+@media (max-width: 1000px) {
+  .customer-ratings-grid, .sales-analysis-grid, .retail-analysis-grid, .retail-quality-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .shell.rail-collapsed, .shell.rail-expanded { grid-template-columns: 52px minmax(0, 1fr); }
+  .rail { padding: 12px 4px; }
+  .rail .brand > div, .rail .nav-item > span, .rail-foot { display: none; }
+  .brand { padding: 0; justify-content: center; }
+  .nav-item { padding: 10px; justify-content: center; }
+  .main { padding: 12px; }
+  .main-col:has(.filterbar) .filterbar { padding: 8px 12px; }
+  .main-col:has(.filterbar) .filterbar > .presets { display: flex; flex-wrap: wrap; height: auto; }
+  .main-col:has(.filterbar) .filterbar > .field { flex-basis: 110px; }
+  .main-col:has(.filterbar) .filterbar > .filter-disclosure { display: block; border: 1px solid var(--line); background: white; border-radius: 6px; padding: 6px 12px; }
+  .main-col:has(.filterbar) .filterbar:not(.filters-expanded) > :not(.filter-disclosure) { display: none; }
+  .main-col:has(.filterbar) .filterbar.filters-expanded { max-height: 55dvh; overflow: auto; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .kpis.n5 > :last-child { grid-column: 1 / -1; }
+  .kpi-value, .sales-performance > .sales-kpi-block .kpi-value { font-size: 18px; }
+  .kpi-delta { font-size: 11px; }
+  .view-tabs button { padding: 6px 8px; font-size: 12px; }
+  .customer-ratings-grid .chart { height: 240px; }
+}
+
+/* Density refinement: expose content instead of nesting oversized scroll areas. */
+.main { padding: 12px 16px 16px; }
+.page-head { margin-bottom: 6px; }
+.page-head h1 { font-size: 22px; }
+.headline { margin-top: 3px; font-size: 12px; max-width: none; }
+.main > .body, .retail-overview, .sales-performance, .customer-experience { gap: 6px; }
+.view-tabs { margin: 2px 0; padding: 3px; }
+.view-tabs button { padding: 6px 10px; font-size: 12px; }
+.kpi, .retail-overview .retail-kpi-wrap .kpi,
+.sales-performance > .sales-kpi-block .kpi { padding: 7px 10px; }
+.kpi-value, .retail-overview .retail-kpi-wrap .kpi-value,
+.sales-performance > .sales-kpi-block .kpi-value { margin: 3px 0; font-size: 21px; }
+.kpi-delta { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.main-col:has(.filterbar) .filterbar { gap: 6px; padding: 7px 16px; }
+.main-col:has(.filterbar) .filterbar > .date-field { flex: 0 0 132px; }
+.main-col:has(.filterbar) .filterbar > .presets { flex: 0 0 220px; height: 32px; }
+.main-col:has(.filterbar) .filterbar .presets button { padding: 3px 6px; font-size: 11px; }
+.main-col:has(.filterbar) .filterbar > .field:has(select[aria-label="Cửa hàng"]) { flex: 1 1 156px; max-width: 200px; }
+.main-col:has(.filterbar) .filterbar > .field:has(select[aria-label="Kênh"]) { flex: 0 0 110px; }
+.main-col:has(.filterbar) .filterbar > .picker { flex: 1 1 150px; max-width: 240px; }
+.more-filters { border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--burgundy); height: 32px; padding: 0 9px; font-size: 12px; cursor: pointer; }
+.filter-advanced { position: absolute; z-index: 80; top: calc(100% + 4px); right: 16px; width: min(640px, calc(100% - 32px));
+  display: grid; grid-template-columns: 1fr 1.5fr 1fr auto; align-items: end; gap: 10px; padding: 12px;
+  border: 1px solid var(--line); background: #fff; border-radius: 8px; box-shadow: 0 8px 28px #32132025; }
+.filter-advanced[hidden] { display: none !important; }
+.filter-advanced .field, .filter-advanced select { min-width: 0; max-width: 100%; }
+.filter-advanced select { width: 100%; }
+.filter-advanced .primary { min-height: 32px; padding: 5px 12px; }
+.customer-ratings-grid .chart { height: clamp(190px, 30dvh, 270px); }
+.sales-trend-card, .sales-trend-card > .section { min-height: 0; }
+.sales-trend-card .sales-chart-frame, .sales-trend-card .chart.hero { min-height: 150px; }
+.sales-trend-card .section-head { margin-bottom: 8px; }
+.sales-trend-card .sales-trend-toolbar { gap: 10px; }
+.sales-analysis-card, .sales-detail-card, .retail-analysis-card { padding: 10px 12px; }
+.section-head { margin-bottom: 8px; }
+.section-head p { font-size: 12px; }
+.view-panel .table-wrap td, .view-panel .table-wrap th { padding: 6px 9px; font-size: 12px; }
+.view-panel .fine { font-size: 11px; margin: 6px 0; }
+.view-panel .chart.short { height: 120px; }
+
+/* Themes use one content surface at a time, while retaining all counts and caveats. */
+.view-panel:has(> .section > .themes-compact) { overflow: hidden; display: flex; flex-direction: column; }
+.view-panel:has(> .section > .themes-compact) > .section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.view-panel .themes-compact { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+.themes-compact .rt-stats { gap: 8px; flex: none; }
+.view-panel .themes-compact .rt-stat-card { padding: 6px 10px; gap: 2px; border-radius: 6px; }
+.themes-compact .rt-stat-label { font-size: 11px; }
+.view-panel .themes-compact .rt-stat-value { margin: 0; font-size: 20px; }
+.themes-compact .rt-stat-note { font-size: 10px; line-height: 1.2; }
+.themes-compact .theme-switch { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: none; }
+.theme-switch > small { color: var(--muted); font-size: 11px; }
+.themes-compact .rt-panel { padding: 8px 10px; min-height: 0; }
+.themes-compact .rt-panel-heading { margin-bottom: 6px; }
+.themes-compact .rt-panel-heading h3 { font-size: 13px; }
+.themes-compact .rt-panel-heading p { display: none; }
+.view-panel .themes-compact .rt-bars { gap: 3px; }
+.themes-compact .rt-bar-item { display: grid; grid-template-columns: minmax(130px, 220px) 1fr 36px; gap: 12px; align-items: center; min-height: 25px; }
+.themes-compact .rt-bar-heading { display: contents; }
+.themes-compact .rt-bar-heading span { grid-column: 1; grid-row: 1; font-size: 12px; }
+.themes-compact .rt-bar-heading strong { grid-column: 3; grid-row: 1; text-align: right; font-size: 12px; }
+.themes-compact .rt-bar-track { grid-column: 2; grid-row: 1; height: 7px; }
+.view-panel .themes-compact .rt-table-wrap { max-height: none; overflow: visible; }
+.themes-compact .rt-table td, .themes-compact .rt-table th { padding: 6px 10px; font-size: 12px; }
+
+/* Edit a scenario and a parameter group, rather than scrolling three long cards. */
+.dss-page > .section .dss-context-grid { padding: 8px 12px; }
+.dss-page > .section .ctx-row { gap: 12px; }
+.dss-page > .section .field input, .dss-page > .section .field select { height: 32px; }
+.view-panel[aria-label="Tham số kịch bản"] { display: flex; overflow: hidden; }
+.view-panel[aria-label="Tham số kịch bản"] > .section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.dss-page .scen-grid.single-scenario { display: flex; flex: 1; min-height: 0; }
+.dss-page .single-scenario .scen-edit { flex: 1; min-height: 0; max-height: none; overflow: hidden; display: flex; flex-direction: column; padding: 8px 12px; }
+.dss-page .scen-head { margin-bottom: 4px; flex: none; }
+.dss-page .scen-name { height: auto; padding: 0; border: 0; font-size: 13px; }
+.scen-edit > .view-tabs { flex: none; }
+.dss-page .single-scenario .stock-row { display: grid; grid-template-columns: 1fr 2.2fr .7fr .9fr 1.4fr 28px; align-items: end; gap: 8px; }
+.dss-page .single-scenario .stock-field input, .dss-page .single-scenario .stock-field select { height: 32px; }
+.dss-page .single-scenario .radio-row { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 4px 0 8px; }
+.dss-page .single-scenario .radio-row legend { width: auto; font-size: 12px; }
+.dss-page .single-scenario .wh-grid { margin: 0 0 8px; }
+.dss-page .single-scenario .param { padding: 6px 0; }
+.dss-page .single-scenario .two { gap: 4px 24px; }
+.dss-page .single-scenario .wh-box { padding: 6px 10px; }
+.dss-page .single-scenario .breakfast-exc .stock-row { grid-template-columns: 1fr 1.7fr 1.5fr 1fr; }
+.dss-page .single-scenario .breakfast-exc .stock-row > :nth-child(n+5) { grid-column: 1 / -1; }
+.dss-page .scen-edit .param-val input { height: 30px; }
+.dss-page .scen-grid.single-scenario { align-items: stretch; overflow: hidden; }
+.dss-page .single-scenario .scen-head { min-height: 22px; height: 22px; margin-bottom: 0; }
+.dss-page .single-scenario .scen-head .icon-btn { width: 22px; height: 22px; padding: 3px; }
+.view-panel[aria-label="Năng lực và giới hạn"] { display: grid; grid-template-columns: 1.25fr 1fr; grid-template-rows: auto 1fr; gap: 8px 20px; }
+.view-panel[aria-label="Năng lực và giới hạn"] > .wh-grid { grid-column: 1; grid-row: 1 / span 2; align-self: start; }
+.view-panel[aria-label="Năng lực và giới hạn"] > .two { grid-column: 2; grid-row: 1; }
+.view-panel[aria-label="Năng lực và giới hạn"] > .param { grid-column: 2; grid-row: 2; align-self: start; }
+.themes-compact .theme-chart .rt-panel-heading { display: none; }
+.themes-compact .rt-bar-item { min-height: 21px; }
+.view-panel .themes-compact .rt-bars { gap: 2px; }
+.chart-details, .data-notes { font-size: 11px; color: var(--muted); margin: 5px 0; }
+.chart-details > summary, .data-notes > summary { cursor: pointer; padding: 3px 0; }
+.retail-analysis-card .bars-btn { padding: 5px 8px; margin: 0; width: 100%; }
+.dss-page .cand { margin: 6px 0; padding: 0; }
+.dss-page .cand h4 { display: none; }
+.dss-results td .sub { font-size: 10px; white-space: nowrap; max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
+.scenario-diagnostic { margin: 4px 0 8px; padding: 7px 10px; font-size: 12px; }
+.scenario-diagnostic summary { cursor: pointer; }
+.scenario-diagnostic p { margin: 6px 0 0; }
+.dss-execute[hidden] { display: none !important; }
+.sku-tag { font-size: 9px; border: 1px solid var(--line); border-radius: 3px; padding: 0 3px; font-weight: 600; }
+.picker-chip { min-width: 0; }
+.picker-chip .picker-selection { display: flex; flex: 1; min-width: 0; flex-direction: column; align-items: stretch; text-align: left; padding: 2px 0; gap: 1px; }
+.picker-selection > span, .picker-selection > small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.picker-selection > span { font-size: 12px; line-height: 1.15; }
+.picker-selection > small { font-size: 10px; line-height: 1.15; font-weight: 400; }
+.picker-popover { position: absolute; top: 100%; left: 0; z-index: 90; width: min(560px, calc(100vw - 90px)); margin-top: 4px;
+  background: white; border: 1px solid var(--line); box-shadow: 0 8px 24px #28141e20; border-radius: 8px; overflow: hidden; }
+.filterbar .picker .picker-popover { left: auto; right: 0; }
+.picker-popover .picker-list { position: static; margin: 0; padding: 3px; width: 100%; max-height: min(350px, 52dvh); border: 0; border-radius: 0; box-shadow: none; }
+.picker-popover .picker-list li { padding: 2px 3px; }
+.picker-popover .picker-list li button { padding: 6px 8px; white-space: normal; overflow-wrap: anywhere; }
+.picker-list .picker-help { padding: 6px 10px !important; font-size: 11px; color: var(--muted); background: #f5f1f4; }
+.picker-result-name { display: block; font-size: 12px; line-height: 1.35; }
+.picker-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; font-size: 11px; border-top: 1px solid var(--line); }
+.picker-pagination button { border: 1px solid var(--line); border-radius: 4px; padding: 3px 8px; background: white; cursor: pointer; }
+.picker-research { width: calc(100% - 16px); margin: 8px; border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; }
+.dss-page > .section { padding: 8px 12px; }
+.dss-page > .section .dss-context-grid { padding: 0; }
+.dss-page > .section .ctx-row { max-width: none; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.dss-page > .section .field { display: grid; grid-template-columns: minmax(70px, 115px) minmax(0, 1fr); align-items: center; gap: 6px; }
+.dss-results .table-wrap td, .dss-results .table-wrap th { padding: 5px 8px; }
+.dss-results .section-head { margin-bottom: 5px; }
+.dss-page .detail td .view-tabs { white-space: normal; }
+.dss-page .orders { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.dss-page .order-card { padding: 8px 10px; }
+@media (max-width: 700px) {
+  .dss-page .orders { grid-template-columns: 1fr; }
+  .view-panel[aria-label="Năng lực và giới hạn"] { display: block; }
+  .dss-page > .section .ctx-row { grid-template-columns: 1fr; gap: 6px; }
+}
+@media (max-width: 700px) {
+  .main { padding: 8px 10px; }
+  .main-col:has(.filterbar) .filterbar > .date-field { flex: 1 1 125px; }
+  .main-col:has(.filterbar) .filterbar > .presets { flex: 1 0 100%; }
+  .main-col:has(.filterbar) .filterbar > .field:has(select[aria-label="Kênh"]) { flex: 1 1 100px; }
+  .filter-advanced { position: static; width: 100%; grid-template-columns: 1fr; box-shadow: none; }
+  .kpi-delta { font-size: 10px; }
+  .kpi-value, .sales-performance > .sales-kpi-block .kpi-value { font-size: 18px; }
+  .themes-compact .rt-stats { grid-template-columns: repeat(2, 1fr); }
+  .themes-compact .rt-stat-note { display: none; }
+  .themes-compact .rt-bar-item { grid-template-columns: 110px 1fr 24px; gap: 6px; }
+  .themes-compact .rt-bar-heading span { font-size: 11px; }
+  .theme-switch { flex-wrap: wrap; }
+  .dss-page .single-scenario .stock-row, .dss-page .single-scenario .breakfast-exc .stock-row { grid-template-columns: 1fr 1fr; }
+  .dss-page .single-scenario .stock-row > :nth-child(2) { grid-column: 1 / -1; }
+  .dss-page .single-scenario .stock-row > :nth-child(2) { order: -1; }
+  .dss-page .single-scenario .radio-row { display: grid; gap: 4px; }
+  .dss-page .single-scenario .wh-grid, .dss-page .single-scenario .two { grid-template-columns: 1fr; }
+}

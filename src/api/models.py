@@ -14,6 +14,7 @@ class Filters(BaseModel):
     end_date: date | None = None
     source: Literal['shopee_bibica', 'shopee_quasure', 'tiktok_bibica'] | None = None
     store: Store | None = None
+    channel: Literal['SHOPEE', 'TIKTOK'] | None = None
     category: Category | None = None
     warehouse_key: int | None = Field(default=None, gt=0)
     warehouse_region: Literal['Hà Nội', 'Hồ Chí Minh'] | None = None
@@ -35,3 +36,4 @@ class PageFilters(Filters):
 
 class ProductFilters(PageFilters):
     search: str = Field('', max_length=150)
+    sort: Literal['key', 'orders', 'units', 'item_value'] = 'key'

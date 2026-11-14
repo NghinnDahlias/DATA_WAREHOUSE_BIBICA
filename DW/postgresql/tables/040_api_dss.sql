@@ -90,3 +90,6 @@ CREATE TABLE IF NOT EXISTS dw.review_theme_feature (
 );
 CREATE INDEX IF NOT EXISTS ix_review_theme_feature_audit_version
     ON dw.review_theme_feature(audit_version);
+
+-- Bind feature rows to the immutable ratings snapshot, avoiding stale labels after ETL.
+ALTER TABLE dw.review_theme_feature ADD COLUMN IF NOT EXISTS source_sha256 text;

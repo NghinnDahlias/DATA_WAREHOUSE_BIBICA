@@ -1,5 +1,9 @@
 """Build privacy-preserving review topic features from the immutable ratings workbook."""
 import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import psycopg
 from psycopg.rows import dict_row
@@ -15,6 +19,7 @@ def main():
     sha = checksum(path)
     parsed = []
     with psycopg.connect(database_dsn(), connect_timeout=5, row_factory=dict_row) as conn:
+        conn.execute("SELECT pg_advisory_xact_lock(4031262)")
         source = conn.execute(
             """
             SELECT source_file_key, sheet_name
@@ -61,6 +66,7 @@ def main():
                 result["severity"],
                 result["text_present"],
                 VERSION,
+                sha,
             ))
 
         if len(parsed) != len(review_key_by_row):
@@ -75,8 +81,8 @@ def main():
                 cur.executemany(
                     """
                     INSERT INTO dw.review_theme_feature
-                        (review_key, labels, severity, text_present, audit_version)
-                    VALUES (%s, %s::jsonb, %s, %s, %s)
+                        (review_key, labels, severity, text_present, audit_version, source_sha256)
+                    VALUES (%s, %s::jsonb, %s, %s, %s, %s)
                     """,
                     parsed,
             )

@@ -1484,10 +1484,10 @@ td.small { font-size: 12px; }
    1 from, 2 to, 3 presets, 4 store, 5 region, 6 category, 7 ProductPicker, 8 reset.
    DSS has no .filterbar, so these rules do not affect the DSS page. */
 .main-col:has(.filterbar) .filterbar {
-  position: sticky !important;
+  position: sticky;
   top: 0;
   z-index: 60;
-  display: grid !important;
+  display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
     "from from to to presets presets presets presets store store store store"

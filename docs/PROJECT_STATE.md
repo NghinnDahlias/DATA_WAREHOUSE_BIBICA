@@ -1,3 +1,95 @@
+# Trạng thái DW, API, DSS và React BI
+
+## 14/11/2026 — Source publication checks
+
+The user explicitly authorized pushing the current source to origin/main. This supersedes
+the earlier local-only publication notes; raw Data, private processing, reports and runtime
+remain excluded. Fetched origin/main and confirmed no divergence before preparing the release.
+
+Fresh checks: 120 backend tests PASS (0 failures/errors/skips), 41 React tests PASS,
+production build PASS (existing bundle-size warning), and one real-API Edge smoke covering
+all five screens PASS. The 42 source hashes and nine evidence hashes in the 10/11 linked
+acceptance manifest still match. Its full 22-journey suite and geometry checks are historical
+results, not rerun in this publication task. No ETL/Golden reload, raw changes, Docker/cloud,
+remote CI or PDF/ZIP regeneration. Local publication evidence: reports/publish_20261114.json
+(not included in the source release). Automatic approval review rejected the first push
+because the commit included analytical reports derived from private warehouse data.
+The source release therefore excludes the entire reports directory; historical and current
+report references in documentation refer to local execution artifacts.
+Commit/push and remote-head verification follow these checks; this entry is not push proof.
+
+## 10/11/2026 — Linked analytical UI verified locally
+
+Read docs/QA/LINKED_DASHBOARD.md and reports/linked_acceptance.json. Overview now has
+KPI/trend/store/category/topSKU on one linked screen. Shared advanced filters include
+status/customer province plus shop/category/warehouse/SKU; individual chips undo one axis.
+Charts/plot points/insight buttons/table rows drill into the same cohort. Details pair
+charts and tables; themes show both together, DSS comparison has an assigned-order plot.
+Teal/slate hierarchy, compact cards and optional explanations replace oversized captions.
+No raw data/ETL/DDL/Golden changes; original5173 application source remains unchanged.
+
+Fresh120backend/41React/22Edge PASS; final2focused rechecks PASS after fully-loaded SKU
+layout fix, buildPASS (large-bundle warning remains).10full-data cohorts/60conservation
+checks PASS;3business fingerprints and full KPIs unchanged.20default viewport checks,
+3overview sizes max0px card/table overflow,22fully-loaded detail views max4px and45expanded
+panels max0px overflow PASS. Screenshots inspected. Final manifest12/12gates PASS verifies
+current source/report hashes and both runtimes. Repo5174/API8001/bibica_repo55432; parent
+5173/API8000/warehouse preserved. No commit/push, cloud/CI/Docker/production load or package
+regeneration. Historical sourcehash/count reports are superseded for these changed paths.
+
+Brand/traffic are not present in the repo read model and no inert controls were fabricated.
+Risk scores are hidden under unsupported product/category/status cohorts. HSD remains a
+manual-assumption simulator. Insights are descriptive shares/rates with denominators, not
+growth/profit/causal findings or calibrated failure predictions. Long content/mobile may
+still scroll locally; do not claim universal no-scroll under every possible input.
+
+## 10/11/2026 — SKU identity and shelf-life assumptions verified locally
+
+Read docs/QA/PRODUCT_FILTER_AND_ASSUMPTIONS.md. Fixed ambiguous product lookup: shop,
+variation and native SKU text, popularity sorting,10row paging, change selection and
+stale-response protection. Same-name products remain distinct native/shop SKUs. Reported
+SKU8confirmed4orders/3canceled/1completed unit/57615VND, not a KPI calculation defect.
+Sales now explains full-order money versus selected-SKU units.
+
+Native headers have no manufacturing/expiry/lot fields. Removed preset30days; renamed
+HSD tab to explicit hypothetical simulation, requires manual input, hides unrelated batch
+execution/errors. No actual expiry/freshness claim. Existing DEMO assumptions remain DEMO.
+
+Executed118backend/38React/17Edge PASS; buildPASS (large-bundle warning);8read-only
+reconciliation gatesPASS.20screen measurements, desktop main panel overflow0px;
+51expanded panels max2px. Screenshots inspected.127588orders/178517items/5625reviews,
+9175209123VND/168478completed units and3business fingerprints unchanged. No ETL/DDL/
+Golden reload for this UI/read-model change. API8001restarted using owned PID guard,
+frontend5174hotloaded; parent DB/runtime untouched. OpenAPI and KPI/runbook docs updated.
+Evidence: reports/product_filter_*.json and reports/phase2_tests.json/log. Earlier fixed
+counts/source-hash acceptance files are historical; new QA report supersedes changed paths.
+Local only, no commit/push/cloud/CI/PDF/ZIP regeneration.
+
+
+## Tối ưu hiển thị tiếp theo — PASS local, 09/11/2026
+
+Theo yêu cầu hạn chế thanh cuộn, chỉ thay React và kiểm thử UI trong repo con. Đọc docs/QA/SCROLL_OPTIMIZATION.md và reports/scroll_acceptance.json; phần này supersede layout/source hashes của snapshot Phase3 bên dưới.
+
+- Bộ lọc desktop một hàng, kho/vùng/category ở popup; KPI/spacing gọn. Review tách biểu đồ/bảng/phương pháp. DSS chọn từngscenario, chia4nhóm tham số, xem giải thích từngscenario; form và bảng không còn nối dọc nhiều khối.
+- Bảng tự chọn3–10dòng theo chiều cao; tuyến5dòng/trang, batch4đơn/trang, tồn3dòng/trang, kết quả5đơn/trang. Payload vẫn chứa toàn bộbatch/scenario, chuyển nhóm không mất input.
+- Cùng54lượt xem desktop1366×768/1280×720/1846×867:41vùng cuộn, max1300px trước →0vùng cuộn, sai sốmax1px sau.51panel mở sâu PASS, maxoverflow2px. Đã xem ảnh loaded review và DSS thực.
+- Chạy mới34/34Reacttests,15/15Edgejourneys,0skip/flaky, build PASS. verify_scroll_ui.py11/11checks PASS; API/DSS implementation hashes vàfull-data KPI không đổi. Không chạy lại backend116tests/ETL/Golden hay sửa bản cha.
+- Gặp1sự cố API khôngtrảhealth trong30s, DBtrực tiếp0,02s và khôngcósessionAPI. Đã restartownedAPI theoPID/StartTime, kiểmhealth/KPI200 và chạy lại15journeys cuối. Rootcausechưa xácđịnh, khônggọiUIchange làfixbackend. Evidence scroll_runtime_recovery.json.
+- UI5174/API8001 vẫn chạy. Source/data riêngtư giữnguyên, khôngcommit/push. Danhsách/giảithích dàivà màn hìnhhẹp vẫn cóthể cuộn cục bộ. Không chứngnhậnproduction; PDF/ZIP chưa táixuất.
+
+## Phase 3 BI/React — PASS local với giới hạn công bố, 09/11/2026
+
+Đã fetch/fast-forward repo từ be9117a tới96941fb70b135f72d040b6fe996421f465936eb6 (4commit mới). Fetch cuối xác nhận origin/main vẫn cùng commit. Các sửa lỗi và QA của lượt này ở local, chưa commit/push. Đọc docs/QA/PHASE3_ACCEPTANCE.md và reports/phase3_acceptance.json; các ghi chú “chưa có frontend/không bắt đầu Phase3” bên dưới là lịch sử Phase2.
+
+- React5màn dùng API thực, sidebar thu gọn, tab phân tích/bước DSS, bảng dài phân trang10dòng, mobile mở/đóng bộ lọc. Kênh tách shop, warehouse_key scoped tách vùng kho; giữ cùng-dòng EXISTS và canonical category. Các panel/API tốt sẵn có được giữ.
+- Đã sửa batch mẫu key1365 hardcode thành chọn SKU động đúng shop; nạp feature review đúng entrypoint với SHA/auditversion và trạng thái unavailable nếu thiếu/cũ; NULL/monthgap không thành0; error không giữ KPI cũ; picker tránh response cũ; đổi ngày xóa shelf-life result cũ. DSS form khóa khi đang chạy để input và output khớp nhau.
+- Chạy mới116/116backend tests,34/34React tests,12/12Edge journeys (0skip/flaky),34/34full-data API checks/27requests,20/20viewport measurements. Build/compileall/gitdiffcheck PASS.13/13rollup checks PASS, statusPASS_WITH_LIMITATIONS. E2E chạy allocate/what-if/sensitivity/shelf-life trên cả3shop, drilldown/filter/empty/error, các tab và mobilefilter.
+- Review feature5625rows đã build và replay cùng fingerprintlogic. Galaxycore12dims/3facts/56FK giữ nguyên; bảngfeature phụ trợ thêm1FK (toàn schema57FK). Không thay127588orders/178517items/5625reviews, completedpayable9175209123VND vàcompletedunits168478;3fingerprints/4nativehashes giữ nguyên. Không chạy lạifullnativeETL/Golden export cho lượtUI này.
+- UI http://127.0.0.1:5174, API http://127.0.0.1:8001/docs, DBbibica_repo55432. start_frontend.ps1/stop_frontend.ps1 đã kiểm ownedPID+StartTime, reuse, stop/restart và liveHTTP200; dịch vụ đang chạy. Bản cha5173/8000 độc lập.
+- Các trang nằm trongviewport; nội dung dài vẫn cuộn trongpanel. Risk tuyến chưa hỗ trợ SKU/category và UI báo rõ/ẩn unfilteredscore khi chọn cácfilter đó; KPI/hiệu suất kho vẫnlọcđúng. ChỉTikTok córating, heuristicmentionschưa xác minh, WMS/CRM/stock/HSD/capacity thật unavailable hoặc scenario. Giữ serialSQLguard và nghiệmthu có điều kiện Phase2. ChunkJS khoảng792kB trướcgzip còn cảnh báo; cloud/Docker/CI/production load chưachạy. PDF/ZIP cũ khôngđượctái xuất.
+
+Runbook docs/PHASE3_RUNBOOK.md; frontend/README.md và docs/api/openapi.json đã cập nhật. Reports phase3_api/frontend/browser/layouts/runtime/features_replay/build/acceptance.json là bằng chứng mới; initial reports giữ lỗi đã phát hiện, không dùng thay kết quả cuối.
+
 # Phase 2 backend và DSS
 
 ## Phát hành Git theo yêu cầu — 05/11/2026

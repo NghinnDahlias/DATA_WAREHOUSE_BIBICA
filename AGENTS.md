@@ -1,4 +1,96 @@
-# Bibica DW, API & DSS
+# Bibica DW, API, DSS & React BI
+
+## 14/11/2026 — Publication authorized
+
+The user requested pushing the current source to Git. Read the publication entry in
+docs/PROJECT_STATE.md and local reports/publish_20261114.json. Earlier local-only/no-push entries
+describe historical snapshots. Raw Data, reports and private data process/.runtime remain excluded.
+Fresh 120 backend/41 React tests, build and five-screen real-API smoke passed. Source and
+evidence hashes still match the 10/11 linked acceptance. Its full browser/layout suite
+was not rerun for publication. Verify the actual Git remote head to establish push status.
+
+## 10/11/2026 — Linked analytical UI verified locally
+
+Read docs/QA/LINKED_DASHBOARD.md and reports/linked_acceptance.json. Overview now has
+KPI/trend/store/category/topSKU on one linked screen. Shared advanced filters include
+status/customer province plus shop/category/warehouse/SKU; individual chips undo one axis.
+Charts/plot points/insight buttons/table rows drill into the same cohort. Details pair
+charts and tables; themes show both together, DSS comparison has an assigned-order plot.
+Teal/slate hierarchy, compact cards and optional explanations replace oversized captions.
+No raw data/ETL/DDL/Golden changes; original5173 application source remains unchanged.
+
+Fresh120backend/41React/22Edge PASS; final2focused rechecks PASS after fully-loaded SKU
+layout fix, buildPASS (large-bundle warning remains).10full-data cohorts/60conservation
+checks PASS;3business fingerprints and full KPIs unchanged.20default viewport checks,
+3overview sizes max0px card/table overflow,22fully-loaded detail views max4px and45expanded
+panels max0px overflow PASS. Screenshots inspected. Final manifest12/12gates PASS verifies
+current source/report hashes and both runtimes. Repo5174/API8001/bibica_repo55432; parent
+5173/API8000/warehouse preserved. No commit/push, cloud/CI/Docker/production load or package
+regeneration. Historical sourcehash/count reports are superseded for these changed paths.
+
+Brand/traffic are not present in the repo read model and no inert controls were fabricated.
+Risk scores are hidden under unsupported product/category/status cohorts. HSD remains a
+manual-assumption simulator. Insights are descriptive shares/rates with denominators, not
+growth/profit/causal findings or calibrated failure predictions. Long content/mobile may
+still scroll locally; do not claim universal no-scroll under every possible input.
+
+
+## 10/11/2026 — SKU identity and shelf-life assumptions verified locally
+
+Read docs/QA/PRODUCT_FILTER_AND_ASSUMPTIONS.md. Fixed ambiguous product lookup: shop,
+variation and native SKU text, popularity sorting,10row paging, change selection and
+stale-response protection. Same-name products remain distinct native/shop SKUs. Reported
+SKU8confirmed4orders/3canceled/1completed unit/57615VND, not a KPI calculation defect.
+Sales now explains full-order money versus selected-SKU units.
+
+Native headers have no manufacturing/expiry/lot fields. Removed preset30days; renamed
+HSD tab to explicit hypothetical simulation, requires manual input, hides unrelated batch
+execution/errors. No actual expiry/freshness claim. Existing DEMO assumptions remain DEMO.
+
+Executed118backend/38React/17Edge PASS; buildPASS (large-bundle warning);8read-only
+reconciliation gatesPASS.20screen measurements, desktop main panel overflow0px;
+51expanded panels max2px. Screenshots inspected.127588orders/178517items/5625reviews,
+9175209123VND/168478completed units and3business fingerprints unchanged. No ETL/DDL/
+Golden reload for this UI/read-model change. API8001restarted using owned PID guard,
+frontend5174hotloaded; parent DB/runtime untouched. OpenAPI and KPI/runbook docs updated.
+Evidence: reports/product_filter_*.json and reports/phase2_tests.json/log. Earlier fixed
+counts/source-hash acceptance files are historical; new QA report supersedes changed paths.
+Local only, no commit/push/cloud/CI/PDF/ZIP regeneration.
+
+
+## Latest display-density follow-up — 09/11/2026
+
+Read docs/QA/SCROLL_OPTIMIZATION.md and reports/scroll_acceptance.json first.
+UI-only refinement, still local/uncommitted/unpushed. Fresh34React/15Edge journeys PASS;
+54main desktop views reduced41scrolling panels/max1300px to0/max1px.51expanded panels PASS.
+Compare panel clientHeight/scrollHeight, not just document fit. Long lists/forms and narrow
+screens may still scroll locally. Table pages adapt3–10rows; route5/batch4/stock3/result5.
+DSS scenario/group tabs retain parent state; payload includes every order, not only visiblepage.
+API/DSS source hashes and full-data KPIs unchanged. No new backend116test or ETL execution.
+API stalled once during work; directDB healthy, ownedAPI restarted and finalsuite passed.
+Rootcause remains undetermined; reports/scroll_runtime_recovery.json, no productionclaim.
+Repo UI5174/API8001/bibica_repo55432 stay separate from parent. Source/runtime remain private.
+Earlier Phase3 source hashes/layout evidence are snapshots superseded for UI by scroll reports.
+
+## Latest Phase 3 React BI verification — 09/11/2026
+
+Read docs/QA/PHASE3_ACCEPTANCE.md, reports/phase3_acceptance.json and docs/PHASE3_RUNBOOK.md.
+Fetched HEAD/origin main96941fb; current fixes/tests/docs remain local, uncommitted and unpushed.
+Fresh116backend/34React/12Edge journeys PASS,34full-dataAPI checks and20viewport measurements;
+feature5625rows rebuilt/replayed,3business fingerprints and4native source hashes unchanged.
+CoreGalaxy12dims/3facts/56FK preserved; review_theme_feature auxiliary table adds1FK (57total).
+SourceSHA+auditversion guard makes missing/stale labels unavailable. Keep serialSQLguard.
+
+Repo frontend5174/API8001/bibica_repo55432 stay separate from parent5173/8000/warehouse.
+Use scripts/start_frontend.ps1 and stop_frontend.ps1, ownedPID+StartTime checks tested.
+React tab workspace uses one document viewport; long tables/forms/details scroll inside panels.
+Globalchannel/store/scopedwarehouse/product filters affect dashboardcohorts. Route risk does not
+support product/categorycohort: UI explicitly hides unfilteredscore under those filters.
+DSS has separate shop/as_of/history inputs; DEMOstock/expiry/capacity are scenario assumptions.
+
+No raw/review text/buyer data publication. data process/.runtime/node_modules/dist ignored.
+No fullnativeETL/Goldenexport was rerun for this UI task. Cloud/Docker/CI/productionload and
+oldPDF/ZIP regeneration unexecuted. Later Phase2-only notes below are historical snapshots.
 
 ## Publication authorization — 05/11/2026
 

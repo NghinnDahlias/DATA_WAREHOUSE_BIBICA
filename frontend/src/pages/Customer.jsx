@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import ViewTabs, { ViewPanel } from '../components/ViewTabs.jsx'
 import { CartesianGrid, ComposedChart, Legend, Line, Bar, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useFilters } from '../context/FilterContext.jsx'
 import { useReport } from '../hooks/useReport.js'
@@ -5,6 +7,8 @@ import { getKpis, pool, STORES } from '../api/client.js'
 import { Page, Section } from '../components/Page.jsx'
 import { KpiRow } from '../components/KpiStrip.jsx'
 import DataTable from '../components/DataTable.jsx'
+import ChartTable from '../components/ChartTable.jsx'
+import { CATEGORY_COLORS } from '../components/LinkedChart.jsx'
 import { BURGUNDY } from '../lib/colors.js'
 import { axisTick, AXIS_LINE, GRID, tipStyle } from '../lib/chart.js'
 import { addDays } from '../lib/dates.js'
@@ -42,21 +46,23 @@ function headline(d) {
 }
 
 export default function Customer() {
-  const { meta, filters } = useFilters()
-  const shopee = filters.store !== 'all' && STORES[filters.store].channel === 'Shopee'
+  const [view, setView] = useState('ratings')
+  const { meta, filters, update } = useFilters()
+  const shopee = filters.channel === 'SHOPEE' || filters.store !== 'all' && STORES[filters.store]?.channel === 'Shopee'
   const state = useReport(async () => {
     if (shopee) return { unavailable: true, reason: 'DW chưa có nguồn đánh giá của Shopee, chỉ có đánh giá của Bibica TikTok Shop. Chọn "Tất cả" hoặc Bibica TikTok Shop để xem trang này.' }
     const f = { ...filters, store: filters.store === 'all' ? 'bibica_tiktok_shop' : filters.store }
     const wins = monthWindows(f.from, f.to)
+    const categories = meta.categories.filter((c) => filters.category === 'all' || filters.category === c)
     const [kpis, months, cats] = await Promise.all([
       getKpis(f),
       pool(wins.map((w) => () => getKpis({ ...f, from: w.from, to: w.to })), 4),
-      pool(meta.categories.map((c) => () => getKpis({ ...f, category: c })), 4)])
+      pool(categories.map((c) => () => getKpis({ ...f, category: c })), 4)])
     if (kpis.reviews === 0) return { empty: true, kpis, reason: 'Không có đánh giá TikTok nào trong khoảng thời gian và bộ lọc này. Thử mở rộng khoảng thời gian hoặc bỏ lọc danh mục/sản phẩm.' }
     return {
       kpis,
       monthly: wins.map((w, i) => ({ period: w.period, reviews: months[i].reviews, avgStars: months[i].avgStars, lowRate: months[i].lowReviewRate })),
-      categories: meta.categories.map((c, i) => ({ name: c, reviews: cats[i].reviews, avgStars: cats[i].avgStars, lowRate: cats[i].lowReviewRate })),
+      categories: categories.map((c, i) => ({ name: c, reviews: cats[i].reviews, avgStars: cats[i].avgStars, lowRate: cats[i].lowReviewRate })),
     }
   }, [filters])
 
@@ -76,7 +82,9 @@ export default function Customer() {
               ]} />
               {k.reviews < 30 && <div className="notice warn">Chỉ có {k.reviews} đánh giá trong bộ lọc này nên các tỷ lệ kém ổn định.</div>}
 
-              <Section title="Điểm sao và tỷ lệ tiêu cực theo tháng đặt hàng" note="Đánh giá được gom theo tháng của đơn được đánh giá. Cột: số đánh giá. Đường: tỷ lệ 1–2 sao.">
+              <ViewTabs value={view} onChange={setView} items={[["ratings", "Điểm sao & danh mục"], ["themes", "Chủ đề đánh giá"]]} />
+              <ViewPanel active={view === 'ratings'} name="Điểm sao và danh mục"><div className="customer-ratings-grid">
+              <Section title="Điểm sao và tỷ lệ tiêu cực theo tháng đặt hàng" note="Tối đa 12 tháng gần nhất trong kỳ, theo tháng đặt hàng. Cột: số đánh giá. Đường: tỷ lệ 1–2 sao.">
                 <div className="chart">
                   <ResponsiveContainer>
                     <ComposedChart data={d.monthly} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
@@ -86,23 +94,24 @@ export default function Customer() {
                       <YAxis yAxisId="r" orientation="right" tick={axisTick} tickLine={false} axisLine={false} width={44} tickFormatter={(v) => fmtPct(v, 0)} />
                       <Tooltip formatter={(v, n) => [n === 'Tỷ lệ 1–2 sao' ? fmtPct(v) : fmtInt(v), n]} labelFormatter={fmtPeriod} contentStyle={tipStyle} />
                       <Legend wrapperStyle={{ fontSize: 12 }} />
-                      <Bar yAxisId="n" name="Số đánh giá" dataKey="reviews" fill="#d9c3cc" maxBarSize={28} radius={[4, 4, 0, 0]} />
-                      <Line yAxisId="r" name="Tỷ lệ 1–2 sao" dataKey="lowRate" stroke={BURGUNDY} strokeWidth={2.5} dot={{ r: 2.5, fill: BURGUNDY }} activeDot={{ r: 4 }} connectNulls />
+                      <Bar isAnimationActive={false} yAxisId="n" name="Số đánh giá" dataKey="reviews" fill="#d9c3cc" maxBarSize={28} radius={[4, 4, 0, 0]} />
+                      <Line isAnimationActive={false} yAxisId="r" name="Tỷ lệ 1–2 sao" dataKey="lowRate" stroke={BURGUNDY} strokeWidth={2.5} dot={{ r: 2.5, fill: BURGUNDY }} activeDot={{ r: 4 }} connectNulls />
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
               </Section>
 
               <Section title="Điểm đánh giá theo danh mục" note="Đánh giá gắn được tới sản phẩm thuộc danh mục (danh mục lịch sử suy từ tên dòng hàng)">
-                <DataTable columns={catColumns} data={d.categories} initialSort={[{ id: 'reviews', desc: true }]} />
+                <ChartTable columns={catColumns} rows={[...d.categories].sort((a,b)=>b.reviews-a.reviews)} valueKey="reviews" label="Đánh giá theo danh mục" color={r=>CATEGORY_COLORS[r.name]} onSelect={r=>update({category:r.name})}/>
               </Section>
+              </div></ViewPanel>
+              <ViewPanel active={view === 'themes'} name="Chủ đề đánh giá"><ReviewThemes /></ViewPanel>
             </div>
           )
         }}
       </Page>
-      <div className="customer-themes">
-        <ReviewThemes />
-      </div>
+      {shopee && <ReviewThemes />}
+
     </>
   )
 }

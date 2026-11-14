@@ -109,8 +109,8 @@ def main():
                        for grain,value in fingerprints.items()})
         source_rows = c.execute('SELECT source_code,sha256,row_count FROM ops.source_current ORDER BY 1').fetchall()
         checks['four_source_bytes_unchanged'] = all(checksum(root/'Data/Data_Source_Raw'/SOURCES[r['source_code']][0]) == r['sha256'] for r in source_rows) and len(source_rows)==4
-        schema = c.execute("SELECT count(*) FILTER(WHERE contype='f') foreign_keys FROM pg_constraint WHERE connamespace='dw'::regnamespace").fetchone()
-        schema['tables'] = c.execute("SELECT count(*) n FROM information_schema.tables WHERE table_schema='dw' AND table_type='BASE TABLE'").fetchone()['n']
+        schema = c.execute("SELECT count(*) FILTER(WHERE contype='f') foreign_keys FROM pg_constraint WHERE connamespace='dw'::regnamespace AND conrelid <> 'dw.review_theme_feature'::regclass").fetchone()
+        schema['tables'] = c.execute("SELECT count(*) n FROM information_schema.tables WHERE table_schema='dw' AND table_type='BASE TABLE' AND table_name <> 'review_theme_feature'").fetchone()['n']
         checks['galaxy_keys_preserved'] = schema == {'foreign_keys':56,'tables':15}
         independent = c.execute('''SELECT count(*) orders,sum(f.order_amount_source) FILTER(WHERE s.reviewed_status='COMPLETED') completed_payable
            FROM dw.fact_order_lifecycle_candidate f JOIN dw.dim_order_status s USING(order_status_key)''').fetchone()

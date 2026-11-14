@@ -60,10 +60,19 @@ def meta():
 def kpis(filters: FilterQuery):
     with snapshot() as c:
         data = repository.kpis(c, filters)
-    shopee_only = filters.source in ['shopee_bibica','shopee_quasure'] or filters.store in ['bibica_official_store','quasure_specialized_store']
+    shopee_only = filters.channel == 'SHOPEE' or filters.source in ['shopee_bibica','shopee_quasure'] or filters.store in ['bibica_official_store','quasure_specialized_store']
     return envelope(data, filters=filters.model_dump(mode='json'), warnings=contract()['policies'],
         metric_availability={'review_metrics': 'UNAVAILABLE_NO_SHOPEE_RATING_SOURCE' if shopee_only else 'TIKTOK_OBSERVED_REVIEWS_ONLY',
                              'zero_observed_review_count_does_not_mean_zero_complaints':True})
+
+
+@app.get('/api/v1/overview/dashboard')
+def overview_dashboard(filters: FilterQuery):
+    with snapshot() as c:
+        data = repository.overview_dashboard(c, filters)
+    return envelope(data, filters=filters.model_dump(mode='json'), snapshot='REPEATABLE READ',
+        warnings=['Order payable is counted once per order; category/SKU item values are separate measures.',
+                  'Observed periods do not prove complete source coverage. No growth or causal inference.'])
 
 
 @app.get('/api/v1/analytics/{dimension}')
@@ -79,7 +88,7 @@ def analytics(dimension: Literal['source', 'store', 'status', 'month', 'category
 @app.get('/api/v1/products')
 def products(filters: Annotated[ProductFilters, Query()]):
     with snapshot() as c:
-        rows = repository.products(c, filters, filters.limit, filters.offset, filters.search)
+        rows = repository.products(c, filters, filters.limit, filters.offset, filters.search, filters.sort)
     return envelope(rows, limit=filters.limit, offset=filters.offset)
 
 

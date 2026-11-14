@@ -1,3 +1,5 @@
+import DataTable from './DataTable.jsx'
+import {ViewPanel} from './ViewTabs.jsx'
 
 import { useEffect, useState } from 'react'
 import { getReviewThemes } from '../api/client.js'
@@ -21,14 +23,14 @@ const LABELS = {
   resolution_confirmed_claim: 'Đề cập đã xử lý',
 }
 
-const number = (value) => fmtInt(value ?? 0)
+const number = (value) => value == null ? '—' : fmtInt(value)
 
 function StatCard({ label, value, note, type = '' }) {
   return (
-    <div className={`rt-stat-card ${type}`}>
+    <div className={`rt-stat-card ${type}`} title={note}>
       <span className="rt-stat-label">{label}</span>
       <strong className="rt-stat-value">{value}</strong>
-      <span className="rt-stat-note">{note}</span>
+
     </div>
   )
 }
@@ -115,6 +117,13 @@ export default function ReviewThemes() {
 
   if (!result) return null
 
+  if (result.availability && result.availability !== 'READY') return (
+    <Section title="Phân tích chủ đề đánh giá"><p className="notice">{
+      result.availability === 'UNAVAILABLE_NO_SHOPEE_RATING_SOURCE' ? 'Chưa có nguồn đánh giá Shopee.' :
+      result.availability === 'NO_OBSERVED_REVIEWS' ? 'Không có đánh giá khớp bộ lọc.' :
+      'Nhãn đánh giá chưa được nạp đủ cho nguồn hiện hành. Cần làm mới dữ liệu chủ đề.'
+    }</p></Section>
+  )
   const labels = result.labels || []
 
   const totalMentions = labels.reduce(
@@ -125,9 +134,9 @@ export default function ReviewThemes() {
   return (
     <Section
       title="Phân tích chủ đề đánh giá"
-      note="Theo dõi các vấn đề được khách hàng đề cập trong đánh giá TikTok theo bộ lọc hiện tại."
+      note="Nhãn từ khóa chưa xác minh; một đánh giá có thể chứa nhiều nhãn."
     >
-      <div className="rt-dashboard">
+      <div className="rt-dashboard themes-compact">
 
         {/* KPI */}
         <div className="rt-stats">
@@ -161,22 +170,10 @@ export default function ReviewThemes() {
           />
         </div>
 
-        {/* Summary */}
-        <div className="rt-summary">
-          <div>
-            <span className="rt-summary-label">
-              Tổng lượt đề cập theo chủ đề
-            </span>
-            <strong>{number(totalMentions)}</strong>
-          </div>
-
-          <span className="rt-summary-description">
-            Một đánh giá có thể chứa nhiều chủ đề khác nhau.
-          </span>
-        </div>
-
+        <div className="theme-pair-heading"><strong>Chủ đề được đề cập</strong><span>{number(totalMentions)} lượt đề cập · có thể trùng đánh giá</span></div>
+        <ViewPanel active name="Chủ đề và bảng"><div className="theme-paired">
         {/* Chart */}
-        <div className="rt-panel">
+        <div className="rt-panel theme-chart">
           <div className="rt-panel-heading">
             <div>
               <h3>Chủ đề được đề cập nhiều nhất</h3>
@@ -188,6 +185,7 @@ export default function ReviewThemes() {
           <ThemeBars labels={labels} />
         </div>
 
+
         {/* Detail table */}
         <div className="rt-panel">
           <div className="rt-panel-heading">
@@ -197,55 +195,15 @@ export default function ReviewThemes() {
             </div>
           </div>
 
-          <div className="rt-table-wrap">
-            <table className="rt-table">
-              <thead>
-                <tr>
-                  <th>Chủ đề / nội dung</th>
-                  <th className="rt-number">Lượt đề cập</th>
-                  <th className="rt-number">Trong đánh giá 1–2 sao</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {[...labels]
-                  .sort((a, b) => b.mentions - a.mentions)
-                  .map((item) => (
-                    <tr key={item.label}>
-                      <td>
-                        <span className="rt-topic-name">
-                          {LABELS[item.label] || item.label}
-                        </span>
-                      </td>
-
-                      <td className="rt-number">
-                        <strong>{number(item.mentions)}</strong>
-                      </td>
-
-                      <td className="rt-number">
-                        <span className={
-                          item.negative_mentions > 0
-                            ? 'rt-negative-value'
-                            : ''
-                        }>
-                          {number(item.negative_mentions)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-
-                {!labels.length && (
-                  <tr>
-                    <td colSpan="3" className="rt-empty">
-                      Chưa phát hiện chủ đề thuộc các nhãn đã định nghĩa.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          <DataTable columns={[
+            { accessorKey: 'label', header: 'Chủ đề', cell: (c) => LABELS[c.getValue()] || c.getValue() },
+            { accessorKey: 'mentions', header: 'Lượt đề cập', cell: (c) => number(c.getValue()), meta: { align: 'right' } },
+            { accessorKey: 'negative_mentions', header: 'Trong đánh giá 1–2 sao', cell: (c) => number(c.getValue()), meta: { align: 'right' } },
+          ]} data={labels} initialSort={[{ id: 'mentions', desc: true }]} />
         </div>
 
+        </div></ViewPanel>
+        <details className="theme-method"><summary>Phương pháp và giới hạn</summary>
         {/* Methodology */}
         <div className="rt-method">
           <div className="rt-method-title">
@@ -264,7 +222,7 @@ export default function ReviewThemes() {
             nhận hàng bù hoặc xử lý khiếu nại thực tế.
           </p>
         </div>
-
+        </details>
       </div>
     </Section>
   )

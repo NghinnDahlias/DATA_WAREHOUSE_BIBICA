@@ -1,16 +1,21 @@
 
 import { useFilters } from '../context/FilterContext.jsx'
 import { fmtDate } from '../lib/format.js'
+import { Info } from 'lucide-react'
 
-export function Section({ title, note, aside, children }) {
+export function Help({text,label='Giải thích chỉ số'}) {
+  return <details className="help"><summary aria-label={label} title={label}><Info size={15}/></summary><div role="note">{text}</div></details>
+}
+
+export function Section({ title, note, noteVisible = false, aside, children }) {
   return (
     <section className="section">
       <header className="section-head">
         <div>
           <h2>{title}</h2>
-          {note && <p>{note}</p>}
+          {noteVisible&&note&&<p>{note}</p>}
         </div>
-        {aside}
+        <div className="section-tools">{aside}{note&&!noteVisible&&<Help text={note}/>}</div>
       </header>
       {children}
     </section>
@@ -28,18 +33,15 @@ export function Page({ title, headline, state, children, maturity = true, isEmpt
     <>
       <header className="page-head">
         <h1>{title}</h1>
+        <div className="page-tools">
+          {unstable&&<span className="period-caution">Có đơn chưa chốt <Help label="Lưu ý kỳ dữ liệu" text={`Kỳ có ngày sau ${fmtDate(maturityEnd)}. Trạng thái đơn có thể chưa kết thúc; số liệu là snapshot nguồn. Mốc30ngày không phải bảo đảm đã chốt.`}/></span>}
+          <Help label="Quy ước dữ liệu" text="Tiền đơn hoàn thành tính mỗi đơn một lần. Tiền dòng hàng là chỉ số riêng, không cộng với tiền đơn. Ngày có đơn không chứng minh xuất đủ kỳ. Đánh giá chỉ có TikTok; thiếu dữ liệu không phải bằng0."/>
+        </div>
         {data && !empty && headline && (
           <p className="headline">{headline(data)}</p>
         )}
       </header>
 
-      {unstable && (
-        <div className="notice warn">
-          Kỳ đang xem có các ngày sau {fmtDate(maturityEnd)}. Đơn ở giai đoạn này
-          thường chưa chuyển sang "Hoàn thành" nên giá trị và số lượng hoàn thành
-          thấp hơn thực tế. Để so sánh đúng, chọn kỳ kết thúc trước ngày đó.
-        </div>
-      )}
 
       {error && (
         <div className="notice err">
@@ -59,7 +61,7 @@ export function Page({ title, headline, state, children, maturity = true, isEmpt
       )}
 
       {data && !empty && (
-        <div className={loading ? 'body loading' : 'body'}>
+        <div className={loading ? 'body loading' : 'body'} aria-busy={loading} inert={loading?'':undefined}>
           {children(data)}
         </div>
       )}

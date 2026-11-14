@@ -1,21 +1,27 @@
 """Read-only review topic aggregation using the repository's shared cohort filters."""
 from . import repository
+from src.dss.review_audit import VERSION
 
 
 def fetch_review_themes(connection, filters):
     cte, params = repository.cohort(filters)
+    params["audit_version"] = VERSION
     query = cte + """
     , feature_reviews AS (
-        SELECT r.review_key, r.star_level, f.labels, f.severity, f.text_present
+        SELECT r.review_key, r.star_level, f.review_key AS feature_key, f.labels, f.severity, f.text_present
         FROM filtered_reviews r
-        LEFT JOIN dw.review_theme_feature f USING (review_key)
+        JOIN dw.fact_review_candidate base USING (review_key)
+        JOIN dw.dim_source_file sf ON sf.source_file_key=base.source_file_key
+        LEFT JOIN dw.review_theme_feature f ON f.review_key=r.review_key
+          AND f.source_sha256=sf.source_sha256 AND f.audit_version=%(audit_version)s
     )
     SELECT
         count(*)::bigint AS total_reviews,
+        count(feature_key)::bigint AS audited_reviews,
         count(*) FILTER (WHERE coalesce(text_present, false))::bigint AS text_present_reviews,
         count(*) FILTER (WHERE star_level <= 2)::bigint AS negative_reviews_le2,
         count(*) FILTER (
-            WHERE coalesce(labels, '[]'::jsonb) = '[]'::jsonb
+            WHERE feature_key IS NOT NULL AND labels = '[]'::jsonb
         )::bigint AS reviews_without_explicit_issue_label,
         count(*) FILTER (
             WHERE severity = 'SAFETY_SIGNAL_REQUIRES_REVIEW'
@@ -41,10 +47,20 @@ def fetch_review_themes(connection, filters):
     FROM feature_reviews
     """
     row = connection.execute(query, params).fetchone()
+    shopee_only = filters.channel == 'SHOPEE' or filters.source in ('shopee_bibica','shopee_quasure') or filters.store in ('bibica_official_store','quasure_specialized_store')
+    availability = ('UNAVAILABLE_NO_SHOPEE_RATING_SOURCE' if shopee_only else
+                    'NO_OBSERVED_REVIEWS' if not row['total_reviews'] else
+                    'READY' if row['audited_reviews'] == row['total_reviews'] else 'UNAVAILABLE_INCOMPLETE_FEATURES')
+    if availability != 'READY':
+        for field in ('text_present_reviews', 'reviews_without_explicit_issue_label', 'safety_signal_reviews'):
+            row[field] = None
+        row['labels'] = []
     return {
+        "availability": availability,
+        "audit_version": VERSION,
         **dict(row),
         "label_status": "UNVALIDATED_HEURISTIC_MENTION",
-        "date_basis": "review_date, with order cohort filters inherited from repository.cohort",
+        "date_basis": "Order creation cohort with review_date <= end_date when supplied; start_date is not a review-date lower bound",
         "content_returned": False,
         "warning": (
             "Một đánh giá có thể có nhiều nhãn; nhãn là tín hiệu từ khóa chưa được xác minh thủ công, "

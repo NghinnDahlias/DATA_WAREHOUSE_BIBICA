@@ -7,7 +7,7 @@ def cohort(filters: Filters):
     item_terms = ['TRUE']
     params = {}
     for field, column in [('start_date', 'o.order_date >= '), ('end_date', 'o.order_date <= '),
-                          ('source', 'o.source_code = '), ('store', 'o.storefront_code = '),
+                          ('source', 'o.source_code = '), ('store', 'o.storefront_code = '), ('channel', 'upper(o.channel_code) = '),
                           ('status', 'o.canonical_status = ')]:
         value = getattr(filters, field)
         if value is not None:
@@ -126,14 +126,37 @@ def metadata(connection):
     }
 
 
-def products(connection, filters, limit, offset, search):
+def products(connection, filters, limit, offset, search, sort='key'):
     query, params = cohort(filters)
     params.update(limit=limit, offset=offset, search='%' + search + '%')
+    ordering = {'orders':'orders DESC,i.product_key','units':'completed_units DESC NULLS LAST,i.product_key',
+                'item_value':'completed_item_value DESC NULLS LAST,i.product_key'}.get(sort,'i.product_key')
     return connection.execute(query + '''SELECT i.product_key,max(i.product_name) product_name,
+      max(s.storefront_code) storefront_code,max(p.native_sku_id) native_sku_id,
+      max(p.variation_name) variation_name,count(DISTINCT i.order_key) orders,
       array_agg(DISTINCT i.canonical_category) historical_categories,count(*) accepted_lines,
-      sum(i.quantity) FILTER(WHERE i.canonical_status='COMPLETED') completed_units,count(*) OVER() total_products
-      FROM filtered_items i WHERE i.product_name ILIKE %(search)s
-      GROUP BY i.product_key ORDER BY i.product_key LIMIT %(limit)s OFFSET %(offset)s''', params).fetchall()
+      sum(i.quantity) FILTER(WHERE i.canonical_status='COMPLETED') completed_units,
+      sum(i.observed_item_payable) FILTER(WHERE i.canonical_status='COMPLETED') completed_item_value,count(*) OVER() total_products
+      FROM filtered_items i
+      JOIN dw.dim_source_product_sku p ON p.source_product_sku_key=i.product_key
+      JOIN dw.dim_storefront s ON s.storefront_key=i.storefront_key
+      WHERE i.product_name ILIKE %(search)s OR p.native_sku_id ILIKE %(search)s
+        OR p.seller_sku ILIKE %(search)s OR p.variation_name ILIKE %(search)s
+      GROUP BY i.product_key ORDER BY ''' + ordering + ''' LIMIT %(limit)s OFFSET %(offset)s''', params).fetchall()
+
+
+def overview_dashboard(connection, filters):
+    """Linked overview, all panels on one read-only REPEATABLE READ snapshot."""
+    query, params = cohort(filters)
+    monthly = connection.execute(query + '''SELECT to_char(order_date,'YYYY-MM') period,
+      storefront_code,count(*) orders,count(*) FILTER(WHERE canonical_status='CANCELED') canceled_orders,
+      sum(order_payable) FILTER(WHERE canonical_status='COMPLETED') completed_payable
+      FROM filtered_orders GROUP BY 1,2 ORDER BY 1,2''', params).fetchall()
+    return {'kpis': kpis(connection, filters), 'monthly': monthly,
+            'stores': breakdown(connection, filters, 'store', 200, 0),
+            'categories': breakdown(connection, filters, 'category', 200, 0),
+            'provinces': breakdown(connection, filters, 'province', 200, 0),
+            'products': products(connection, filters, 8, 0, '', 'units')}
 
 
 def delivery(connection, filters):

@@ -9,7 +9,7 @@ export function useReport(fetcher, deps) {
     Promise.resolve()
       .then(fetcher)
       .then((data) => alive && setState({ data, loading: false, error: null }))
-      .catch((e) => alive && setState((s) => ({ ...s, loading: false, error: e.message || 'Lỗi không xác định' })))
+      .catch((e) => alive && setState({ data: null, loading: false, error: e.message || 'Lỗi không xác định' }))
     return () => { alive = false }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)

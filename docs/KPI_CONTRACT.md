@@ -8,6 +8,8 @@ Phiên bản máy đọc `2026-11-05-kpi-v1` ở `src/api/kpi_contract.py`, xu�
 
 Ngày đầu/cuối bao gồm cả ngày, lọc theo ngày tạo đơn. `source`, `store`, `status` lọc orders. `category`, `product_key`, `warehouse_key`, `warehouse_region`, `province` ràng buộc trên cùng một dòng thông qua EXISTS khi tính KPI đơn. Các measures item chỉ dùng những dòng thỏa bộ lọc. Một đơn có nhiều category/kho có thể thuộc nhiều nhóm, không cộng distinct orders giữa nhóm.
 
+Khi lọc một SKU, tiền hoàn thành/AOV vẫn là tiền của **toàn bộ đơn chứa SKU đó**, mỗi đơn chỉ tính một lần; không phải doanh thu được phân bổ riêng cho SKU. Số lượng bán chỉ cộng dòng của SKU đã lọc. Sản phẩm cùng tên nhưng khác native SKU hoặc cửa hàng giữ riêng; không gộp theo tên hay seller SKU. Danh sách tìm kiếm hiển thị shop, biến thể, mã SKU nguồn dạng chuỗi và số đơn trong kỳ, phân trang theo số đơn giảm dần rồi product_key.
+
 Review được tính riêng trong cohort đơn, không join nhân với items. Nếu có end_date, chỉ lấy review_date đến hết ngày đó. Khi lọc thuộc tính dòng, review cần product link đã xác minh trong đúng đơn và đúng tập dòng đã lọc. ORDER_ONLY không được tự phân bổ cho SKU/kho. Bộ lọc này đo đánh giá của cohort ngày tạo đơn, không phải phân phối review theo ngày đăng độc lập.
 
 ## Công thức và coverage
@@ -48,3 +50,16 @@ Contract còn công bố M17growth và M18cross-platform discount ở unavailabl
 Kiểm chứng mới trong `reports/phase2_tests.json`, `reports/phase2_verification.json`. Đối soát đã chạy cả fixture multi-line, cùng-dòng category/kho, NULL/empty/date, status, review cutoff và fingerprints toàn bộ dữ liệu.
 
 Kiểm toán bổ sung so68cohort/2108numeric measures với oracle độc lập trong reports/phase2_assessment/integrity.json. KPI envelope ghi rõ review_metricsUNAVAILABLE nếu chỉ lọc Shopee, dù count observed review records là0. Giá trị0đó không phải số khiếu nại0. Không có customer identity hoặc replacement lifecycle trong nguồn hợp đồng, meta công bố unavailable/null.
+
+
+## Dashboard liên kết (10/11/2026)
+
+/overview/dashboard sử dụng cùng cohort/order-line-review contract trong một REPEATABLE
+READ snapshot có serialSQLguard. TopSKU sắp theo completed_units, trả completed_item_value
+là tổng observed_item_payable của dòng hoàn thành; không phân bổ tiền toàn đơn cho SKU.
+API products thêm sort=units/item_value theo allowlist; mặc định key giữ tương thích.
+
+Insight chỉ là mô tả cohort hiện tại: tiền shop/tổng tiền, đơn hủy/số đơn (tối thiểu30mẫu),
+sản lượng danh mục/tổng sản lượng đã lọc. Không có kỳ trước, tăng trưởng, dự báo, lời/lỗ
+hoặc suy luận nguyên nhân. Danh mục NULL vẫn là trạng thái kiểm toán, không thêm business
+category thứ5. Cột/nhãn trục tỷ lệ dùng phần trăm, thời gian dùng ngày, tiền dùng VND.

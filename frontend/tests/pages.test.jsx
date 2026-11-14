@@ -394,6 +394,8 @@ function route({ url, method }) {
     return env(meta)
   }
 
+  if (url === '/overview/dashboard') return env({kpis:kpiRow,monthly:groups.month.map(r=>({...r,period:r.group_value,storefront_code:'bibica_tiktok_shop'})),stores:groups.store,categories:groups.category,provinces:groups.province,products})
+
   if (url === '/overview/kpis') {
     return env(kpiRow, {
       warnings: ['Tiền đơn tính một lần.'],
@@ -572,6 +574,27 @@ const at = (path) =>
 // ============================================================
 
 describe('các trang dựng được với dữ liệu theo hợp đồng API', () => {
+  it('tab bàn phím chỉ dựng panel đang chọn và quay lại được biểu đồ', async () => {
+    at('/sales')
+    const first = await screen.findByRole('tab', { name: 'Xu hướng', exact: true })
+    first.focus()
+    await userEvent.keyboard('{End}')
+    expect(screen.getByRole('tab', { name: 'Sản phẩm', exact: true }).getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByText('Tải xếp hạng sản phẩm')).toBeTruthy()
+    await userEvent.keyboard('{Home}')
+    expect(screen.queryByText('Tải xếp hạng sản phẩm')).toBeNull()
+    expect(screen.getByText('Xu hướng theo kênh')).toBeTruthy()
+  })
+
+  it('bảng dài phân trang sau khi sắp xếp, không mất dòng ngoài trang đầu', async () => {
+    const { default: DataTable } = await import('../src/components/DataTable.jsx')
+    render(<DataTable columns={[{ accessorKey: 'value', header: 'Giá trị' }]} data={Array.from({ length: 25 }, (_, i) => ({ value: i + 1 }))} />)
+    expect(document.querySelectorAll('tbody tr')).toHaveLength(10)
+    await userEvent.click(screen.getByRole('button', { name: 'Trang bảng sau' }))
+    expect(document.querySelector('tbody tr').textContent).toBe('11')
+    await userEvent.click(screen.getByRole('button', { name: 'Trang bảng sau' }))
+    expect(document.querySelectorAll('tbody tr')).toHaveLength(5)
+  })
 
   // ----------------------------------------------------------
   // EXECUTIVE OVERVIEW
@@ -582,12 +605,12 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
 
     // KPI số đơn đặt là dữ liệu ổn định hơn câu headline diễn giải.
     expect(
-      await screen.findByText('1.000')
+      (await screen.findAllByText('1.000'))[0]
     ).toBeTruthy()
 
-    expect(
-      screen.getByText('Chất lượng dữ liệu và lưu ý')
-    ).toBeTruthy()
+    expect(screen.queryByRole('tab')).toBeNull()
+    expect(screen.getByText('SKU nổi bật')).toBeTruthy()
+    expect(screen.getByText('Cơ cấu sản lượng')).toBeTruthy()
 
     expect(
       screen.getByText(/12 đơn có giá trị mâu thuẫn/)
@@ -605,6 +628,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
       await screen.findByText('Xu hướng theo kênh')
     ).toBeTruthy()
 
+    await userEvent.click(screen.getByRole('tab', { name: 'Sản phẩm', exact: true }))
     await userEvent.click(
       screen.getByText('Tải xếp hạng sản phẩm')
     )
@@ -669,7 +693,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
 
     await waitFor(() =>
       expect(
-        screen.getAllByText('Kho Hà Nội').length
+        screen.getAllByText(/Kho Hà Nội/).length
       ).toBeGreaterThan(0)
     )
 
@@ -677,6 +701,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
       screen.getByText(/Tuyến kho → tỉnh/)
     ).toBeTruthy()
 
+    await userEvent.click(screen.getByRole('tab', { name: 'Tuyến kho → tỉnh', exact: true }))
     expect(
       screen.getAllByText('Đang tải…').length
     ).toBeGreaterThan(0)
@@ -716,15 +741,16 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     })
 
     at('/warehouse')
-
+    await screen.findByText('Hiệu suất theo kho')
+    await userEvent.click(screen.getByRole('tab', { name: 'Tuyến kho → tỉnh', exact: true }))
     expect(
       await screen.findByText(/Không tải được phần này/)
     ).toBeTruthy()
 
     expect(
-      screen.getByText('Hiệu suất theo kho')
+      screen.getByRole('heading', { name: 'Warehouse & Fulfillment', exact: true })
     ).toBeTruthy()
-
+    await userEvent.click(screen.getByRole('tab', { name: 'Tỉnh nhận hàng', exact: true }))
     expect(
       screen.getByText('Khu vực giao hàng')
     ).toBeTruthy()
@@ -736,6 +762,8 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
 
   it('Customer Experience', async () => {
     at('/customer')
+    await screen.findByRole('heading', { name: 'Customer Experience', exact: true })
+    await userEvent.click(await screen.findByRole('tab', { name: 'Chủ đề đánh giá', exact: true }))
 
     expect(
       await screen.findByText(/Phân tích chủ đề đánh giá/)
@@ -748,13 +776,14 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
 
   it('Customer Experience báo rõ lý do khi lọc cửa hàng Shopee và vẫn giữ tiêu đề phân tích chủ đề đánh giá', async () => {
     at('/customer')
+    await screen.findByRole('heading', { name: 'Customer Experience', exact: true })
+    await userEvent.click(await screen.findByRole('tab', { name: 'Chủ đề đánh giá', exact: true }))
 
     await screen.findByText(/Phân tích chủ đề đánh giá/)
 
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[0],
-      'bibica_official_store'
-    )
+    await userEvent.click(screen.getByRole('button',{name:'Lọc thêm',exact:true}))
+    await userEvent.selectOptions(screen.getByLabelText('Cửa hàng',{exact:true}),'bibica_official_store')
+    await userEvent.click(screen.getByRole('button',{name:'Xong',exact:true}))
 
     expect(
       await screen.findByText(
@@ -777,6 +806,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     await userEvent.click(
       await screen.findByText('Tạo batch mẫu')
     )
+    await waitFor(() => expect(screen.getAllByText('DEMO0').length).toBeGreaterThan(0))
 
     await userEvent.click(
       await screen.findByText('Chạy và so sánh kịch bản')
@@ -825,7 +855,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     expect(
       body.orders.every((o) =>
         o.items.length === 1 &&
-        o.items[0].product_key === 1365 &&
+        o.items[0].product_key === 13 &&
         o.items[0].quantity === 2
       )
     ).toBe(true)
@@ -848,7 +878,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
       expect.arrayContaining([
         expect.objectContaining({
           warehouse_key: 2,
-          product_key: 1365,
+          product_key: 13,
           units: 100,
           remaining_shelf_days: 30,
           stock_scope: 'ECOMMERCE',
@@ -856,7 +886,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
 
         expect.objectContaining({
           warehouse_key: 3,
-          product_key: 1365,
+          product_key: 13,
           units: 100,
           remaining_shelf_days: 30,
           stock_scope: 'ECOMMERCE',
@@ -885,9 +915,9 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     ).toEqual([
       {
         warehouse_key: 2,
-        product_key: 1365,
-        reason: 'APPROVED_ECOMMERCE_EXCEPTION',
-        evidence_ref: 'SCENARIO-HCM-EXCEPTION',
+        product_key: 13,
+        reason: 'HN_STOCKOUT_TRANSFER',
+        evidence_ref: 'DEMO-HN-STOCKOUT-001',
         ecommerce_stock_confirmed: true,
       },
     ])
@@ -929,6 +959,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
 
     // DEMO0 xuất hiện ở thẻ đơn và bảng kết quả sau khi chạy mô phỏng.
     // Click mã đơn ở thẻ batch để mở phần chi tiết phân bổ.
+    await userEvent.click(screen.getByRole('tab', { name: 'Phân bổ & giải thích', exact: true }))
     await userEvent.click(
       screen.getAllByText('DEMO0')[0]
     )
@@ -966,6 +997,7 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     await userEvent.click(
       await screen.findByText('Tạo batch mẫu')
     )
+    await waitFor(() => expect(screen.getAllByText('DEMO0').length).toBeGreaterThan(0))
 
     await userEvent.click(
       await screen.findByText('Chạy và so sánh kịch bản')
@@ -994,7 +1026,9 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     await userEvent.click(
       await screen.findByText('Tạo batch mẫu')
     )
+    await waitFor(() => expect(screen.getAllByText('DEMO0').length).toBeGreaterThan(0))
 
+    await userEvent.click(screen.getByRole('tab', { name: 'Tham số kịch bản', exact: true }))
     await userEvent.click(
       screen.getAllByLabelText(/Nhập tồn kho/)[0]
     )

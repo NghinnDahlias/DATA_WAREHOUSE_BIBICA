@@ -1,11 +1,14 @@
+import ViewTabs, { ViewPanel } from '../components/ViewTabs.jsx'
+import LinkedChart from '../components/LinkedChart.jsx'
 import { Fragment, useMemo, useState } from 'react'
 import { Plus, Play, Shuffle, Trash2, TriangleAlert, ChevronDown, ChevronRight } from 'lucide-react'
 import { useFilters } from '../context/FilterContext.jsx'
-import { dssAllocate, dssSensitivity, dssWhatIf, dssShelfLife, STORES } from '../api/client.js'
+import { dssAllocate, dssSensitivity, dssWhatIf, dssShelfLife, getAllProducts, STORES } from '../api/client.js'
 import { Section } from '../components/Page.jsx'
+import { KpiRow } from '../components/KpiStrip.jsx'
 import ProductPicker from '../components/ProductPicker.jsx'
 import { DEFAULT_SCENARIO, buildOrders, buildScenario, reasonText, validateBatch } from '../lib/dss.js'
-import { fmtDate, fmtInt } from '../lib/format.js'
+import { fmtDate, fmtInt, fmtDays, fmtPct } from '../lib/format.js'
 
 const dec = (x, d = 1) => (x == null ? '—' : Number(x).toFixed(d).replace('.', ','))
 // Giá trị stock_scope mà API nhận (models.Stock). Giá trị khác bị trả 422.
@@ -24,6 +27,10 @@ function Num({ label, value, onChange, min, max, step = 1, hint, placeholder }) 
 }
 
 function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
+  const [group, setGroup] = useState('stock')
+  const [stockPage, setStockPage] = useState(0)
+  const pages = Math.max(1, Math.ceil(s.stocks.length / 3))
+  const page = Math.min(stockPage, pages - 1)
   const upd = (patch) => set({ ...s, ...patch })
   const setMap = (field, key, v) => upd({ [field]: { ...s[field], [key]: v } })
   const addStock = () => upd({ stocks: [...s.stocks, { id: ++seq, warehouseKey: warehouses[0]?.key ?? '', productKey: products[0]?.key ?? '', units: '', shelfDays: '', scope: 'ECOMMERCE' }] })
@@ -50,6 +57,8 @@ function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
         {onRemove && <button type="button" className="icon-btn" onClick={onRemove} aria-label="Xóa phương án"><Trash2 size={16} /></button>}
       </div>
 
+      <ViewTabs value={group} onChange={setGroup} label="Nhóm tham số" items={[["stock", "Tồn kho & HSD"], ["capacity", "Năng lực & giới hạn"], ["weights", "Điểm rủi ro"], ["exception", "Ngoại lệ bữa sáng"]]} />
+      <ViewPanel active={group === 'stock'} name="Tồn kho và hạn dùng">
       <fieldset className="radio-row">
         <legend>Tồn kho</legend>
         <label><input type="radio" checked={s.stockMode === 'assume_available'} onChange={() => upd({ stockMode: 'assume_available' })} /> Giả định đủ hàng</label>
@@ -58,7 +67,7 @@ function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
 
       {s.stockMode === 'required' && (
         <div className="stock-rows">
-          {s.stocks.map((x) => (
+          {s.stocks.slice(page * 3, (page + 1) * 3).map((x) => (
             <div className="stock-row" key={x.id}>
               <label className="stock-field"><span>Kho áp dụng</span>
                 <select value={x.warehouseKey} aria-label="Kho áp dụng" onChange={(e) => setStock(x.id, { warehouseKey: Number(e.target.value) })}>
@@ -86,11 +95,14 @@ function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
               <button type="button" className="icon-btn stock-remove" onClick={() => upd({ stocks: s.stocks.filter((y) => y.id !== x.id) })} aria-label="Xóa dòng tồn" title="Xóa dòng tồn"><Trash2 size={15} /></button>
             </div>
           ))}
-          <button type="button" className="reset" disabled={!products.length} onClick={addStock}><Plus size={14} /> Thêm dòng tồn kho</button>
+          {pages > 1 && <div className="table-pagination"><button type="button" disabled={page === 0} onClick={() => setStockPage(page - 1)}>Trước</button><span>{page + 1} / {pages} · {s.stocks.length} dòng tồn</span><button type="button" disabled={page + 1 === pages} onClick={() => setStockPage(page + 1)}>Sau</button></div>}
+          <button type="button" className="reset" disabled={!products.length} onClick={() => { addStock(); setStockPage(Math.floor(s.stocks.length / 3)) }}><Plus size={14} /> Thêm dòng tồn kho</button>
           {!products.length && <p className="fine">Thêm sản phẩm vào batch trước khi nhập tồn kho.</p>}
         </div>
       )}
 
+      </ViewPanel>
+      <ViewPanel active={group === 'capacity'} name="Năng lực và giới hạn">
       <div className="wh-grid">
         {warehouses.map((w) => (
           <div key={w.key} className="wh-box">
@@ -110,6 +122,8 @@ function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
         <input type="range" min="0" max="1" step="0.05" value={s.riskWeight} onChange={(e) => upd({ riskWeight: Number(e.target.value) })} aria-label="Trọng số rủi ro" />
         <small>0% = chỉ xét thời gian giao, 100% = chỉ xét điểm rủi ro.</small>
       </label>
+      </ViewPanel>
+      <ViewPanel active={group === 'exception'} name="Ngoại lệ bữa sáng">
       {s.stockMode === 'required' ? (
         <fieldset className="radio-row breakfast-exc">
           <legend>Ngoại lệ sản phẩm bữa sáng</legend>
@@ -149,8 +163,9 @@ function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
       ) : (
         <p className="fine">Muốn khai hạn dùng còn lại hoặc ngoại lệ bữa sáng, chọn "Nhập tồn kho theo kho/sản phẩm".</p>
       )}
-      <details className="adv">
-        <summary>Tham số nâng cao</summary>
+      </ViewPanel>
+      <ViewPanel active={group === 'weights'} name="Điểm rủi ro">
+      <div className="adv">
         <div className="two">
           <Num label="Trọng số hủy đơn" value={s.wCancel} min={0} max={1} step={0.1} onChange={(v) => upd({ wCancel: v })} />
           <Num label="Trọng số giao trễ" value={s.wLate} min={0} max={1} step={0.1} onChange={(v) => upd({ wLate: v })} />
@@ -161,24 +176,23 @@ function ScenarioEditor({ s, set, warehouses, products, onRemove, heading }) {
           <Num label="Hạn còn tối thiểu (ngày)" value={s.minRemainingDays} min={0} max={365} onChange={(v) => upd({ minRemainingDays: v })} />
           <Num label="Sao tối đa tính là thấp" value={s.lowStarMax} min={1} max={3} onChange={(v) => upd({ lowStarMax: v })} />
         </div>
-      </details>
+      </div>
+      </ViewPanel>
     </div>
   )
 }
 
 function Result({ res, whName }) {
   const [open, setOpen] = useState(null)
+  const [detailView, setDetailView] = useState('summary')
+  const [candidateScenario, setCandidateScenario] = useState('0')
+  const [orderPage, setOrderPage] = useState(0)
   const scen = [{ title: res.baseline.scenario.label + ' (gốc)', r: res.baseline, cmp: null },
     ...res.alternatives.map((a) => ({ title: a.result.scenario.label, r: a.result, cmp: a.comparison }))]
   const rows = res.baseline.assignments.map((a, i) => ({ ref: a.order_ref, province: a.province, cells: scen.map((s) => s.r.assignments[i]) }))
+  const resultPage = Math.min(orderPage, Math.max(0, Math.ceil(rows.length / 5) - 1))
   const whOrders = (r) => Object.entries(r.summary.warehouse_orders).map(([k, n]) => `${whName(Number(k))}: ${n}`).join(' · ') || '—'
   const changed = (ref) => scen.slice(1).some((s) => s.cmp.changed_order_refs.includes(ref))
-  const kpis = [
-    { label: 'Đơn được gán kho', value: (r) => `${fmtInt(r.summary.assigned_orders)} / ${fmtInt(r.summary.requested_orders)}`, hint: 'Đơn được phân bổ / tổng đơn' },
-    { label: 'Đơn chưa gán', value: (r) => fmtInt(r.summary.unassigned_orders), hint: 'Chưa tìm được kho phù hợp' },
-    { label: 'Điểm rủi ro trung bình', value: (r) => dec(r.summary.mean_risk_score), hint: 'Điểm chỉ số, không phải xác suất' },
-    { label: 'P90 giao trung bình', value: (r) => `${dec(r.summary.mean_p90_scenario_days)} ngày`, hint: 'Ước tính theo dữ liệu tuyến lịch sử' },
-  ]
   const HINTS = {
     MISSING_BREAKFAST_SHELF_LIFE_SCENARIO: 'Bánh bữa sáng cần tồn kho kèm "Hạn sử dụng còn (ngày)": ở mục 03 chọn "Nhập tồn kho theo kho/sản phẩm" rồi điền hạn dùng.',
     MISSING_STOCK_SCENARIO: 'Ở mục 03 chọn "Nhập tồn kho theo kho/sản phẩm" và khai tồn cho kho/sản phẩm này.',
@@ -197,33 +211,21 @@ function Result({ res, whName }) {
     return top ? { top, hint: HINTS[top] } : null
   }
   return (
-    <>
+    <div className="dss-results">
+      <ViewTabs value={detailView} onChange={setDetailView} label="Kết quả mô phỏng" items={[["summary", "So sánh"], ["orders", "Phân bổ & giải thích"]]} />
+      <ViewPanel active={detailView === 'summary'} name="So sánh kịch bản">
       {scen.filter((s) => s.r.summary.unassigned_orders > 0).map((s) => {
         const d = diagnose(s.r)
         return (
-          <div key={s.title} className={`notice ${s.r.summary.assigned_orders === 0 ? 'err' : ''}`} style={{ marginBottom: 10 }}>
-            <b>{s.title}:</b> {fmtInt(s.r.summary.unassigned_orders)}/{fmtInt(s.r.summary.requested_orders)} đơn chưa gán được kho.
-            {d && <> Lý do phổ biến nhất: {reasonText(d.top)}. {d.hint}</>}
-          </div>
+          <details key={s.title} className={`notice scenario-diagnostic ${s.r.summary.assigned_orders === 0 ? 'err' : ''}`}>
+            <summary><b>{s.title}:</b> {fmtInt(s.r.summary.unassigned_orders)}/{fmtInt(s.r.summary.requested_orders)} đơn chưa gán được kho.</summary>
+            {d && <p>Lý do phổ biến nhất: {reasonText(d.top)}. {d.hint}</p>}
+          </details>
         )
       })}
-      <section className="dss-kpi-grid" aria-label="Tóm tắt kết quả mô phỏng" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 12, margin: '4px 0 18px' }}>
-        {kpis.map((kpi) => (
-          <article key={kpi.label} className="dss-kpi-card" style={{ background: '#fff', border: '1px solid #e8e1e5', borderRadius: 12, padding: '14px 16px', minWidth: 0 }}>
-            <div style={{ fontSize: 13, color: '#6f6268', fontWeight: 600 }}>{kpi.label}</div>
-            <div style={{ display: 'grid', gap: 7, marginTop: 10 }}>
-              {scen.map((scenario, index) => (
-                <div key={scenario.title} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
-                  <span style={{ color: '#786d72', fontSize: 11, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{index === 0 ? 'Gốc' : scenario.title}</span>
-                  <strong style={{ color: '#451326', fontSize: 17, whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{kpi.value(scenario.r)}</strong>
-                </div>
-              ))}
-            </div>
-            <div style={{ color: '#8a7e84', fontSize: 11, marginTop: 8 }}>{kpi.hint}</div>
-          </article>
-        ))}
-      </section>
-      <Section title="So sánh kịch bản" note="Chỉ là chênh lệch đầu ra giữa các kịch bản; mục tiêu khác trọng số không so sánh được như độ hữu dụng.">
+      <Section title="So sánh kịch bản" note="Chênh lệch mô phỏng; mục tiêu khác trọng số không so sánh trực tiếp.">
+        <div className="scenario-summary-visual">
+        <div className="scenario-comparison-chart"><LinkedChart rows={scen.map((s,i)=>({key:i,name:s.title,value:s.r.summary.assigned_orders}))} label="Số đơn gán kho theo kịch bản" color="#168b7d"/></div>
         <div className="table-wrap">
           <table>
             <thead><tr><th>Chỉ số</th>{scen.map((s) => <th key={s.title} className="num">{s.title}</th>)}</tr></thead>
@@ -235,35 +237,38 @@ function Result({ res, whName }) {
               <tr><td>P90 giao trung bình (ngày)</td>{scen.map((s) => <td key={s.title} className="num">{dec(s.r.summary.mean_p90_scenario_days)}</td>)}</tr>
               <tr><td>Chi phí mục tiêu</td>{scen.map((s) => <td key={s.title} className="num">{(s.r.summary.assigned_orders ? dec(s.r.summary.objective_cost, 3) : '—')}</td>)}</tr>
               {scen.length > 1 && <tr><td>Số đơn đổi kho so với gốc</td><td className="num">—</td>{scen.slice(1).map((s) => <td key={s.title} className="num"><b>{fmtInt(s.cmp.changed_orders)}</b></td>)}</tr>}
-              {scen.length > 1 && <tr><td>Chênh chi phí mục tiêu</td><td className="num">—</td>{scen.slice(1).map((s) => <td key={s.title} className="num">{!s.r.summary.assigned_orders ? '—' : s.cmp.objective_cost_delta == null ? 'Không so sánh được (khác trọng số)' : dec(s.cmp.objective_cost_delta, 3)}</td>)}</tr>}
+              {scen.length > 1 && <tr><td>Chênh chi phí mục tiêu</td><td className="num">—</td>{scen.slice(1).map((s) => <td key={s.title} className="num">{!s.r.summary.assigned_orders ? '—' : s.cmp.objective_cost_delta == null || s.cmp.same_assigned_cohort === false ? 'Khác trọng số hoặc tập đơn'  : dec(s.cmp.objective_cost_delta, 3)}</td>)}</tr>}
             </tbody>
           </table>
         </div>
-        <p className="fine">P90 là thống kê lịch sử của từng tuyến. Báo cáo kiểm tra của nhóm cho thấy trên dữ liệu giữ lại, chỉ khoảng 85–89% đơn nằm trong P90 (dưới 90%), nên không dùng P90 để cam kết thời gian giao hay an toàn hạn dùng.</p>
-        <p className="fine">Bộ giải: {res.baseline.solver.method}. Nghiệm tối ưu trong phạm vi batch và các dữ liệu/ràng buộc đầu vào; kết quả mô phỏng chưa phải xác nhận hiệu quả vận hành thực tế.</p>
+        </div>
+        <details className="data-notes"><summary>Phương pháp và giới hạn so sánh</summary><p className="fine">P90 là thống kê lịch sử của từng tuyến. Báo cáo kiểm tra của nhóm cho thấy trên dữ liệu giữ lại, chỉ khoảng 85–89% đơn nằm trong P90 (dưới 90%), nên không dùng P90 để cam kết thời gian giao hay an toàn hạn dùng.</p>
+        <p className="fine">Bộ giải: {res.baseline.solver.method}. Nghiệm tối ưu trong phạm vi batch và các dữ liệu/ràng buộc đầu vào; kết quả mô phỏng chưa phải xác nhận hiệu quả vận hành thực tế.</p></details>
       </Section>
 
-      <Section title="Phân bổ từng đơn" note="Bấm một đơn để xem lý do từng kho được chọn hoặc bị loại. Dòng tô nền là đơn đổi kho giữa các phương án.">
+      </ViewPanel>
+      <ViewPanel active={detailView === 'orders'} name="Phân bổ từng đơn"><Section title="Phân bổ từng đơn" note="Bấm một đơn để xem lý do từng kho được chọn hoặc bị loại. Dòng tô nền là đơn đổi kho giữa các phương án.">
         <div className="table-wrap">
           <table>
             <thead><tr><th /><th>Đơn</th><th>Tỉnh / thành</th>{scen.map((s) => <th key={s.title}>{s.title}</th>)}</tr></thead>
             <tbody>
-              {rows.map((r) => (
+              {rows.slice(resultPage * 5, (resultPage + 1) * 5).map((r) => (
                 <Fragment key={r.ref}>
                   <tr className={`clickable ${changed(r.ref) ? 'changed' : ''}`} onClick={() => setOpen(open === r.ref ? null : r.ref)}>
                     <td>{open === r.ref ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</td>
                     <td>{r.ref}</td><td>{r.province}</td>
                     {r.cells.map((c, i) => (
                       <td key={i}>{c.warehouse_key ? <b>{whName(c.warehouse_key)}</b> : <span className="down">Không gán</span>}
-                        <small className="sub">{reasonText(c.reason)}</small></td>))}
+                        <small className="sub" title={reasonText(c.reason)}>{reasonText(c.reason)}</small></td>))}
                   </tr>
                   {open === r.ref && (
                     <tr className="detail"><td /><td colSpan={2 + scen.length}>
-                      {r.cells.map((c, i) => (
+                      <ViewTabs value={candidateScenario} onChange={setCandidateScenario} label="Giải thích theo kịch bản" items={scen.map((s, i) => [String(i), s.title])} />
+                      {r.cells.map((c, i) => i === Number(candidateScenario) ? (
                         <div key={i} className="cand">
                           <h4>{scen[i].title}</h4>
                           <table>
-                            <thead><tr><th>Kho</th><th>Khả thi</th><th>Lý do loại</th><th className="num">Rủi ro</th><th className="num">P90 giao</th><th>Bằng chứng</th></tr></thead>
+                            <thead><tr><th scope="col">Kho</th><th scope="col">Khả thi</th><th scope="col">Lý do loại</th><th scope="col" className="num">Rủi ro</th><th scope="col" className="num">P90 giao</th><th scope="col">Bằng chứng</th></tr></thead>
                             <tbody>{c.candidates.map((k) => (
                               <tr key={k.warehouse_key}>
                                 <td>{whName(k.warehouse_key)}</td><td>{k.feasible ? 'Có' : 'Không'}</td>
@@ -272,7 +277,7 @@ function Result({ res, whName }) {
                                 <td>{k.evidence ? (k.evidence.evidence_level === 'WAREHOUSE_PROVINCE' ? 'Tuyến kho–tỉnh' : 'Toàn kho') + `, ${k.evidence.timing_samples} mẫu` : 'Thiếu mẫu'}</td>
                               </tr>))}</tbody>
                           </table>
-                        </div>))}
+                        </div>) : null)}
                     </td></tr>
                   )}
                 </Fragment>
@@ -280,17 +285,23 @@ function Result({ res, whName }) {
             </tbody>
           </table>
         </div>
+        {rows.length > 5 && <div className="table-pagination"><button type="button" disabled={resultPage === 0} onClick={() => { setOrderPage(resultPage - 1); setOpen(null) }}>Trước</button><span>{resultPage + 1} / {Math.ceil(rows.length / 5)} · {rows.length} đơn</span><button type="button" disabled={(resultPage + 1) * 5 >= rows.length} onClick={() => { setOrderPage(resultPage + 1); setOpen(null) }}>Sau</button></div>}
       </Section>
-    </>
+      </ViewPanel>
+    </div>
   )
 }
 
 export default function Dss() {
   const { meta, filters } = useFilters()
+  const [view, setView] = useState('batch')
+  const [scenarioKey, setScenarioKey] = useState('baseline')
   const [store, setStore] = useState('bibica_tiktok_shop')
   const [asOf, setAsOf] = useState(filters.to)
   const [history, setHistory] = useState('')
   const [orders, setOrders] = useState([])
+  const [batchPage, setBatchPage] = useState(0)
+  const visibleBatchPage = Math.min(batchPage, Math.max(0, Math.ceil(orders.length / 4) - 1))
   const [baseline, setBaseline] = useState({ ...DEFAULT_SCENARIO })
   const [alts, setAlts] = useState([{ ...DEFAULT_SCENARIO, id: ++seq, label: 'Phương án 1' }])
   const [res, setRes] = useState(null)
@@ -299,7 +310,7 @@ export default function Dss() {
   const [shelfProduct, setShelfProduct] = useState(null)
   const [shelfWarehouse, setShelfWarehouse] = useState('')
   const [shelfProvince, setShelfProvince] = useState('Hồ Chí Minh')
-  const [remainingShelfDays, setRemainingShelfDays] = useState(30)
+  const [remainingShelfDays, setRemainingShelfDays] = useState('')
   const [minRemainingDays, setMinRemainingDays] = useState(1)
   const [shelfExtraDelay, setShelfExtraDelay] = useState(0)
   const [shelfMinRouteSamples, setShelfMinRouteSamples] = useState(20)
@@ -325,9 +336,9 @@ export default function Dss() {
 
   const newOrder = () => ({ ref: `D${++seq}`, province: 'Hà Nội', items: [{ id: ++seq, product: null, quantity: 1 }] })
   const setOrder = (ref, patch) => { setOrders((os) => os.map((o) => (o.ref === ref ? { ...o, ...patch } : o))); resetResults() }
-  const resetResults = () => { setRes(null); setError(null) }
+  const resetResults = () => { setRes(null); setError(null); setShelfResult(null); setShelfError(null) }
 
-  const changeStore = (v) => { setStore(v); setOrders([]); setShelfProduct(null); setShelfWarehouse(''); setShelfResult(null); setShelfError(null); resetResults(); setBaseline((b) => ({ ...b, stocks: [], capacity: {}, delay: {}, breakfastExceptions: [] })); setAlts((a) => a.map((x) => ({ ...x, stocks: [], capacity: {}, delay: {}, breakfastExceptions: [] }))) }
+  const changeStore = (v) => { setStore(v); setOrders([]); setShelfProduct(null); setShelfWarehouse(''); setShelfResult(null); setShelfError(null); resetResults(); setBaseline((b) => ({ ...b, stocks: [], capacity: {}, delay: {}, breakfastExceptions: [], breakfastProductKeys: [] })); setAlts((a) => a.map((x) => ({ ...x, stocks: [], capacity: {}, delay: {}, breakfastExceptions: [], breakfastProductKeys: [] }))) }
 
   const updateBaseline = (v) => { setBaseline(v); resetResults() }
   const updateAlternative = (idx, v) => { setAlts((all) => all.map((x, j) => (j === idx ? { ...v, id: x.id } : x))); resetResults() }
@@ -398,6 +409,7 @@ export default function Dss() {
 
 
   const runShelfLife = async () => {
+    if (remainingShelfDays === '' || remainingShelfDays == null) return setShelfError('Nhập số ngày hạn dùng còn lại giả định. Dataset không có HSD/lô hàng.')
     if (!shelfProduct?.key) return setShelfError('Hãy chọn sản phẩm cần kiểm tra.')
     if (!selectedShelfWarehouse) return setShelfError('Cửa hàng hiện tại chưa có kho để đánh giá.')
     if (!shelfProvince || shelfProvince === 'Unknown') return setShelfError('Hãy chọn tỉnh/thành nhận hàng hợp lệ.')
@@ -434,14 +446,12 @@ export default function Dss() {
     setError(null)
 
     try {
-      // SKU 1365 đã được xác định trong bộ dữ liệu demo.
-      // Không cần tải toàn bộ danh sách sản phẩm từ API.
-      const product = {
-        key: 1365,
-        label: 'Combo Bánh Ăn Sáng Bibica (SKU 1365)',
-        categories: ['Bánh'],
-        units: 0,
-      }
+      const catalog = await getAllProducts(base)
+      const commercial = catalog.filter((p) => (p.historical_categories || []).some((c) => ['Bánh', 'Kẹo', 'Ngũ cốc'].includes(c)))
+      const name = (p) => p.product_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      const selected = commercial.find((p) => /an sang|bua sang|breakfast/.test(name(p))) || commercial[0]
+      if (!selected) throw new Error('Không có sản phẩm thương mại trong cửa hàng và mốc lịch sử đã chọn.')
+      const product = { key: selected.product_key, label: selected.product_name, categories: selected.historical_categories, store: selected.storefront_code, sku: selected.native_sku_id, variation: selected.variation_name }
 
       const provinces = [
         'Hà Nội',
@@ -482,15 +492,19 @@ export default function Dss() {
       const hcm = warehouses.find((w) => w.region === 'Hồ Chí Minh')
       if (hn && hcm) {
         const stock = (w, units) => ({ id: ++seq, warehouseKey: w.key, productKey: product.key, units, shelfDays: 30, scope: 'ECOMMERCE' })
-        setBaseline((b) => ({ ...b, label: 'Hiện trạng · Hà Nội còn hàng', stockMode: 'required', stocks: [stock(hn, 100)], breakfastExceptions: [] }))
+        setBaseline({ ...DEFAULT_SCENARIO, label: 'DEMO · Hà Nội mặc định', stockMode: 'required', stocks: [stock(hn, 100), stock(hcm, 100)], capacity: { [hcm.key]: 0 } })
         setAlts([{
           ...DEFAULT_SCENARIO, id: ++seq, label: 'Hà Nội hết hàng · chuyển sang HCM', stockMode: 'required',
-          stocks: [stock(hn, 0), stock(hcm, 100)],
+          stocks: [stock(hn, 0), stock(hcm, 100)], capacity: { [hn.key]: 0 },
           breakfastExceptions: [{ warehouseKey: hcm.key, productKey: product.key, reason: 'HN_STOCKOUT_TRANSFER', evidenceRef: 'DEMO-HN-STOCKOUT-001', ecommerceStockConfirmed: true }],
+        }, {
+          ...DEFAULT_SCENARIO, id: ++seq, label: 'DEMO · Stress hạn dùng', stockMode: 'required',
+          stocks: [stock(hn, 100), stock(hcm, 100)].map((x) => ({ ...x, shelfDays: 5 })),
+          capacity: { [hcm.key]: 0 }, delay: { [hn.key]: 4, [hcm.key]: 4 }, minRemainingDays: 1,
         }])
       }
 
-      resetResults()
+      resetResults(); setBatchPage(0); setView('batch')
     } catch (e) {
       setError(e.message)
     } finally {
@@ -503,7 +517,7 @@ export default function Dss() {
     const problem = validateBatch(orders)
     if (problem) return setError(problem)
     if (history && history > asOf) return setError('Ngày bắt đầu lịch sử phải trước hoặc bằng ngày đánh giá.')
-    const scenarioError = validateScenarioInputs(baseline, 'Phương án gốc') || alts.map((a, i) => validateScenarioInputs(a, `Phương án ${i + 1}`)).find(Boolean)
+    const scenarioError = validateScenarioInputs(baseline, 'Phương án gốc') || (mode !== 'single' && alts.map((a, i) => validateScenarioInputs(a, `Phương án ${i + 1}`)).find(Boolean))
     if (scenarioError) return setError(scenarioError)
     if (orders.length > 50) return setError('Batch tối đa 50 đơn.')
     if (orders.some((o) => o.items.length > 20)) return setError('Mỗi đơn tối đa 20 sản phẩm.')
@@ -522,11 +536,12 @@ export default function Dss() {
         const { data, meta: m } = await dssSensitivity({ ...common, baseline: buildScenario(baseline), alternatives: alts.map(buildScenario) })
         setRes({ data, warnings: m.warnings })
       }
+      setView('results')
     } catch (e) { setError(e.message); setRes(null) } finally { setBusy(false) }
   }
 
   return (
-    <div className="dss-page">
+    <fieldset className="dss-page" disabled={busy || shelfBusy}>
       <header className="page-head dss-hero">
         <div>
           <span className="dss-eyebrow">DECISION SUPPORT · BIBICA RETAIL</span>
@@ -540,7 +555,7 @@ export default function Dss() {
         <div className="dss-context-grid">
           <div className="ctx-row">
           <label className="field"><span>Cửa hàng</span>
-            <select value={store} onChange={(e) => changeStore(e.target.value)}>
+            <select aria-label="Cửa hàng" value={store} onChange={(e) => changeStore(e.target.value)}>
               {Object.entries(STORES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
             </select></label>
           <label className="field"><span>Đánh giá tại ngày</span>
@@ -552,12 +567,13 @@ export default function Dss() {
         </div>
       </Section>
 
-      <Section title="02 · Batch đơn hàng" note="Tối đa 50 đơn, mỗi đơn tối đa 20 sản phẩm. Công suất kho tính theo số đơn trong cả batch."
+      <ViewTabs value={view} onChange={setView} label="Étapes DSS" items={[["batch", "Đơn hàng"], ["scenario", "Tham số kịch bản"], ["shelf", "Mô phỏng HSD"], ["results", "Kết quả"]]} />
+      <ViewPanel active={view === 'batch'} name="Đơn hàng"><Section title="02 · Batch đơn hàng" note="DEMO là nhu cầu, tồn kho và HSD giả định; SKU lấy từ catalog. Tạo mẫu sẽ thay batch và các kịch bản đang nhập."
         aside={<div className="row-actions"><button className="reset" onClick={sample} disabled={busy}><Shuffle size={14} /> Tạo batch mẫu</button>
-          <button className="reset" onClick={() => { setOrders((o) => [...o, newOrder()]); resetResults() }}><Plus size={14} /> Thêm đơn</button></div>}>
+          <button className="reset" disabled={orders.length >= 50} onClick={() => { setBatchPage(Math.floor(orders.length / 4)); setOrders((o) => [...o, newOrder()]); resetResults() }}><Plus size={14} /> Thêm đơn</button></div>}>
         {orders.length === 0 ? <p className="muted">Chưa có đơn. Bấm "Tạo batch mẫu" để thử nhanh hoặc "Thêm đơn".</p> : (
           <div className="orders" style={{ rowGap: 14 }}>
-            {orders.map((o) => (
+            {orders.slice(visibleBatchPage * 4, (visibleBatchPage + 1) * 4).map((o) => (
               <div className="order-card" key={o.ref}>
                 <div className="order-top">
                   <b>{o.ref}</b>
@@ -581,25 +597,31 @@ export default function Dss() {
             ))}
           </div>
         )}
+        {orders.length > 4 && <div className="table-pagination"><button type="button" aria-label="Trang đơn trước" disabled={visibleBatchPage === 0} onClick={() => setBatchPage(visibleBatchPage - 1)}>Trước</button><span>{visibleBatchPage + 1} / {Math.ceil(orders.length / 4)} · {orders.length} đơn</span><button type="button" aria-label="Trang đơn sau" disabled={(visibleBatchPage + 1) * 4 >= orders.length} onClick={() => setBatchPage(visibleBatchPage + 1)}>Sau</button></div>}
       </Section>
 
-      <Section title="03 · Cấu hình kịch bản" note="Kịch bản gốc là mốc tham chiếu. Các phương án dùng để thay đổi công suất, độ trễ, tồn kho hoặc ngưỡng và so sánh tác động."
+      </ViewPanel>
+      <ViewPanel active={view === 'scenario'} name="Tham số kịch bản"><Section title="03 · Cấu hình kịch bản" note="Kịch bản gốc là mốc tham chiếu. Các phương án dùng để thay đổi công suất, độ trễ, tồn kho hoặc ngưỡng và so sánh tác động."
         aside={alts.length < 4 && <button className="reset" onClick={() => { setAlts((a) => [...a, { ...baseline, id: ++seq, label: `Phương án ${a.length + 1}` }]); resetResults() }}><Plus size={14} /> Thêm phương án</button>}>
-        <div className="scen-grid">
-          <ScenarioEditor heading="Kịch bản gốc" s={baseline} set={updateBaseline} warehouses={warehouses} products={batchProducts} />
-          {alts.map((a, idx) => (
-            <ScenarioEditor key={a.id} heading={`Phương án ${idx + 1}`} s={a} warehouses={warehouses} products={batchProducts}
-              set={(v) => updateAlternative(idx, v)}
-              onRemove={alts.length > 1 ? () => { setAlts((all) => all.filter((_, j) => j !== idx)); resetResults() } : null} />
-          ))}
+        <ViewTabs value={alts.some((a) => String(a.id) === scenarioKey) ? scenarioKey : 'baseline'} onChange={setScenarioKey} label="Chọn kịch bản"
+          items={[["baseline", "Kịch bản gốc"], ...alts.map((a, idx) => [String(a.id), `Phương án ${idx + 1}`])]} />
+        <div className="scen-grid single-scenario">
+          {!alts.some((a) => String(a.id) === scenarioKey) ?
+            <ScenarioEditor key="baseline" heading="Kịch bản gốc" s={baseline} set={updateBaseline} warehouses={warehouses} products={batchProducts} /> :
+            alts.filter((a) => String(a.id) === scenarioKey).map((a) => {
+              const idx = alts.findIndex((x) => x.id === a.id)
+              return <ScenarioEditor key={a.id} heading={`Phương án ${idx + 1}`} s={a} warehouses={warehouses} products={batchProducts}
+                set={(v) => updateAlternative(idx, v)} onRemove={alts.length > 1 ? () => { setAlts((all) => all.filter((x) => x.id !== a.id)); setScenarioKey('baseline'); resetResults() } : null} />
+            })}
         </div>
       </Section>
 
-      <Section title="04 · Kiểm tra hạn sử dụng" note="Đánh giá một sản phẩm tại kho và tuyến giao đã chọn. Kết quả được trả trực tiếp từ API /dss/shelf-life.">
+      </ViewPanel>
+      <ViewPanel active={view === 'shelf'} name="Mô phỏng HSD"><Section title="04 · Mô phỏng hạn dùng — giả định" noteVisible note="Dataset không có NSX, HSD hoặc dữ liệu lô hàng. Nhập giả định để mô phỏng với thời gian giao lịch sử; không xác nhận sản phẩm còn hạn.">
         <div className="dss-context-grid">
           <div className="ctx-row">
             <div className="field">
-              <ProductPicker value={shelfProduct} onChange={(p) => { setShelfProduct(p); setShelfResult(null); setShelfError(null) }} baseFilters={base} label="Sản phẩm" placeholder="Tìm sản phẩm cần kiểm tra…" />
+              <ProductPicker value={shelfProduct} onChange={(p) => { setShelfProduct(p); setShelfResult(null); setShelfError(null) }} baseFilters={{ ...base, category: 'Bánh' }} label="Sản phẩm" placeholder="Tìm sản phẩm bánh cần kiểm tra…" />
             </div>
             <label className="field"><span>Kho xuất hàng</span>
               <select value={selectedShelfWarehouse} onChange={(e) => { setShelfWarehouse(Number(e.target.value)); setShelfResult(null) }}>
@@ -613,24 +635,35 @@ export default function Dss() {
             </label>
           </div>
           <div className="two">
-            <Num label="Hạn sử dụng còn lại (ngày)" value={remainingShelfDays} min={0} max={3650} onChange={(v) => { setRemainingShelfDays(v); setShelfResult(null) }} />
-            <Num label="Hạn dùng tối thiểu (ngày)" value={minRemainingDays} min={0} max={365} onChange={(v) => { setMinRemainingDays(v); setShelfResult(null) }} />
+            <Num label="Giả định hạn dùng còn lại (ngày)" value={remainingShelfDays} min={0} max={3650} onChange={(v) => { setRemainingShelfDays(v); setShelfResult(null) }} />
+            <Num label="Đệm hạn dùng giả định (ngày)" value={minRemainingDays} min={0} max={365} onChange={(v) => { setMinRemainingDays(v); setShelfResult(null) }} />
             <Num label="Độ trễ bổ sung (ngày)" value={shelfExtraDelay} min={0} max={90} step={0.5} onChange={(v) => { setShelfExtraDelay(v); setShelfResult(null) }} />
             <Num label="Số mẫu tuyến tối thiểu" value={shelfMinRouteSamples} min={1} max={10000} onChange={(v) => { setShelfMinRouteSamples(v); setShelfResult(null) }} />
           </div>
           <div className="row-actions">
-            <button type="button" className="primary" disabled={shelfBusy || !warehouses.length} onClick={runShelfLife}><Play size={15} /> {shelfBusy ? 'Đang đánh giá…' : 'Kiểm tra hạn sử dụng'}</button>
+            <button type="button" className="primary" disabled={shelfBusy || !warehouses.length} onClick={runShelfLife}><Play size={15} /> {shelfBusy ? 'Đang đánh giá…' : 'Chạy mô phỏng hạn dùng'}</button>
           </div>
           {shelfError && <div className="notice err">{shelfError}</div>}
           {shelfResult && <div className="shelf-result">
             <strong>Kết quả đánh giá</strong>
-            <pre style={{ whiteSpace: 'pre-wrap', overflowX: 'auto', padding: 14, borderRadius: 10, background: '#f8f5f6', border: '1px solid #eadfe4', fontSize: 12 }}>{JSON.stringify(shelfResult.data, null, 2)}</pre>
+            {shelfResult.data.status === 'INSUFFICIENT_EVIDENCE' ? <p className="notice">Chưa đủ mẫu thời gian giao để đánh giá tuyến này.</p> : <>
+              <p className={`notice ${shelfResult.data.shelf_life.feasible ? '' : 'warn'}`}>
+                {shelfResult.data.shelf_life.feasible ? 'Đủ đệm hạn dùng theo kịch bản.' : 'Không đủ đệm hạn dùng theo kịch bản.'}
+              </p>
+              <KpiRow items={[
+                { label: 'Hạn còn khi xuất', value: fmtDays(shelfResult.data.shelf_life.remaining_at_dispatch_days), note: 'Giả định đầu vào' },
+                { label: 'Hạn còn khi tới nơi theo P90', value: fmtDays(shelfResult.data.shelf_life.p90_arrival_remaining_days), note: `Yêu cầu tối thiểu ${fmtDays(shelfResult.data.shelf_life.minimum_remaining_days)}` },
+                { label: 'Lịch sử vượt đệm giả định', value: fmtPct(shelfResult.data.historical_threshold_exceedance.fraction), note: `${fmtInt(shelfResult.data.historical_threshold_exceedance.exceedances)} / ${fmtInt(shelfResult.data.historical_threshold_exceedance.samples)} quan sát` },
+              ]} />
+              <p className="fine">Thời gian P90 {fmtDays(shelfResult.data.evidence.p90_lead_days)}, {fmtInt(shelfResult.data.evidence.timing_samples)} mẫu. {shelfResult.data.evidence.evidence_level === 'WAREHOUSE_ALL_PROVINCES' ? 'Dùng dữ liệu toàn kho do tuyến thiếu mẫu.' : 'Dùng dữ liệu tuyến kho–tỉnh.'} Tỷ lệ vượt đệm là quan sát lịch sử theo giả định, chưa phải xác suất sản phẩm hỏng.</p>
+            </>}
             {shelfResult.warnings.length > 0 && <ul className="warn-list">{shelfResult.warnings.map((w, i) => <li key={i}><TriangleAlert size={14} /> {w}</li>)}</ul>}
           </div>}
         </div>
       </Section>
 
-      <div className="dss-execute">
+      </ViewPanel>
+      <div className="dss-execute" hidden={view === 'shelf'}>
         <div><span className="dss-eyebrow">05 · EXECUTION</span><strong>Sẵn sàng chạy mô phỏng?</strong><small>Kiểm tra batch và cấu hình kịch bản trước khi thực thi.</small></div>
         <div className="run-bar">
         <button className="primary" disabled={busy} onClick={() => run('compare')}><Play size={15} aria-hidden="true" /> {busy ? 'Đang chạy…' : 'Chạy và so sánh kịch bản'}</button>
@@ -638,15 +671,18 @@ export default function Dss() {
         </div>
       </div>
 
-      {error && <div className="notice err">{error}</div>}
+      {error && view !== 'shelf' && <div className="notice err">{error}</div>}
+      <ViewPanel active={view === 'results'} name="Kết quả DSS">
+      {!res && <p className="notice">Nhập đơn hàng và tham số, sau đó chạy mô phỏng để xem kết quả.</p>}
       {res && (
-        <div className={busy ? 'loading' : ''}>
+        <div className={`dss-result-body ${busy ? 'loading' : ''}`}>
           <Result res={res.data} whName={whName} />
-          <Section title="Lưu ý khi đọc kết quả">
+          <details className="dss-warnings"><summary>Lưu ý khi đọc kết quả</summary>
             <ul className="warn-list">{(res.warnings || []).map((w) => <li key={w}><TriangleAlert size={14} aria-hidden="true" /> {w}</li>)}</ul>
-          </Section>
+          </details>
         </div>
       )}
-    </div>
+      </ViewPanel>
+    </fieldset>
   )
 }

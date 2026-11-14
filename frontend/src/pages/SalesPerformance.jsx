@@ -1,4 +1,9 @@
+import { productIdentity } from '../lib/productIdentity.js'
+import ViewTabs, { ViewPanel } from '../components/ViewTabs.jsx'
 import { useState } from 'react'
+import ChartTable from '../components/ChartTable.jsx'
+import { CATEGORY_COLORS } from '../components/LinkedChart.jsx'
+import { monthSelection } from '../lib/overview.js'
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useFilters } from '../context/FilterContext.jsx'
 import { useReport } from '../hooks/useReport.js'
@@ -55,13 +60,14 @@ function ProductRanking({ filters, update }) {
         getAllProducts(filters)])
       const label = Object.fromEntries(names.map((p) => [p.product_key, p]))
       const data = rows.map((r) => ({ key: r.group_value, name: label[r.group_value]?.product_name ?? `Sản phẩm #${r.group_value}`,
+        store: label[r.group_value]?.storefront_code, sku: label[r.group_value]?.native_sku_id, variation: label[r.group_value]?.variation_name,
         category: (label[r.group_value]?.historical_categories ?? []).filter(Boolean).join(', ') || 'Chưa phân loại',
         units: r.completed_units, value: r.completed_observed_item_payable, orders: r.orders }))
         .sort((a, b) => (b.units ?? 0) - (a.units ?? 0))
       setState({ phase: 'done', rows: data })
     } catch (e) { setState({ phase: 'error', message: e.message }) }
   }
-  const cols = [{ accessorKey: 'name', header: 'Sản phẩm' }, { accessorKey: 'category', header: 'Danh mục' },
+  const cols = [{ accessorKey: 'name', header: 'Sản phẩm / SKU', cell: (c) => <span className="product-cell" title={`${c.getValue()} — ${productIdentity(c.row.original)}`}><span>{c.getValue()}</span></span> }, { accessorKey: 'category', header: 'Danh mục' },
     ...itemColumns('').slice(1)]
   return (
     <Section title="Sản phẩm bán chạy" note="Xếp hạng theo số lượng sản phẩm hoàn thành">
@@ -69,8 +75,7 @@ function ProductRanking({ filters, update }) {
       {state.phase === 'loading' && <p className="muted">Đang tải {state.total ? `${fmtInt(state.done)}/${fmtInt(state.total)} sản phẩm` : ''}…</p>}
       {state.phase === 'error' && <p className="muted">Không tải được: {state.message} <button className="reset" onClick={load}>Thử lại</button></p>}
       {state.phase === 'done' && (
-        <DataTable columns={cols} data={state.rows.slice(0, 30)} onRowClick={(r) => update({ product: { key: r.key, label: r.name } })}
-          initialSort={[{ id: 'units', desc: true }]} />
+        <ChartTable columns={cols} rows={state.rows.slice(0,30)} valueKey="units" label="SKU theo sản lượng" onSelect={r=>update({product:{key:r.key,label:r.name,store:r.store,sku:r.sku,variation:r.variation}})}/>
       )}
       {state.phase === 'done' && <p className="fine">Hiển thị 30 sản phẩm đầu trong {fmtInt(state.rows.length)}. Bấm một dòng để lọc theo sản phẩm. Mỗi mã sản phẩm thuộc một cửa hàng.</p>}
     </Section>
@@ -79,6 +84,7 @@ function ProductRanking({ filters, update }) {
 
 export default function SalesPerformance() {
   const { filters, update } = useFilters()
+  const [view, setView] = useState('trend')
   const [metric, setMetric] = useState('revenue')
   const [groupBy, setGroupBy] = useState('channel')
   const state = useReport(async () => {
@@ -113,7 +119,7 @@ export default function SalesPerformance() {
   )
 
   return (
-    <Page title="Sales Performance" headline={headline} state={state}>
+    <Page title="Sales Performance" headline={(d) => filters.product ? `${fmtInt(d.kpis.orders)} đơn có SKU đã chọn, ${fmtInt(d.kpis.completedUnits)} đơn vị SKU hoàn thành. Tiền hiển thị là tiền toàn đơn có chứa SKU, không phải doanh thu riêng SKU.` : headline(d)} state={state}>
       {(d) => (
         <div className="sales-performance">
           <div className="sales-kpi-block">
@@ -121,10 +127,11 @@ export default function SalesPerformance() {
               <span className="sales-eyebrow">SALES SNAPSHOT</span>
               <span className="sales-context">Theo bộ lọc hiện tại</span>
             </div>
-            <KpiRow items={standardKpis(d.kpis)} />
+            <KpiRow items={standardKpis(d.kpis, Boolean(filters.product))} />
           </div>
 
-          <div className="sales-trend-card">
+          <ViewTabs value={view} onChange={setView} items={[["trend", "Xu hướng"], ["stores", "Cửa hàng & trạng thái"], ["mix", "Danh mục & vùng kho"], ["geography", "Tỉnh nhận hàng"], ["products", "Sản phẩm"]]} />
+          <ViewPanel active={view === 'trend'} name="Xu hướng"><div className="sales-trend-card">
             <Section title={groupBy === 'channel' ? 'Xu hướng theo kênh' : 'Xu hướng theo cửa hàng'} note={NOTE[metric]}
               aside={<div className="sales-trend-toolbar">
                 <div className="sales-trend-control">
@@ -139,13 +146,13 @@ export default function SalesPerformance() {
               <div className="sales-chart-frame">
                 <div className="chart hero trend-chart">
                   <ResponsiveContainer>
-                    <LineChart data={d.monthly[metric]} margin={{ top: 12, right: 28, left: 8, bottom: 4 }}>
+                    <LineChart data={d.monthly[metric]} onClick={e=>e?.activeLabel&&update(monthSelection(e.activeLabel,filters))} margin={{ top: 12, right: 28, left: 8, bottom: 4 }}>
                       <CartesianGrid stroke={GRID} vertical={false} />
                       <XAxis dataKey="period" tickFormatter={fmtPeriod} tick={axisTick} tickLine={false} axisLine={AXIS_LINE} minTickGap={24} />
                       <YAxis tickFormatter={fmtAxis} tick={axisTick} tickLine={false} axisLine={false} width={64} />
                       <Tooltip formatter={(v, n) => [metric === 'revenue' ? fmtVND(v) + ' ₫' : fmtInt(v), n]} labelFormatter={fmtPeriod} contentStyle={tipStyle} />
                       <Legend iconType="plainline" wrapperStyle={{ fontSize: 13, paddingTop: 8 }} />
-                      {d.monthly.names.map((n) => <Line key={n} type="monotone" dataKey={n} stroke={groupBy === 'channel' ? (CHANNEL_COLOR[n] ?? '#7a6b73') : storeColor(n)} strokeWidth={2.5} dot={{ r: 4, strokeWidth: 2, fill: '#ffffff' }} activeDot={{ r: 6, strokeWidth: 2 }} />)}
+                      {d.monthly.names.map((n) => <Line isAnimationActive={false} key={n} type="monotone" dataKey={n} stroke={groupBy === 'channel' ? (CHANNEL_COLOR[n] ?? '#7a6b73') : storeColor(n)} strokeWidth={2.5} dot={{ r: 4, strokeWidth: 2, fill: '#ffffff' }} activeDot={{ r: 6, strokeWidth: 2 }} />)}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -154,49 +161,51 @@ export default function SalesPerformance() {
             </Section>
           </div>
 
-          <div className="sales-analysis-grid">
+          </ViewPanel>
+          <ViewPanel active={view === 'stores' || view === 'mix'} name="Phân tích doanh số"><div className="sales-analysis-grid" data-view={view}>
             <div className="sales-analysis-card">
               <div className="sales-card-index">01 / CHANNEL PERFORMANCE</div>
               <Section title="Theo cửa hàng" note="Bấm một dòng để lọc">
                 <div className="sales-store-table">
-                  <DataTable
-                    columns={storeColumns} data={d.stores} onRowClick={(r) => update({ store: r.key })} initialSort={[{ id: 'revenue', desc: true }]}
-                  />
+                  <ChartTable columns={storeColumns} rows={[...d.stores].sort((a,b)=>(b.revenue??0)-(a.revenue??0))} valueKey="revenue" format={v=>`${fmtVND(v)} ₫`} color={r=>storeColor(r.name)} label="Tiền hoàn thành theo cửa hàng" onSelect={r=>update({store:r.key})}/>
                 </div>
               </Section>
             </div>
             <div className="sales-analysis-card">
               <div className="sales-card-index">02 / ORDER STATUS</div>
               <Section title="Đơn theo trạng thái" note="Số đơn đặt, trạng thái hiện tại của đơn">
-                <ShareBars items={d.status.map((s) => ({ ...s, revenue: s.revenue }))} colorFor={() => INK} countMode />
+                <ChartTable rows={d.status.map(r=>({...r,orders:r.revenue})).sort((a,b)=>b.orders-a.orders)} columns={[{accessorKey:'name',header:'Trạng thái'},{accessorKey:'orders',header:'Đơn',cell:cnt,meta:num}]} valueKey="orders" color={r=>r.key==='CANCELED'?'#d68a39':'#178a80'} label="Đơn theo trạng thái" onSelect={r=>update({status:r.key})}/>
               </Section>
             </div>
             <div className="sales-analysis-card">
               <div className="sales-card-index">03 / CATEGORY MIX</div>
               <Section title="Theo danh mục" note="Danh mục được phân loại dựa trên tên sản phẩm trong dữ liệu lịch sử. Một đơn có thể thuộc nhiều danh mục nên không cộng tổng các dòng.">
-                <DataTable columns={itemColumns('Danh mục')} data={d.categories} onRowClick={(r) => r.key && update({ category: r.key })} initialSort={[{ id: 'units', desc: true }]} />
+                <ChartTable columns={itemColumns('Danh mục')} rows={[...d.categories].sort((a,b)=>(b.units??0)-(a.units??0))} valueKey="units" label="Danh mục theo sản lượng" color={r=>CATEGORY_COLORS[r.name]} onSelect={r=>r.key&&update({category:r.key})}/>
               </Section>
             </div>
             <div className="sales-analysis-card">
               <div className="sales-card-index">04 / WAREHOUSE REGION</div>
               <Section title="Theo vùng kho" note="Phân bổ số lượng và giá trị theo vùng kho xuất hàng.">
-                <DataTable columns={itemColumns('Vùng kho')} data={d.regions} initialSort={[{ id: 'units', desc: true }]} />
+                <ChartTable columns={itemColumns('Vùng kho')} rows={[...d.regions].sort((a,b)=>(b.units??0)-(a.units??0))} valueKey="units" label="Vùng kho theo sản lượng" color={r=>r.key==='Hà Nội'?'#5377bb':'#17958a'} onSelect={r=>r.key&&update({region:r.key})}/>
               </Section>
             </div>
           </div>
 
-          <div className="sales-detail-card">
+          </ViewPanel>
+          <ViewPanel active={view === 'geography'} name="Tỉnh nhận hàng"><div className="sales-detail-card">
             <div className="sales-card-index">05 / DELIVERY GEOGRAPHY</div>
             <Section title="12 tỉnh/thành nhận nhiều đơn nhất" note="Xếp hạng theo số đơn có thông tin tỉnh/thành nhận hàng.">
-              <DataTable columns={itemColumns('Tỉnh / thành')} data={d.provinces} initialSort={[{ id: 'orders', desc: true }]} />
+              <ChartTable columns={itemColumns('Tỉnh / thành')} rows={d.provinces} valueKey="orders" label="Đơn theo tỉnh khách" onSelect={r=>update({province:r.key})}/>
             </Section>
           </div>
 
-          <div className="sales-detail-card sales-product-card">
+          </ViewPanel>
+          <ViewPanel active={view === 'products'} name="Sản phẩm"><div className="sales-detail-card sales-product-card">
             <div className="sales-card-index">06 / PRODUCT RANKING</div>
             <ProductRanking key={JSON.stringify(filters)} filters={filters} update={update} />
           </div>
 
+          </ViewPanel>
           <p className="footnote sales-footnote">
             Giá trị dòng hàng khác với "Giá trị đơn hoàn thành" nên không cộng hai chỉ tiêu này. Một số chỉ tiêu chi tiết chưa được hỗ trợ bởi dữ liệu hiện tại.
           </p>

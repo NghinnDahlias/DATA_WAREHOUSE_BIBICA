@@ -2,10 +2,9 @@
 // Hợp đồng KPI của DW đánh dấu M17 "tăng trưởng" là UNAVAILABLE nên không hiển thị % so với kỳ trước.
 function Kpi({ label, value, note }) {
   return (
-    <div className="kpi">
+    <div className="kpi" title={note||undefined}>
       <div className="kpi-label">{label}</div>
       <div className="kpi-value">{value}</div>
-      <div className="kpi-delta flat">{note ?? ' '}</div>
     </div>
   )
 }

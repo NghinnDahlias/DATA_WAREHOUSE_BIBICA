@@ -3,6 +3,7 @@ import tempfile
 import unittest
 import uuid
 from datetime import date
+from decimal import Decimal
 from pathlib import Path
 from unittest.mock import patch
 
@@ -92,6 +93,43 @@ class APIIntegration(unittest.TestCase):
         self.assertEqual(response.status_code,200,response.text)
         return response.json()['data']
 
+    def test_phase3_channel_filter_and_absent_shopee_reviews(self):
+        shopee = self.kpi(channel='SHOPEE')
+        self.assertEqual(shopee['orders'], self.kpi(source='shopee_bibica')['orders'] + self.kpi(source='shopee_quasure')['orders'])
+        self.assertEqual(self.kpi(channel='TIKTOK')['orders'], self.kpi(source='tiktok_bibica')['orders'])
+        self.assertEqual(self.kpi(channel='SHOPEE', store='bibica_tiktok_shop')['orders'], 0)
+        r = self.client.get('/api/v1/customer/review-themes', params={'channel':'SHOPEE'})
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()['data']['availability'], 'UNAVAILABLE_NO_SHOPEE_RATING_SOURCE')
+        self.assertIsNone(r.json()['data']['safety_signal_reviews'])
+
+    def test_phase3_feature_coverage_version_and_source_freshness(self):
+        from src.dss.review_audit import VERSION
+        path = '/api/v1/customer/review-themes'
+        self.assertEqual(self.client.get(path).json()['data']['availability'], 'UNAVAILABLE_INCOMPLETE_FEATURES')
+        try:
+            with psycopg.connect(self.dsn) as c:
+                c.execute("""INSERT INTO dw.review_theme_feature(review_key,labels,severity,text_present,audit_version,source_sha256)
+                    SELECT r.review_key,'["packaging_damage_mention"]'::jsonb,'FULFILLMENT_DAMAGE_SIGNAL',true,%s,s.source_sha256
+                    FROM dw.fact_review_candidate r JOIN dw.dim_source_file s USING(source_file_key)""", (VERSION,))
+            d = self.client.get(path).json()['data']
+            self.assertEqual(d['availability'], 'READY')
+            self.assertEqual(d['audited_reviews'], 3)
+            self.assertEqual(d['labels'][0]['mentions'], 3)
+            self.assertEqual(d['labels'][0]['negative_mentions'], 2)
+            with psycopg.connect(self.dsn) as c:
+                c.execute("UPDATE dw.review_theme_feature SET source_sha256='stale' WHERE review_key=(SELECT min(review_key) FROM dw.review_theme_feature)")
+            d = self.client.get(path).json()['data']
+            self.assertEqual(d['availability'], 'UNAVAILABLE_INCOMPLETE_FEATURES')
+            self.assertIsNone(d['text_present_reviews'])
+            self.assertEqual(d['labels'], [])
+            with psycopg.connect(self.dsn) as c:
+                c.execute("UPDATE dw.review_theme_feature SET audit_version='old'")
+            self.assertEqual(self.client.get(path).json()['data']['audited_reviews'], 0)
+        finally:
+            with psycopg.connect(self.dsn) as c:
+                c.execute('DELETE FROM dw.review_theme_feature')
+
     def payload(self):
         return {'store':'bibica_tiktok_shop','as_of':'2026-10-18','orders':[
             {'order_ref':'DEMO','province':'Đồng Nai','items':[{'product_key':self.product,'quantity':2}]}],
@@ -142,6 +180,51 @@ class APIIntegration(unittest.TestCase):
             self.assertEqual(c.execute('SHOW transaction_read_only').fetchone()['transaction_read_only'],'on')
             self.assertEqual(c.execute('SHOW max_parallel_workers_per_gather').fetchone()['max_parallel_workers_per_gather'],'0')
             with self.assertRaises(psycopg.errors.ReadOnlySqlTransaction):c.execute('DELETE FROM dw.dim_category')
+
+    def test_product_identity_preserves_native_sku_and_store(self):
+        response=self.client.get('/api/v1/products',params={'product_key':self.product})
+        self.assertEqual(response.status_code,200)
+        row=response.json()['data'][0]
+        with psycopg.connect(self.dsn) as c:
+            native=c.execute('SELECT native_sku_id FROM dw.dim_source_product_sku WHERE source_product_sku_key=%s',(self.product,)).fetchone()[0]
+        self.assertEqual(row['native_sku_id'],native)
+        self.assertIsInstance(row['native_sku_id'],str)
+        self.assertEqual(row['storefront_code'],'bibica_tiktok_shop')
+        found=self.client.get('/api/v1/products',params={'search':native,'sort':'orders'}).json()['data']
+        self.assertTrue(any(p['product_key']==self.product for p in found))
+
+    def test_product_popularity_paging_and_sort_allowlist(self):
+        rows=self.client.get('/api/v1/products',params={'sort':'orders'}).json()['data']
+        self.assertEqual([(r['orders'],r['product_key']) for r in rows],sorted([(r['orders'],r['product_key']) for r in rows],key=lambda x:(-x[0],x[1])))
+        second=self.client.get('/api/v1/products',params={'sort':'orders','limit':1,'offset':1}).json()['data']
+        self.assertEqual(second[0]['product_key'],rows[1]['product_key'])
+        self.assertEqual(self.client.get('/api/v1/products',params={'sort':'orders;DROP TABLE x'}).status_code,422)
+
+    def test_linked_dashboard_reconciles_all_panels_to_filtered_orders(self):
+        for params in [{},{'store':'bibica_tiktok_shop'},{'status':'CANCELED'},
+                       {'product_key':self.product,'category':'Bánh','province':'Đồng Nai'}]:
+            with self.subTest(params=params):
+                response=self.client.get('/api/v1/overview/dashboard',params=params)
+                self.assertEqual(response.status_code,200)
+                board=response.json()['data']
+                independent=self.client.get('/api/v1/overview/kpis',params=params).json()['data']
+                self.assertEqual(board['kpis'],independent)
+                self.assertEqual(sum(r['orders'] for r in board['stores']),independent['orders'])
+                self.assertEqual(sum(r['orders'] for r in board['monthly']),independent['orders'])
+                self.assertEqual(sum(Decimal(r['completed_payable'] or '0') for r in board['monthly']),Decimal(independent['completed_payable'] or '0'))
+                self.assertEqual(sum(Decimal(r['completed_units'] or '0') for r in board['categories']),Decimal(independent['completed_units'] or '0'))
+
+    def test_linked_dashboard_empty_and_rank_grain(self):
+        empty=self.client.get('/api/v1/overview/dashboard',params={'province':'NONEXISTENT TEST'}).json()['data']
+        self.assertEqual(empty['kpis']['orders'],0)
+        self.assertEqual(empty['products'],[])
+        rows=self.client.get('/api/v1/products',params={'sort':'units'}).json()['data']
+        units=[Decimal(r['completed_units']) for r in rows if r['completed_units'] is not None]
+        self.assertEqual(units,sorted(units,reverse=True))
+        for r in rows:
+            filtered=self.kpi(product_key=r['product_key'])
+            self.assertEqual(r['completed_units'],filtered['completed_units'])
+            self.assertIn('completed_item_value',r)
 
     def test_geography_not_warehouse_inferred(self):
         data=self.kpi(province='Đồng Nai')

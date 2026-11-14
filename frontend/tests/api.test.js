@@ -11,6 +11,10 @@ const filters = { from: '2026-06-20', to: '2026-09-18', store: 'all', region: 'a
 beforeEach(() => { request.mockClear(); request.mockImplementation(async () => env([])) })
 
 describe('toNumbers', () => {
+  it('preserves long native SKU identifiers as text', () => {
+    expect(api.toNumbers({ native_sku_id: '2000000000000000001', seller_sku: '001234', variation_name: '123' }))
+      .toEqual({ native_sku_id: '2000000000000000001', seller_sku: '001234', variation_name: '123' })
+  })
   it('đổi chuỗi decimal thành số nhưng giữ group_value và mã', () => {
     const out = api.toNumbers({ completed_payable: '9175209123.00', group_value: '2026-07', sha256: '1234', nested: [{ v: '12' }], text: 'abc' })
     expect(out).toEqual({ completed_payable: 9175209123, group_value: '2026-07', sha256: '1234', nested: [{ v: 12 }], text: 'abc' })
@@ -19,6 +23,12 @@ describe('toNumbers', () => {
 })
 
 describe('filterParams', () => {
+  it('sends customer province and canonical order status without mixing warehouse region',()=>{
+    expect(api.filterParams({...filters,province:'Hà Nội',status:'CANCELED',region:'Hồ Chí Minh'})).toMatchObject({province:'Hà Nội',status:'CANCELED',warehouse_region:'Hồ Chí Minh'})
+  })
+  it('gửi đồng thời kênh và khóa kho scoped thay vì suy kho từ vùng', () => {
+    expect(api.filterParams({ ...filters, channel: 'SHOPEE', warehouse: '4' })).toMatchObject({ channel: 'SHOPEE', warehouse_key: 4 })
+  })
   it('chỉ gửi tham số có trong models.Filters và bỏ giá trị "all"', () => {
     const p = api.filterParams({ ...filters, store: 'bibica_tiktok_shop', region: 'Hà Nội', product: { key: 7, label: 'x' } })
     expect(p).toEqual({ start_date: '2026-06-20', end_date: '2026-09-18', store: 'bibica_tiktok_shop', warehouse_region: 'Hà Nội', product_key: 7 })
@@ -40,6 +50,12 @@ describe('errorMessage', () => {
 })
 
 describe('getKpis', () => {
+  it('searches SKU pages by order count and retains product identity', async () => {
+    request.mockResolvedValue(env([{product_key:8,product_name:'Cake',native_sku_id:'2000000000000000001',storefront_code:'bibica_official_store',variation_name:'10 + 10',orders:4,total_products:25}]))
+    const rows=await api.searchProducts(filters,'Cake',10,10)
+    expect(rows[0]).toMatchObject({key:8,sku:'2000000000000000001',store:'bibica_official_store',variation:'10 + 10',orders:4,total:25})
+    expect(request.mock.calls[0][0].params).toMatchObject({sort:'orders',limit:10,offset:10,search:'Cake'})
+  })
   it('chuyển dòng KPI của repository.kpis sang trường giao diện', async () => {
     request.mockResolvedValue(env({ orders: 127588, completed_orders: 100000, canceled_orders: 9000, unknown_status_orders: 3, payable_observed_orders: 127000,
       completed_payable: '9175209123.00', completed_aov: '91752.09', cancellation_rate: '0.0705', completed_units: '168478', review_stars_mean: '4.7000', low_review_rate: null,
@@ -56,6 +72,17 @@ describe('getKpis', () => {
 })
 
 describe('getMonthlyBySource', () => {
+  it('giữ null khi nguồn có đơn nhưng tiền hoàn thành không quan sát được', async () => {
+    request.mockResolvedValue(env([{ group_value: '2026-06', orders: 5, completed_payable: null, canceled_orders: 0 }]))
+    const m = await api.getMonthlyBySource({ ...filters, store: 'bibica_tiktok_shop' })
+    expect(m.revenue[0]['Bibica TikTok Shop']).toBeNull()
+    expect(m.orders[0]['Bibica TikTok Shop']).toBe(5)
+  })
+  it('chọn kênh Shopee chỉ gộp hai shop Shopee', async () => {
+    request.mockResolvedValue(env([]))
+    await api.getMonthlyBySource({ ...filters, channel: 'SHOPEE' }, 'channel')
+    expect(request.mock.calls.map(([r]) => r.params.source).sort()).toEqual(['shopee_bibica', 'shopee_quasure'])
+  })
   it('gọi mỗi nguồn một lần, gộp theo tháng, thiếu tháng là 0', async () => {
     request.mockImplementation(async ({ params }) => env(
       params.source === 'tiktok_bibica' ? [{ group_value: '2026-07', orders: 10, completed_payable: '1000.00', canceled_orders: 1, total_groups: 1 }]
@@ -65,8 +92,8 @@ describe('getMonthlyBySource', () => {
     expect(request).toHaveBeenCalledTimes(3)
     expect(m.names).toHaveLength(3)
     expect(m.revenue).toEqual([
-      { period: '2026-07', 'Bibica TikTok Shop': 1000, 'Bibica Official Store': 500, 'Quasure specialized store': 0 },
-      { period: '2026-08', 'Bibica TikTok Shop': 0, 'Bibica Official Store': 400, 'Quasure specialized store': 0 }])
+      { period: '2026-07', 'Bibica TikTok Shop': 1000, 'Bibica Official Store': 500, 'Quasure specialized store': null },
+      { period: '2026-08', 'Bibica TikTok Shop': null, 'Bibica Official Store': 400, 'Quasure specialized store': null }])
     expect(m.canceled[1]['Bibica Official Store']).toBe(2)
   })
   it('khi chọn một cửa hàng chỉ gọi một lần với source tương ứng', async () => {
