@@ -121,7 +121,8 @@ test('warehouse cohort, delivery semantics, pagination and product-filter limita
 test('TikTok negative reviews/themes and absent Shopee ratings', async ({ page, request }) => {
   await page.goto('/customer'); await full(page)
   await expect(kpi(page, 'Số đánh giá')).toHaveText('5.625')
-  await expect(page.locator('.kpi').filter({ hasText: 'Đánh giá tiêu cực' })).toHaveAttribute('title','262 đánh giá')
+  await expect(page.getByRole('button', { name: 'Đọc đánh giá tiêu cực', exact: true }))
+    .toHaveAttribute('title', /^262 đánh giá(?: · .+)?$/)
   const themes = (await (await request.get('/api/v1/customer/review-themes')).json()).data
   expect(themes.availability).toBe('READY')
   expect(themes.audited_reviews).toBe(5625)
