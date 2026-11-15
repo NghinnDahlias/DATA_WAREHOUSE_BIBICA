@@ -6,36 +6,24 @@ import { getReviewThemes } from '../api/client.js'
 import { useFilters } from '../context/FilterContext.jsx'
 import { Section } from './Page.jsx'
 import { fmtInt } from '../lib/format.js'
-
-const LABELS = {
-  missing_items_mention: 'Giao thiếu hàng',
-  wrong_items_mention: 'Giao sai sản phẩm',
-  packaging_damage_mention: 'Bao bì hư hỏng',
-  product_breakage_mention: 'Sản phẩm vỡ, nát',
-  pest_or_foreign_material_mention: 'Côn trùng hoặc dị vật',
-  spoilage_or_expired_mention: 'Hư hỏng hoặc hết hạn',
-  short_shelf_life_mention: 'Hạn sử dụng ngắn',
-  taste_or_texture_mention: 'Chất lượng, hương vị',
-  delivery_delay_mention: 'Giao hàng chậm',
-  replacement_promised_mention: 'Hứa gửi bù',
-  replacement_dispatch_claim: 'Đề cập đã gửi bù',
-  replacement_received_claim: 'Đề cập đã nhận hàng bù',
-  resolution_confirmed_claim: 'Đề cập đã xử lý',
-}
+import Modal from './Modal.jsx'
+import ReviewCases from './ReviewCases.jsx'
+import {THEME_LABELS as LABELS} from '../lib/reviewLabels.js'
 
 const number = (value) => value == null ? '—' : fmtInt(value)
 
-function StatCard({ label, value, note, type = '' }) {
+function StatCard({ label, value, note, type = '', onClick }) {
+  const Tag=onClick?'button':'div'
   return (
-    <div className={`rt-stat-card ${type}`} title={note}>
+    <Tag className={`rt-stat-card ${type}`} title={note} onClick={onClick}>
       <span className="rt-stat-label">{label}</span>
       <strong className="rt-stat-value">{value}</strong>
 
-    </div>
+    </Tag>
   )
 }
 
-function ThemeBars({ labels }) {
+function ThemeBars({ labels, onSelect }) {
   const topLabels = [...labels]
     .sort((a, b) => b.mentions - a.mentions)
     .slice(0, 8)
@@ -49,7 +37,7 @@ function ThemeBars({ labels }) {
   return (
     <div className="rt-bars">
       {topLabels.map((item) => (
-        <div className="rt-bar-item" key={item.label}>
+        <button className="rt-bar-item" key={item.label} onClick={()=>onSelect(item.label)} title={`Đọc ${item.negative_mentions} đánh giá 1–2 sao: ${LABELS[item.label]}`}>
           <div className="rt-bar-heading">
             <span>{LABELS[item.label] || item.label}</span>
             <strong>{number(item.mentions)}</strong>
@@ -63,7 +51,7 @@ function ThemeBars({ labels }) {
               }}
             />
           </div>
-        </div>
+        </button>
       ))}
     </div>
   )
@@ -74,6 +62,7 @@ export default function ReviewThemes() {
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [caseTopic,setCaseTopic]=useState(null)
 
   useEffect(() => {
     let active = true
@@ -158,6 +147,7 @@ export default function ReviewThemes() {
 
           <StatCard
             label="Đánh giá 1–2 sao"
+            onClick={()=>setCaseTopic('')}
             value={number(result.negative_reviews_le2)}
             note="Đánh giá có mức sao thấp"
           />
@@ -182,7 +172,7 @@ export default function ReviewThemes() {
             <span className="rt-panel-tag">TOP 8</span>
           </div>
 
-          <ThemeBars labels={labels} />
+          <ThemeBars labels={labels} onSelect={setCaseTopic}/>
         </div>
 
 
@@ -199,7 +189,7 @@ export default function ReviewThemes() {
             { accessorKey: 'label', header: 'Chủ đề', cell: (c) => LABELS[c.getValue()] || c.getValue() },
             { accessorKey: 'mentions', header: 'Lượt đề cập', cell: (c) => number(c.getValue()), meta: { align: 'right' } },
             { accessorKey: 'negative_mentions', header: 'Trong đánh giá 1–2 sao', cell: (c) => number(c.getValue()), meta: { align: 'right' } },
-          ]} data={labels} initialSort={[{ id: 'mentions', desc: true }]} />
+          ]} data={labels} onRowClick={r=>setCaseTopic(r.label)} initialSort={[{ id: 'mentions', desc: true }]} />
         </div>
 
         </div></ViewPanel>
@@ -224,6 +214,7 @@ export default function ReviewThemes() {
         </div>
         </details>
       </div>
+      {caseTopic!==null&&<Modal title="Đánh giá tiêu cực · đọc ý kiến" className="review-reader-dialog" onClose={()=>setCaseTopic(null)}><ReviewCases initialTopic={caseTopic}/></Modal>}
     </Section>
   )
 }

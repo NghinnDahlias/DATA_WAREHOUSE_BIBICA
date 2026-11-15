@@ -51,9 +51,9 @@ Ma trận risk `/dss/risk` hiện là cohort thương mại toàn shop. Khi ch�
 
 ## Review themes và cập nhật dữ liệu
 
-`dw.review_theme_feature` là bảng phụ trợ một review/row, thêm một FK tới fact review. Galaxy chính vẫn 12 dimension, 3 fact và 56 FK; toàn schema DW hiện có 57 FK khi tính bảng phụ trợ. Golden 15 bảng lõi giữ contract riêng, không đồng nhất số bảng core với bảng feature.
+`dw.review_theme_feature` là bảng phụ trợ một review/row, thêm một FK tới fact review. Galaxy chính vẫn 12 dimension, 3 fact và 56 FK; toàn schema DW có 57 FK ở snapshot này; từ 15/11 thêm một FK cho bảng nội dung đã che thông tin. Golden 15 bảng lõi giữ contract riêng, không đồng nhất số bảng core với bảng feature.
 
-Script build đọc nguồn rating immutable trong bộ nhớ và chỉ lưu nhãn kiểm soát, severity, cờ có nội dung, audit version và SHA256 nguồn. Không lưu/đưa nội dung review hoặc thông tin người mua lên API. Tạo lại feature sau khi ETL/rating thay đổi. Toàn bộ thay thế feature nằm trong transaction và khóa advisory chung với ETL.
+Script build đọc nguồn rating immutable trong bộ nhớ và chỉ lưu nhãn kiểm soát, severity, cờ có nội dung, audit version và SHA256 nguồn. Endpoint tổng hợp chủ đề không đưa nội dung review hoặc thông tin người mua lên API. Từ 15/11, endpoint đọc case riêng chỉ trả nội dung đã che tự động, chuẩn bị offline; không trả bản gốc, tài khoản hoặc mã đơn. Tạo lại feature sau khi ETL/rating thay đổi. Toàn bộ thay thế feature nằm trong transaction và khóa advisory chung với ETL.
 
 API chỉ dùng feature có SHA nguồn và audit version hiện hành. Thiếu/cũ/chưa đủ feature trả `UNAVAILABLE_INCOMPLETE_FEATURES`; trường phân tích chủ đề không bị giả thành số 0. Shopee trả `UNAVAILABLE_NO_SHOPEE_RATING_SOURCE`. Có thể phân tích sao độc lập khi feature nội dung chưa sẵn sàng.
 
@@ -96,3 +96,33 @@ Kho/tuyến dùng chart số lượng/tỷ lệ/thời gian đúng đơn vị; t
 giá nhìn chart và bảng cùng lúc; phương pháp mở khi cần. DSS so sánh có chart số đơn gán
 kho cạnh bảng đầy đủ chỉ số, không dùng objective khác trọng số để vẽ lợi ích giả.
 Các lưu ý KPI ở icon thông tin/title, lỗi và unavailable không bị che đi.
+
+## 15/11 — Thống kê theo yêu cầu và đọc review tiêu cực
+
+Tổng quan bỏ dải insight và ô chọn tháng. Nút **Thống kê chỉ số** mở popup và gọi
+`/overview/dashboard` theo bộ lọc hiện tại. Các biểu đồ vẫn hỗ trợ drilldown bằng cột/điểm.
+Tooltip cột dùng portal, chiều cao dòng riêng và giới hạn trong viewport.
+
+Đọc review: bấm KPI tiêu cực, tab **Đánh giá tiêu cực · đọc ý kiến**, cột chủ đề hoặc
+dòng trong bảng chủ đề. Mặc định là 1–2 sao; có thể chọn 1 sao hay 1–3 sao. Mọi bộ lọc
+cohort đơn và review cutoff giữ cùng contract KPI; nhãn chủ đề chưa phải kết luận nguyên nhân.
+Bảng danh sách phân trang, ý kiến mở bên cạnh; case không có nội dung ghi rõ chỉ chấm sao.
+
+Chuẩn bị sau ETL/rating thay đổi (không cần chạy lại native ETL chỉ để nâng cấp UI):
+
+```powershell
+..\.venv\Scripts\python.exe -X utf8 scripts/migrate_api.py
+..\.venv\Scripts\python.exe -X utf8 scripts/build_review_theme_features.py
+..\.venv\Scripts\python.exe -X utf8 scripts/build_review_case_content.py
+..\.venv\Scripts\python.exe -X utf8 scripts/verify_review_reader.py
+```
+
+`dw.review_case_content` là bảng phụ trợ một review/row, FK cascade tới review fact;
+không thay grain/khóa của 12dims/3facts. Chỉ chuẩn bị các case <=3 sao từ review đã được
+chấp nhận, đúng source checksum. API không đọc workbook; chỉ phục vụ text đã che khi
+source SHA, row hash và content version đều khớp. Nhãn cũng cần audit version/SHA hiện hành.
+
+Không đưa nội dung/bản backup DB này lên Git hay gói công khai. Che thông tin tự động
+có thể xóa cả từ hữu ích và không thay thế kiểm duyệt ẩn danh thủ công. Không gọi số sao thấp
+là khiếu nại đã xác minh hoặc suy lỗi kho/carrier. Cơ chế này không cung cấp danh tính khách,
+mã đơn gốc hay vòng đời xử lý khiếu nại. Nguồn và business facts không bị viết lại.

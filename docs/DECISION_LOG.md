@@ -1,5 +1,32 @@
 # Quyết định DW, API, DSS và React BI
 
+## 15/11/2026 — Publish source following the user's request
+
+The user authorized publishing the statistics modal, tooltip fixes and negative-review
+reader source after local verification. Include code, migration, synthetic tests and
+documentation only. Exclude every new/changed report, prepared review content, raw source,
+processing layer, runtime and backup. Use a normal push and verify origin/main afterwards.
+
+## 15/11/2026 — Put extra statistics on demand and read negative opinions safely
+
+Replace the overview ribbon with a statistics modal; remove the redundant month dropdown
+while retaining chart drilldown. Reset HTML tooltip line height and portal column tooltips
+to avoid clipping/overlapping text inherited from compact SVG layout styles.
+
+Use an offline redacted review display projection, not workbook reads per API request or
+original free text in business facts. Bind each record to accepted review PK, source SHA,
+row hash and content version; stale/missing records are unavailable. Keep review grain,
+shared cohort/cutoff and source-scoped product/warehouse rules. Topic filters require current
+feature SHA/audit version. Detail access respects the same filters, star ceiling and topic.
+Never return native customer/order identifiers. No inferred complaint causality/resolution.
+
+Show a short paginated case list beside readable text. Inspection exposed a partial fifth
+card at desktop height, so use four compact rows per page and verify the list's own overflow,
+not only document height. Prefer a record with opinion text initially; preserve star-only
+records in counts and explicitly state no text. Automatic redaction can over-remove or miss
+unrecognized personal phrasing; do not certify it as manually verified anonymization.
+Keep content, generated evidence and source data local; no new push requested.
+
 ## 14/11/2026 — Publish the verified source on explicit request
 
 Publish the current child-repository source and documentation to origin/main using a normal

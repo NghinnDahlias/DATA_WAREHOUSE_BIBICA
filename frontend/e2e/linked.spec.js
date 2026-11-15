@@ -5,7 +5,7 @@ const fmt=n=>Number(n).toLocaleString('vi-VN')
 const loaded=async p=>{await expect(p.locator('.overview-grid')).toBeVisible();await expect(p.locator('.body.loading')).toHaveCount(0)}
 const filter=async p=>p.getByRole('button',{name:'Lọc thêm',exact:true}).click()
 
-test('overview links charts, month selection, insights and removable filters to actual KPI cohorts',async({page,request})=>{
+test('overview links charts and removable filters to actual KPI cohorts; extra stats are on demand',async({page,request})=>{
  await page.goto('/overview');await loaded(page)
  await expect(page.getByRole('tablist')).toHaveCount(0)
  await expect(page.locator('.dashboard-card')).toHaveCount(4)
@@ -17,15 +17,20 @@ test('overview links charts, month selection, insights and removable filters to 
  await expect(page.getByRole('button',{name:'Bỏ lọc category'})).toBeVisible()
  await page.locator('.overview-trend .recharts-area-dot').nth(1).click();await loaded(page)
  await expect(page.getByLabel('Từ ngày')).toHaveValue('2026-07-01')
- await page.getByLabel('Lọc theo tháng',{exact:true}).selectOption('2026-07');await loaded(page)
+ await expect(page.getByLabel('Lọc theo tháng',{exact:true})).toHaveCount(0)
  await expect(page.getByLabel('Từ ngày')).toHaveValue('2026-07-01')
  await expect(page.getByLabel('Đến ngày')).toHaveValue('2026-07-31')
  expected=(await (await request.get('/api/v1/overview/kpis',{params:{store:'bibica_official_store',category:'Bánh',start_date:'2026-07-01',end_date:'2026-07-31'}})).json()).data
  await expect(orders(page)).toHaveText(fmt(expected.orders))
  await page.getByRole('button',{name:'Bỏ lọc category'}).click();await loaded(page)
  await expect(page.getByRole('button',{name:'Bỏ lọc store'})).toBeVisible()
- const insight=page.locator('.insight-ribbon button').filter({hasText:'hủy'}).first()
- await insight.click();await loaded(page)
+ await page.getByRole('button',{name:'Thống kê chỉ số',exact:true}).click()
+ await expect(page.getByRole('dialog',{name:'Thống kê chỉ số'})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'So sánh cửa hàng',exact:true})).toBeVisible()
+ await page.keyboard.press('Escape')
+ await filter(page)
+ await page.getByLabel('Trạng thái',{exact:true}).selectOption('CANCELED')
+ await page.getByRole('button',{name:'Xong',exact:true}).click();await loaded(page)
  await expect(page.getByRole('button',{name:'Bỏ lọc status'})).toContainText('Đã hủy')
  await filter(page)
  await expect(page.getByLabel('Trạng thái',{exact:true})).toHaveValue('CANCELED')

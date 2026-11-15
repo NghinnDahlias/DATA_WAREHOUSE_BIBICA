@@ -23,7 +23,7 @@ export function Section({ title, note, noteVisible = false, aside, children }) {
 }
 
 // Khung trang: tiêu đề, câu tóm tắt, trạng thái tải / lỗi / trống, lưu ý dữ liệu chưa chốt
-export function Page({ title, headline, state, children, maturity = true, isEmpty }) {
+export function Page({ title, headline, state, children, maturity = true, isEmpty, actions }) {
   const { meta, filters, maturityEnd } = useFilters()
   const { data, loading, error } = state
   const empty = data && (isEmpty ? isEmpty(data) : data.kpis?.orders === 0)
@@ -34,6 +34,7 @@ export function Page({ title, headline, state, children, maturity = true, isEmpt
       <header className="page-head">
         <h1>{title}</h1>
         <div className="page-tools">
+          {actions}
           {unstable&&<span className="period-caution">Có đơn chưa chốt <Help label="Lưu ý kỳ dữ liệu" text={`Kỳ có ngày sau ${fmtDate(maturityEnd)}. Trạng thái đơn có thể chưa kết thúc; số liệu là snapshot nguồn. Mốc30ngày không phải bảo đảm đã chốt.`}/></span>}
           <Help label="Quy ước dữ liệu" text="Tiền đơn hoàn thành tính mỗi đơn một lần. Tiền dòng hàng là chỉ số riêng, không cộng với tiền đơn. Ngày có đơn không chứng minh xuất đủ kỳ. Đánh giá chỉ có TikTok; thiếu dữ liệu không phải bằng0."/>
         </div>

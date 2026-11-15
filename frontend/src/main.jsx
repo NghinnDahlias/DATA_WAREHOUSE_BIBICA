@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './styles.css'
 import './compact.css'
 import './analytical.css'
+import './features.css'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

@@ -10,7 +10,8 @@ from fastapi.responses import JSONResponse
 
 from .db import snapshot
 from .kpi_contract import VERSION, contract
-from .models import Filters, PageFilters, ProductFilters
+from .models import Filters, PageFilters, ProductFilters, ReviewCaseFilters
+from .review_cases import fetch_review_cases
 from . import repository
 
 from .review_themes import fetch_review_themes
@@ -117,3 +118,18 @@ def customer_review_themes(filters: FilterQuery):
 
 from .dss_routes import router as dss_router
 app.include_router(dss_router)
+
+
+@app.get('/api/v1/customer/review-cases')
+def review_cases(filters: Annotated[ReviewCaseFilters, Query()]):
+    with snapshot() as c:
+        return envelope(fetch_review_cases(c, filters))
+
+
+@app.get('/api/v1/customer/review-cases/{case_key}')
+def review_case(case_key: int, filters: Annotated[ReviewCaseFilters, Query()]):
+    with snapshot() as c:
+        row = fetch_review_cases(c, filters, case_key)
+    if row is None:
+        raise HTTPException(404, 'Case not found in this review cohort')
+    return envelope(row)

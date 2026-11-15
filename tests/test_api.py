@@ -103,6 +103,56 @@ class APIIntegration(unittest.TestCase):
         self.assertEqual(r.json()['data']['availability'], 'UNAVAILABLE_NO_SHOPEE_RATING_SOURCE')
         self.assertIsNone(r.json()['data']['safety_signal_reviews'])
 
+    def test_review_case_cohort_pagination_freshness_and_privacy(self):
+        from src.api.review_privacy import CONTENT_VERSION
+        from src.dss.review_audit import VERSION
+        path='/api/v1/customer/review-cases'
+        baseline=self.kpi()
+        missing=self.client.get(path).json()['data']
+        self.assertEqual(missing['total'],baseline['low_reviews'])
+        self.assertTrue(all(r['content_status']=='UNAVAILABLE_NOT_PREPARED' for r in missing['rows']))
+        try:
+            with psycopg.connect(self.dsn) as c:
+                c.execute('''INSERT INTO dw.review_case_content(review_key,source_sha256,source_row_hash,content_version,redacted_text)
+                    SELECT r.review_key,s.source_sha256,r.source_row_hash,%s,'bánh bị vỡ [đã ẩn số]'
+                    FROM dw.fact_review_candidate r JOIN dw.dim_source_file s USING(source_file_key) WHERE star_level<=3''',(CONTENT_VERSION,))
+                c.execute('''INSERT INTO dw.review_theme_feature(review_key,labels,severity,text_present,audit_version,source_sha256)
+                    SELECT r.review_key,'["product_breakage_mention"]'::jsonb,'FULFILLMENT_DAMAGE_SIGNAL',true,%s,s.source_sha256
+                    FROM dw.fact_review_candidate r JOIN dw.dim_source_file s USING(source_file_key) WHERE star_level<=2''',(VERSION,))
+            page=self.client.get(path,params={'limit':1}).json()['data']
+            self.assertEqual(page['total'],2)
+            key=page['rows'][0]['case_key']
+            detail=self.client.get(f'{path}/{key}').json()['data']
+            self.assertEqual(detail['content_status'],'READY')
+            self.assertEqual(detail['content'],'bánh bị vỡ [đã ẩn số]')
+            self.assertEqual(set(detail),{'case_key','star_level','review_date','product_name','labels','content_status','content'})
+            second=self.client.get(path,params={'offset':1,'limit':1}).json()['data']
+            self.assertNotEqual(second['rows'][0]['case_key'],key)
+            self.assertEqual(self.client.get(path,params={'offset':20}).json()['data']['total'],2)
+            self.assertEqual(self.client.get(path,params={'topic':'product_breakage_mention'}).json()['data']['total'],2)
+            self.assertEqual(self.client.get(path,params={'topic':'missing_items_mention'}).json()['data']['total'],0)
+            self.assertEqual(self.client.get(f'{path}/{key}',params={'channel':'SHOPEE'}).status_code,404)
+            self.assertEqual(self.client.get(path,params={'channel':'SHOPEE'}).json()['data']['total'],0)
+            self.assertEqual(self.client.get(path,params={'category':'Quà tặng'}).json()['data']['total'],0)
+            self.assertEqual(self.client.get(path,params={'product_key':self.product}).json()['data']['total'],1)
+            with psycopg.connect(self.dsn) as c:
+                positive=c.execute('SELECT review_key FROM dw.fact_review_candidate WHERE star_level>3 LIMIT 1').fetchone()[0]
+                c.execute('UPDATE dw.review_case_content SET source_sha256=%s WHERE review_key=%s',('stale',key))
+            self.assertEqual(self.client.get(f'{path}/{positive}').status_code,404)
+            stale=self.client.get(f'{path}/{key}').json()['data']
+            self.assertEqual(stale['content_status'],'UNAVAILABLE_NOT_PREPARED')
+            self.assertIsNone(stale['content'])
+            self.assertEqual(self.kpi(),baseline)
+        finally:
+            with psycopg.connect(self.dsn) as c:
+                c.execute('DELETE FROM dw.review_case_content')
+                c.execute('DELETE FROM dw.review_theme_feature')
+
+    def test_review_case_query_validation(self):
+        path='/api/v1/customer/review-cases'
+        for params in [{'stars_max':0},{'stars_max':4},{'topic':"'; DROP TABLE test"},{'limit':201},{'offset':-1}]:
+            self.assertEqual(self.client.get(path,params=params).status_code,422)
+
     def test_phase3_feature_coverage_version_and_source_freshness(self):
         from src.dss.review_audit import VERSION
         path = '/api/v1/customer/review-themes'

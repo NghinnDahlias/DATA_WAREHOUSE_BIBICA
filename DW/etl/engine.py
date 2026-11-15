@@ -9,7 +9,7 @@ from .sources import SCOPES,preflight,records,project,require_headers
 from .facts import load_facts
 from .validation import validate,olap_checks
 
-DDL_FILES=[ROOT/'DW/postgresql/schemas/001_create_schemas.sql',ROOT/'DW/postgresql/tables/010_dw_dimensions.sql',ROOT/'DW/postgresql/tables/020_dw_facts.sql',ROOT/'DW/postgresql/constraints_indexes/constraints_indexes.sql',ROOT/'DW/postgresql/tables/030_canonical_operations.sql',ROOT/'DW/postgresql/tables/040_api_dss.sql']
+DDL_FILES=[ROOT/'DW/postgresql/schemas/001_create_schemas.sql',ROOT/'DW/postgresql/tables/010_dw_dimensions.sql',ROOT/'DW/postgresql/tables/020_dw_facts.sql',ROOT/'DW/postgresql/constraints_indexes/constraints_indexes.sql',ROOT/'DW/postgresql/tables/030_canonical_operations.sql',ROOT/'DW/postgresql/tables/040_api_dss.sql',ROOT/'DW/postgresql/tables/050_review_case_content.sql']
 ANALYZE_SQL='ANALYZE dw.dim_category,dw.dim_channel,dw.dim_storefront,dw.dim_order_status,dw.dim_warehouse,dw.dim_province,dw.dim_source_product_sku,dw.dim_date,dw.dim_time,dw.fact_order_line_candidate,dw.fact_order_lifecycle_candidate,dw.fact_review_candidate'
 
 def dump(path,value):

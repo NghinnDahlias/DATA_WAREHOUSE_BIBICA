@@ -63,3 +63,18 @@ Insight chỉ là mô tả cohort hiện tại: tiền shop/tổng tiền, đơn
 sản lượng danh mục/tổng sản lượng đã lọc. Không có kỳ trước, tăng trưởng, dự báo, lời/lỗ
 hoặc suy luận nguyên nhân. Danh mục NULL vẫn là trạng thái kiểm toán, không thêm business
 category thứ5. Cột/nhãn trục tỷ lệ dùng phần trăm, thời gian dùng ngày, tiền dùng VND.
+
+## Negative review case drilldown (15/11/2026)
+
+`/customer/review-cases` and `/customer/review-cases/{case_key}` reuse the review cohort
+above. Default stars_max=2; only 1/2/3 are accepted. Topic matches a current source-bound
+keyword feature. Total is distinct accepted reviews, not topic mentions or order count.
+List limit/offset are bounded; detail must match the same cohort, stars and topic, else404.
+Only internal case key/date/star/product title/controlled labels and automatically redacted
+opinion are returned. There are no native order/product/customer IDs or buyer attributes.
+A missing or stale content projection is UNAVAILABLE_NOT_PREPARED; empty text is NO_TEXT,
+never a fabricated opinion. Aggregate review-themes continues returning no review text.
+
+The on-demand statistics dialog preserves null monetary/quantity denominators and shows
+Shopee review metrics unavailable. Store order-money shares use disjoint shop groups;
+category shares use completed units, never a sum/allocation of order money across categories.

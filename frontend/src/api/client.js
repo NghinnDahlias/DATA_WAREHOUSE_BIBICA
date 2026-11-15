@@ -8,7 +8,7 @@ const http = axios.create({ baseURL: '/api/v1', timeout: 90000 })
 
 // Các khóa luôn giữ nguyên là chuỗi (mã, nhãn, băm)
 const KEEP = new Set(['group_value', 'order_ref', 'evidence_ref', 'sha256', 'source_code', 'storefront_code',
-  'store', 'province', 'route_province', 'canonical_status', 'database', 'native_sku_id', 'seller_sku', 'variation_name'])
+  'content', 'preview', 'content_status', 'product_name', 'store', 'province', 'route_province', 'canonical_status', 'database', 'native_sku_id', 'seller_sku', 'variation_name'])
 const NUMERIC = /^-?\d+(\.\d+)?$/
 
 export function toNumbers(x, key) {
@@ -214,5 +214,14 @@ export async function getReviewThemes(f) {
   const { data } = await call('get', '/customer/review-themes', {
     params: filterParams(f),
   })
+  return data
+}
+
+export async function getReviewCases(f, {starsMax=2,topic,offset=0,limit=6}={}) {
+  const {data}=await call('get','/customer/review-cases',{params:filterParams(f,{stars_max:starsMax,topic:topic||undefined,offset,limit})})
+  return data
+}
+export async function getReviewCase(f,key,{starsMax=2,topic}={}) {
+  const {data}=await call('get',`/customer/review-cases/${key}`,{params:filterParams(f,{stars_max:starsMax,topic:topic||undefined})})
   return data
 }

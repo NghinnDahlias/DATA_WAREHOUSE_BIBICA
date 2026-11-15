@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import {Area,ComposedChart,CartesianGrid,Legend,Line,ResponsiveContainer,Tooltip,XAxis,YAxis} from 'recharts'
-import {ArrowUpRight} from 'lucide-react'
+import {Calculator} from 'lucide-react'
+import IndicatorStats from '../components/IndicatorStats.jsx'
 import {useFilters} from '../context/FilterContext.jsx'
 import {useReport} from '../hooks/useReport.js'
 import {getOverviewDashboard} from '../api/client.js'
@@ -12,15 +13,16 @@ import {storeColor} from '../lib/colors.js'
 import {fmtAxis,fmtInt,fmtPct,fmtPeriod,fmtVND} from '../lib/format.js'
 import {standardKpis,qualityNotes} from '../lib/kpis.js'
 import {storeLabel} from '../lib/shape.js'
-import {monthSelection,overviewInsights} from '../lib/overview.js'
+import {monthSelection} from '../lib/overview.js'
 import {productIdentity} from '../lib/productIdentity.js'
 
 export default function ExecutiveOverview() {
   const {filters,update}=useFilters()
   const [byStore,setByStore]=useState(false)
+  const [statistics,setStatistics]=useState(false)
   const state=useReport(()=>getOverviewDashboard(filters),[filters])
   const money=v=>v==null?'—':`${fmtVND(v)} ₫`
-  return <Page title="Tổng quan" state={state}>{d=>{
+  return <><Page title="Tổng quan" state={state} actions={<button className="feature-trigger" onClick={()=>setStatistics(true)}><Calculator size={15}/>Thống kê chỉ số</button>}>{d=>{
     const selectProduct=r=>update({product:{key:r.key,label:r.name,store:r.store,sku:r.sku,variation:r.variation}})
     const products=d.products.map((p,i)=>({key:p.product_key,name:p.product_name,plotName:`#${i+1} · ${p.variation_name||p.product_name}`,store:p.storefront_code,sku:p.native_sku_id,variation:p.variation_name,units:p.completed_units,value:p.completed_item_value,orders:p.orders}))
     const stores=d.stores.map(r=>({key:r.group_value,name:storeLabel(r.group_value),value:r.completed_payable,orders:r.orders,cancelRate:r.orders?r.canceled_orders/r.orders:null})).sort((a,b)=>(b.value??-1)-(a.value??-1))
@@ -30,14 +32,9 @@ export default function ExecutiveOverview() {
       {accessorKey:'value',header:'Tiền dòng',cell:c=>money(c.getValue()),meta:{align:'right'}}]
     return <div className="overview-board">
       <KpiRow items={standardKpis(d.kpis,Boolean(filters.product))}/>
-      <div className="insight-ribbon" aria-label="Điểm đáng chú ý">{overviewInsights(d).map((insight,i)=>{
-        const patch=insight.kind==='category'?{category:insight.category}:insight.kind==='cancel'?{store:insight.store,status:'CANCELED'}:{store:insight.store}
-        const text=insight.kind==='share'?`${storeLabel(insight.store)} · ${fmtPct(insight.value)} tiền hoàn thành`:insight.kind==='cancel'?`${storeLabel(insight.store)} · hủy ${fmtPct(insight.value)} (${fmtInt(insight.canceled)}/${fmtInt(insight.n)} đơn)`:`${insight.category} · ${fmtPct(insight.value)} sản lượng hoàn thành`
-        return <button key={i} onClick={()=>update(patch)} title="Lọc theo điểm đáng chú ý">{text}<ArrowUpRight size={13}/></button>
-      })}</div>
       <div className="overview-grid">
         <section className="dashboard-card overview-trend"><Section title="Diễn biến giá trị đơn hoàn thành" note="Theo tháng đặt hàng, mỗi đơn một lần. Bấm điểm để lọc trong tháng. Tháng đầu/cuối có thể chưa đủ; tháng thiếu dữ liệu để trống, không tự gán0."
-          aside={<><select aria-label="Lọc theo tháng" value="" onChange={e=>e.target.value&&update(monthSelection(e.target.value,filters))}><option value="">Chọn tháng</option>{d.monthly.map(r=><option key={r.period} value={r.period}>{fmtPeriod(r.period)}</option>)}</select><div className="toggle"><button aria-pressed={!byStore} className={!byStore?'on':''} onClick={()=>setByStore(false)}>Tổng</button><button aria-pressed={byStore} className={byStore?'on':''} onClick={()=>setByStore(true)}>Theo cửa hàng</button></div></>}>
+          aside={<><div className="toggle"><button aria-pressed={!byStore} className={!byStore?'on':''} onClick={()=>setByStore(false)}>Tổng</button><button aria-pressed={byStore} className={byStore?'on':''} onClick={()=>setByStore(true)}>Theo cửa hàng</button></div></>}>
           <div className="board-chart" role="group" aria-label="Xu hướng tương tác"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={d.monthly} margin={{top:8,right:16,left:0,bottom:0}} onClick={e=>e?.activeLabel&&update(monthSelection(e.activeLabel,filters))}>
             <CartesianGrid stroke="#e7edf2" vertical={false}/><XAxis dataKey="period" tickFormatter={fmtPeriod} tick={{fontSize:11,fill:'#53697d'}} tickLine={false} axisLine={false} minTickGap={26}/>
             <YAxis tickFormatter={fmtAxis} tick={{fontSize:11,fill:'#53697d'}} tickLine={false} axisLine={false} width={58}/>
@@ -60,5 +57,5 @@ export default function ExecutiveOverview() {
       </div>
       {qualityNotes(d.kpis).length>0&&<details className="board-quality"><summary>{qualityNotes(d.kpis).length} lưu ý dữ liệu</summary>{qualityNotes(d.kpis).map(n=><p key={n.title}>{n.title}. {n.detail}</p>)}</details>}
     </div>
-  }}</Page>
+  }}</Page>{statistics&&<IndicatorStats onClose={()=>setStatistics(false)}/>}</>
 }

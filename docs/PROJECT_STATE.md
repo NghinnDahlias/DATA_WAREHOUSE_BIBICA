@@ -1,5 +1,46 @@
 # Trạng thái DW, API, DSS và React BI
 
+## 15/11/2026 — Publication of the review-reader source authorized
+
+The user explicitly requested pushing the preceding UI/review-reader changes. Prepare a
+normal source/documentation-only commit to origin/main; this supersedes the no-publication
+status of the implementation snapshot below. Private review content, all generated reports,
+raw Data, data process, database backups, builds and runtime remain local. Revalidate the
+recorded source/evidence hashes before committing; verify the remote head after pushing.
+Publication is not a deployment or an additional full test execution.
+
+## 15/11/2026 — On-demand statistics, readable tooltips and negative-review reader
+
+Removed the overview insight ribbon and month dropdown. Extra calculations now load in
+the **Thống kê chỉ số** modal using the current filters. Monthly point/bar cross-filtering
+remains. Fixed tooltip typography inherited from zero-line-height SVG containers; column
+tooltips render in a viewport-clamped portal, with separate title/value rows.
+
+Customer Experience adds a negative-review reading tab and clickable negative KPI/topic
+bars/table rows. Reader uses four cases per page with a side-by-side opinion, 1/2/3-star
+ceilings, topic selection and the existing global cohort. It initially selects a case with
+text when available; star-only records are explicitly NO_TEXT. Source/native buyer/order
+identifiers are not returned. Content is a conservative automatically redacted projection,
+not a guarantee of human-verified anonymization; labels remain unvalidated keyword mentions.
+
+Added auxiliary dw.review_case_content via migration050 (one review/PK, cascade FK),
+offline scripts/build_review_case_content.py and source/version/row-hash guards. API reads
+PostgreSQL only. Prepared448accepted cases <=3stars; default1–2stars gives262cases.
+Original rating bytes, all four source hashes, three fact fingerprints and every KPI
+matched the before snapshot. Core Galaxy/grains/keys and the original parent app unchanged.
+No native ETL/Golden reload, no publication, Docker/cloud/CI or PDF/ZIP regeneration.
+
+Executed:125backend tests,46React tests, production build and26Edge journeys PASS.
+Final four browser rechecks cover the last reader paging/selection and fully-loaded
+geometry updates; they supplement the26journeys, not four additional unique journeys.
+Eightcohorts reconcile with low-review KPI; all topic counts and all262case details verified.
+Sixloaded overview/reader viewport checks include1366x768,1280x720,390x844; desktop page,
+card/panel and four-case list overflow are checked directly. Screenshots inspected.
+Evidence: reports/review_reader.json, reports/review_ui_full_browser.json,
+reports/review_ui_final_browser.json, reports/review_ui_acceptance.json and private runtime
+logs/measurements. Older linked acceptance source hashes do not certify these changed files.
+Build retains the existing large-bundle warning. Local UI5174/API8001/bibica_repo55432.
+
 ## 14/11/2026 — Source publication checks
 
 The user explicitly authorized pushing the current source to origin/main. This supersedes

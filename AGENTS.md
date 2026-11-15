@@ -1,5 +1,27 @@
 # Bibica DW, API, DSS & React BI
 
+## 15/11/2026 — Source publication requested
+
+The user explicitly authorized pushing the latest verified UI/review-reader source.
+Earlier no-push notes below are implementation snapshots. Only source, synthetic tests,
+schema migration and documentation may be included; generated reports, all review content,
+raw/private layers, runtime and backups remain local. Verify the actual remote head for
+publication status; local acceptance remains reports/review_ui_acceptance.json.
+
+## 15/11/2026 — Statistics modal and negative-review reading
+
+Read the latest PROJECT_STATE/DECISION_LOG and local reports/review_ui_acceptance.json.
+Overview ribbon/month dropdown removed; statistics are on demand. Tooltip HTML must reset
+SVG wrapper line-height0; column hover uses a viewport-clamped portal. Reader opens from
+negative KPI/tab/topic chart/table. Fourcase paging,1/2/3star ceilings and same global cohort.
+Auxiliary dw.review_case_content is built offline from accepted rows only, with conservative
+automatic redaction; no raw content/buyer/nativeorderIDs in responses. API reads DB only.
+Require sourceSHA+rowhash+contentversion for text; sourceSHA+auditversion for topic labels.
+262default low-star cases/448prepared <=3stars. Business fact fingerprints/KPIs/raw hashes
+unchanged.125backend/46React/26Edge PASS plus final4focused rechecks; buildPASS with bundle
+warning. Fully loaded list/card geometry checked. Prior linked sourcehash manifest is historical
+for changed paths. No nativeETL/Goldenreload or new push. New content/DBbackup/reports stay private.
+
 ## 14/11/2026 — Publication authorized
 
 The user requested pushing the current source to Git. Read the publication entry in

@@ -37,3 +37,12 @@ class PageFilters(Filters):
 class ProductFilters(PageFilters):
     search: str = Field('', max_length=150)
     sort: Literal['key', 'orders', 'units', 'item_value'] = 'key'
+
+
+class ReviewCaseFilters(PageFilters):
+    stars_max: int = Field(2, ge=1, le=3)
+    topic: Literal['missing_items_mention', 'wrong_items_mention', 'packaging_damage_mention',
+        'product_breakage_mention', 'pest_or_foreign_material_mention', 'spoilage_or_expired_mention',
+        'short_shelf_life_mention', 'taste_or_texture_mention', 'delivery_delay_mention',
+        'replacement_promised_mention', 'replacement_dispatch_claim', 'replacement_received_claim',
+        'resolution_confirmed_claim'] | None = None

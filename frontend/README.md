@@ -53,3 +53,12 @@ Bộ lọc chuyên sâu có cửa hàng, danh mục, trạng thái, tỉnh khác
 và SKU; ngày/kênh/khoảng nhanh nằm trên thanh chính. Bỏ từng chip để lùi bước phân tích.
 /overview/dashboard trả các khối trên cùng snapshot REPEATABLE READ. Các chiều brand/
 traffic chưa có trong read model của repo được giữ ngoài UI, không thêm bộ lọc giả.
+
+### Local review reader and on-demand statistics (15/11)
+
+Overview exposes extra calculations through **Thống kê chỉ số** and removes the month
+selector/ribbon. Customer Experience opens redacted low-star cases from the KPI, the
+negative-review tab or a topic chart/table. Review data still comes from FastAPI/PostgreSQL.
+After migrate_api.py, prepare the private display projection with
+`python scripts/build_review_case_content.py`; see docs/PHASE3_RUNBOOK.md for Windows commands
+and privacy/freshness limits. No workbook reads in the browser/API request path.

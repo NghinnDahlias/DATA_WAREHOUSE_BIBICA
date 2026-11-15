@@ -12,5 +12,6 @@ with psycopg.connect(database_dsn(), connect_timeout=5) as connection:
     connection.execute('SELECT pg_advisory_xact_lock(4031262)')
     connection.execute("SET LOCAL lock_timeout='5s'")
     connection.execute(path.read_text(encoding='utf8'))
+    connection.execute((path.parent/'050_review_case_content.sql').read_text(encoding='utf8'))
     connection.execute(ANALYZE_SQL)
 print('API/DSS read models applied to repository database')

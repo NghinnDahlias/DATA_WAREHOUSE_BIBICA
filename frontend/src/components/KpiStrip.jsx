@@ -1,11 +1,12 @@
 
 // Hợp đồng KPI của DW đánh dấu M17 "tăng trưởng" là UNAVAILABLE nên không hiển thị % so với kỳ trước.
-function Kpi({ label, value, note }) {
+function Kpi({ label, value, note, onClick, actionLabel }) {
+  const Tag=onClick?'button':'div'
   return (
-    <div className="kpi" title={note||undefined}>
+    <Tag className={`kpi${onClick?' kpi-action':''}`} title={note||undefined} onClick={onClick} aria-label={actionLabel}>
       <div className="kpi-label">{label}</div>
       <div className="kpi-value">{value}</div>
-    </div>
+    </Tag>
   )
 }
 

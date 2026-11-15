@@ -14,6 +14,7 @@ import { axisTick, AXIS_LINE, GRID, tipStyle } from '../lib/chart.js'
 import { addDays } from '../lib/dates.js'
 import { fmtInt, fmtPct, fmtPeriod, fmtStar } from '../lib/format.js'
 import ReviewThemes from '../components/ReviewThemes.jsx'
+import ReviewCases from '../components/ReviewCases.jsx'
 
 const num = { align: 'right' }
 const catColumns = [
@@ -77,12 +78,12 @@ export default function Customer() {
               <KpiRow items={[
                 { label: 'Số đánh giá', value: fmtInt(k.reviews), note: 'TikTok, đã qua kiểm soát chất lượng' },
                 { label: 'Điểm trung bình', value: `${fmtStar(k.avgStars)} / 5`, note: 'Trung bình số sao' },
-                { label: 'Đánh giá tiêu cực (1–2 sao)', value: fmtPct(k.lowReviewRate), note: `${fmtInt(k.lowReviews)} đánh giá` },
+                { label: 'Đánh giá tiêu cực (1–2 sao)', value: fmtPct(k.lowReviewRate), note: `${fmtInt(k.lowReviews)} đánh giá · Bấm để đọc ý kiến`, onClick:()=>setView('negative'), actionLabel:'Đọc đánh giá tiêu cực' },
                 { label: 'Độ phủ đánh giá', value: k.reviewOrderCoverage == null ? '—' : fmtPct(k.reviewOrderCoverage), note: 'Đơn TikTok có đánh giá / tổng đơn TikTok' },
               ]} />
               {k.reviews < 30 && <div className="notice warn">Chỉ có {k.reviews} đánh giá trong bộ lọc này nên các tỷ lệ kém ổn định.</div>}
 
-              <ViewTabs value={view} onChange={setView} items={[["ratings", "Điểm sao & danh mục"], ["themes", "Chủ đề đánh giá"]]} />
+              <ViewTabs value={view} onChange={setView} items={[["ratings", "Điểm sao & danh mục"], ["themes", "Chủ đề đánh giá"], ["negative", "Đánh giá tiêu cực · đọc ý kiến"]]} />
               <ViewPanel active={view === 'ratings'} name="Điểm sao và danh mục"><div className="customer-ratings-grid">
               <Section title="Điểm sao và tỷ lệ tiêu cực theo tháng đặt hàng" note="Tối đa 12 tháng gần nhất trong kỳ, theo tháng đặt hàng. Cột: số đánh giá. Đường: tỷ lệ 1–2 sao.">
                 <div className="chart">
@@ -106,6 +107,7 @@ export default function Customer() {
               </Section>
               </div></ViewPanel>
               <ViewPanel active={view === 'themes'} name="Chủ đề đánh giá"><ReviewThemes /></ViewPanel>
+              <ViewPanel active={view === 'negative'} name="Đánh giá tiêu cực"><ReviewCases/></ViewPanel>
             </div>
           )
         }}

@@ -617,6 +617,20 @@ describe('các trang dựng được với dữ liệu theo hợp đồng API', 
     ).toBeTruthy()
   })
 
+  it('overview keeps extra calculations in an on-demand modal and removes the month dropdown', async () => {
+    at('/overview')
+    await screen.findByText('SKU nổi bật')
+    expect(document.querySelector('.insight-ribbon')).toBeNull()
+    expect(screen.queryByLabelText('Lọc theo tháng')).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
+    await userEvent.click(screen.getByRole('button',{name:'Thống kê chỉ số'}))
+    await screen.findByRole('heading',{name:'So sánh cửa hàng'})
+    expect(screen.getByRole('dialog',{name:'Thống kê chỉ số'})).toBeTruthy()
+    await userEvent.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.activeElement.textContent).toContain('Thống kê chỉ số')
+  })
+
   // ----------------------------------------------------------
   // SALES PERFORMANCE
   // ----------------------------------------------------------
