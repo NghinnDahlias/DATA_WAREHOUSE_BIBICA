@@ -18,6 +18,7 @@ Kho dữ liệu bán hàng đa kênh cho Shopee Bibica, Shopee Quasure và TikTo
 
 ```text
 DW/           ETL, SQL, Galaxy Schema và tài liệu kho dữ liệu
+Data/         Dữ liệu nguồn theo quyền truy cập
 src/          API, DSS và profiling
 frontend/     React, component tests và browser tests
 tests/        Python unit/integration tests
@@ -43,7 +44,7 @@ Tạo database riêng `bibica_repo` trên PostgreSQL đang chạy. Ví dụ cấ
 $env:BIBICA_DSN='postgresql://warehouse@127.0.0.1:55432/bibica_repo'
 ```
 
-Đổi tài khoản/cổng theo môi trường của bạn. Biến môi trường phải được đặt trong phiên terminal; ứng dụng không tự đọc `.env`. Không dùng database `warehouse` của dự án tham chiếu.
+Đổi tài khoản/cổng theo môi trường của bạn. Biến môi trường phải được đặt trong phiên terminal; ứng dụng không tự đọc `.env`.
 
 ### 2. Chuẩn bị dữ liệu và ETL
 

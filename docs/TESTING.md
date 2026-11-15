@@ -39,3 +39,17 @@ Golden verifier kiểm hash/reconciliation, replay, nạp lại vào database m�
 ## Phạm vi kết quả
 
 Các bước khởi động lại, native ETL/Golden replay, cài dependencies, browser và unit tests là các kiểm tra riêng. PASS ở một bước không thay thế các bước khác. Docker/cloud/remote CI, tải production và điều phối kho thực không được chứng nhận từ các test local này.
+
+## Kiểm chứng bản bàn giao — 15/11/2026
+
+Đã clone dự án sang thư mục riêng và chạy lại từ cây source không có báo cáo lịch sử hay ghi chú làm việc:
+
+| Kiểm tra | Kết quả |
+|---|---|
+| Python unit/integration | 125 PASS, 0 fail/error/skip |
+| Cài frontend theo lockfile | npm ci PASS |
+| React tests | 46 PASS |
+| Production frontend build | PASS |
+| Browser E2E với API của bản clone | 26 PASS, 0 failed/skipped/flaky |
+
+Python dùng môi trường dependencies đã có; frontend được cài mới trong bản clone. Test DB dùng fixture/database tạm; browser đọc DW dữ liệu thật đã nạp sẵn. Build còn cảnh báo bundle lớn và dependencies hiện hành có cảnh báo deprecation. Đây không phải kiểm chứng nạp lại toàn bộ nguồn vào DW trống hoặc vận hành production.
