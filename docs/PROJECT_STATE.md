@@ -1,5 +1,13 @@
 # Trạng thái DW, API, DSS và React BI
 
+## 15/11/2026 — External agent notes
+
+At the user's request, moved AGENTS.md outside the project to
+D:/Datawarehouse_Agent_Notes/DATA_WAREHOUSE_BIBICA/AGENTS.md and verified its SHA256.
+Removed the file from the package allowlist; reject agent instruction filenames at every
+depth/case and ignore them in Git/Docker. Preserve all application source and tests.
+Rebuild and inspect the source ZIP before publishing this source-only cleanup to Git.
+
 ## 15/11/2026 — Cleanup and source packaging
 
 Rewrote root/frontend README around current capabilities, standalone Windows setup, ETL,

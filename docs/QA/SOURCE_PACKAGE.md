@@ -38,7 +38,9 @@ Run `python scripts/package_source.py` from the repo root. The output is
 Local evidence and the final ZIP checksum are in `reports/source_package.json`.
 
 Excluded: original Data, Raw/Silver/Golden, review content, reports, .runtime, .git,
-credentials, database backups, logs, caches, node_modules, test traces and compiled build.
+credentials, database backups, logs, caches, node_modules, test traces, agent instruction
+files and compiled build. AGENTS.md is kept outside the project and explicitly rejected
+by the package allowlist at any depth, including uppercase filename variants.
 Source tests use synthetic fixtures; private source files are supplied separately by an
 authorized recipient. This package is not a preloaded database, sample-data demo or the
 coursework PDF/slide submission. It does not claim a fresh dependency install, browser run,

@@ -7,7 +7,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 TOP = 'Bibica_DW_Source'
-ROOT_FILES = {'.dockerignore', '.env.example', '.gitattributes', '.gitignore', 'AGENTS.md', 'README.md', 'requirements.txt'}
+ROOT_FILES = {'.dockerignore', '.env.example', '.gitattributes', '.gitignore', 'README.md', 'requirements.txt'}
 EXTENSIONS = {
     'src': {'.py'}, 'tests': {'.py'}, 'scripts': {'.py', '.ps1', '.sql'},
     'DW': {'.py', '.sql', '.dbml', '.md'}, 'docs': {'.md'},
@@ -20,6 +20,8 @@ EXCLUDED_PARTS = {'.git', '.runtime', '.venv', '__pycache__', 'node_modules', 'd
 
 def allowed(relative):
     parts = relative.parts
+    if relative.name.casefold() == 'agents.md':
+        return False
     if any(p.casefold() in EXCLUDED_PARTS for p in parts):
         return False
     if len(parts) == 1:

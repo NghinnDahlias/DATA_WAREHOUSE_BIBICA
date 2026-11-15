@@ -10,7 +10,8 @@ class SourcePackageTests(unittest.TestCase):
         for name in ['Data/Data_Source_Raw/source.xlsx', 'reports/run.json', '.runtime/log.txt',
                      'frontend/node_modules/module/index.js', 'frontend/dist/index.html',
                      'src/api/__pycache__/app.pyc', 'docs/secret.csv', 'frontend/.env',
-                     '.env', 'data process/Golden/fact.csv', 'docs/db.dump']:
+                     '.env', 'data process/Golden/fact.csv', 'docs/db.dump',
+                     'AGENTS.md', 'AGENTS.MD', 'docs/AGENTS.md']:
             self.assertFalse(allowed(Path(name)), name)
         for name in ['tests/test_api.py', 'frontend/tests/pages.test.jsx', 'frontend/e2e/review-reader.spec.js',
                      'DW/postgresql/tables/050_review_case_content.sql', 'docs/api/openapi.json', '.env.example']:
@@ -22,7 +23,7 @@ class SourcePackageTests(unittest.TestCase):
             names = ['README.md','requirements.txt','src/api/app.py','DW/etl/run.py',
                      'frontend/package.json','frontend/src/main.jsx','tests/test_api.py',
                      'frontend/tests/pages.test.jsx','frontend/e2e/review-reader.spec.js']
-            for name in names + ['Data/raw.csv','reports/private.json','frontend/node_modules/private.js']:
+            for name in names + ['Data/raw.csv','reports/private.json','frontend/node_modules/private.js','AGENTS.md','docs/AGENTS.md']:
                 path=root/name;path.parent.mkdir(parents=True,exist_ok=True)
                 path.write_text('synthetic fixture',encoding='utf8')
             result=build_package(root,Path(folder)/'source.zip')
@@ -33,6 +34,7 @@ class SourcePackageTests(unittest.TestCase):
                 self.assertEqual(len(entries),len(names)+1)
                 self.assertTrue(any(n.endswith('/tests/test_api.py') for n in entries))
                 self.assertFalse(any('private' in n or '/Data/' in n for n in entries))
+                self.assertFalse(any(Path(n).name.casefold()=='agents.md' for n in entries))
 
     def test_incomplete_project_cannot_be_packaged(self):
         with tempfile.TemporaryDirectory() as folder:

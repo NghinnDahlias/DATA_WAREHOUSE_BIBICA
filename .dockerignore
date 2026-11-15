@@ -15,3 +15,5 @@ frontend/test-results
 playwright-report
 *.pyc
 *.log
+AGENTS.md
+AGENTS.MD

@@ -1,5 +1,12 @@
 # Quyết định DW, API, DSS và React BI
 
+## 15/11/2026 — Keep agent instructions outside the deliverable
+
+The user requested moving AGENTS.md outside the project and updating Git. Preserve its
+bytes in a separate local notes folder; remove it from the repository and source ZIP.
+Enforce the exclusion in the packager itself, not only Git/Docker ignore rules. Synthetic
+archive fixtures also contain agent files to verify they cannot enter future packages.
+
 ## 15/11/2026 — Package runnable source with explicit artifact boundaries
 
 Keep tests and working business modules. Archive only proven obsolete root replay logs
