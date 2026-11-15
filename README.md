@@ -21,7 +21,7 @@ DW/           ETL, SQL, Galaxy Schema và tài liệu kho dữ liệu
 src/          API, DSS và profiling
 frontend/     React, component tests và browser tests
 tests/        Python unit/integration tests
-scripts/      Khởi chạy, kiểm định và đóng gói
+scripts/      Khởi chạy và kiểm định
 docs/         Kiến trúc, KPI, thuật toán và hướng dẫn vận hành
 ```
 
@@ -47,7 +47,7 @@ $env:BIBICA_DSN='postgresql://warehouse@127.0.0.1:55432/bibica_repo'
 
 ### 2. Chuẩn bị dữ liệu và ETL
 
-Nguồn được cung cấp riêng, không nằm trong gói source. Đặt bốn file vào `Data/Data_Source_Raw/`:
+ETL đọc bốn nguồn tại `Data/Data_Source_Raw/`. Chỉ sử dụng dữ liệu được cấp phép:
 
 ```text
 Shopee_Bibica.xlsx
@@ -84,10 +84,10 @@ Dừng bằng `scripts/stop_api.ps1` và `scripts/stop_frontend.ps1`. Các scrip
 Test được giữ trong `tests/`, `frontend/tests/` và `frontend/e2e/`.
 
 ```powershell
-# Python portable: fixture tổng hợp, không cần dữ liệu bán hàng riêng
+# Python unit/integration tests
 # Tài khoản DB cần quyền tạo database; test chỉ tạo/xóa DB ngẫu nhiên của chính nó.
 $env:BIBICA_TEST_DSN='postgresql://warehouse@127.0.0.1:55432/postgres'
-.\.venv\Scripts\python.exe -X utf8 scripts/run_tests.py --portable
+.\.venv\Scripts\python.exe -X utf8 scripts/run_tests.py
 
 # React và production build
 npm --prefix frontend test
@@ -97,17 +97,9 @@ npm --prefix frontend run build
 npm --prefix frontend run e2e
 ```
 
-`--portable` bỏ đúng ba kiểm tra cần file nguồn/báo cáo profiling riêng; các test gốc vẫn được giữ. Không đặt `BIBICA_TEST_DSN` thì nhóm DB bị SKIP và báo cáo là PARTIAL. Toàn bộ suite, gồm kiểm tra dữ liệu riêng: `python scripts/run_tests.py`.
+Test sử dụng fixture tổng hợp và database tạm do chính nó tạo. Hai kiểm tra hợp đồng nguồn đọc file trong `Data/Data_Source_Raw/`. Dùng `--portable` nếu chưa có nguồn; hai kiểm tra đó được loại khỏi profile và ghi rõ trong báo cáo. Không đặt `BIBICA_TEST_DSN` thì nhóm DB bị SKIP và báo cáo là PARTIAL.
 
-## Đóng gói source
-
-```powershell
-.\.venv\Scripts\python.exe -X utf8 scripts/package_source.py
-```
-
-Kết quả: **`dist/Bibica_DW_Source.zip`**, có source, SQL, tài liệu, test và manifest SHA-256. Script tự kiểm tra cấu trúc, nội dung và CRC của ZIP.
-
-Gói không chứa dữ liệu gốc, nội dung review, Raw/Silver/Golden, báo cáo sinh tự động, log, `.env`, database, `.git`, dependencies hoặc build. Đây là **gói source**, cần PostgreSQL và nguồn được cấp phép để dựng lại dữ liệu; không phải bản DW đã nạp sẵn hay gói báo cáo/slide môn học.
+Báo cáo test, profiling và runtime được tạo khi chạy, không lưu trong Git. Hướng dẫn kiểm thử: [TESTING.md](docs/TESTING.md).
 
 ## Quy ước dữ liệu
 
@@ -119,8 +111,9 @@ Gói không chứa dữ liệu gốc, nội dung review, Raw/Silver/Golden, báo
 
 ## Tài liệu
 
+- [Yêu cầu nghiệp vụ](docs/BUSINESS_REQUIREMENTS.md)
 - [Galaxy Schema](DW/architecture/1_galaxy_schema/galaxy_schema_candidate.md) · [DBML](DW/architecture/2_erd/galaxy_schema.dbml)
 - [ETL](DW/documentation/etl_design.md) · [Raw/Silver/Golden](DW/documentation/DATA_LAYERS.md)
 - [KPI Contract](docs/KPI_CONTRACT.md) · [API](docs/API_RUNBOOK.md)
 - [Thuật toán DSS](docs/DSS_ALGORITHMS.md) · [Đánh giá và giới hạn](docs/DSS_EVALUATION.md)
-- [Frontend và review reader](docs/PHASE3_RUNBOOK.md) · [Trạng thái kiểm chứng](docs/PROJECT_STATE.md)
+- [BI và review reader](docs/BI_RUNBOOK.md) · [Kiểm thử](docs/TESTING.md)

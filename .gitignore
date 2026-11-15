@@ -16,3 +16,10 @@ playwright-report/
 /Data/Data_Source_Raw/
 AGENTS.md
 AGENTS.MD
+
+# Local implementation notes are not handover documents.
+PROJECT_STATE.md
+DECISION_LOG.md
+/docs/progress.md
+/docs/decisions.md
+/docs/validation.md

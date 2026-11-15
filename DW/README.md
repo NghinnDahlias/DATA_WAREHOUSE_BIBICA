@@ -1,9 +1,13 @@
-# Chỉ mục DW
+# Kho dữ liệu và ETL
 
-- `postgresql/`: DDL gốc giữ nguyên và migration030 bổ sung canonical category, operational state, source identity và FK theo kho/shop.
-- Migration040 bổ sung analytics.v_orders/v_items/v_reviews và dss.v_route_orders cho API/DSS, không đổi Galaxy keys/grain. Xem docs/API_RUNBOOK.md và docs/DSS_ALGORITHMS.md ở repo root.
-- `etl/run.py`: CLI ổn định. `sources.py`: projection/contracts; `engine.py`: COPY và transaction; `transform.sql`: DQ/dimensions; `facts.py`: upsert facts; `validation.py`: assertion gates; `processing.py`/`verify.py`: private layers và reload.
-- `04_sql/olap/`: SQL tổng hợp và5materialized views.
-- `architecture/`: kiến trúc, Galaxy, DBML và dictionary cập nhật từ database.
-- `documentation/`: ETL/data layers/category/geography runbook.
-- `07_documentation/implementation_status.md`: trạng thái hiện hành. Các snapshot kiểm chứng cũ được ghi nhãn lịch sử.
+- `postgresql/`: DDL, khóa, index và migration bổ sung cho read models.
+- `etl/`: đọc nguồn, chuẩn hóa, DQ, upsert facts và xuất/kiểm định Raw–Silver–Golden.
+- `04_sql/olap/`: SQL tổng hợp và materialized views.
+- `architecture/`: Galaxy Schema, measure catalog, DBML và data dictionary.
+- `documentation/`: thiết kế ETL, các lớp dữ liệu và quy tắc category/địa lý.
+
+Grain: một đơn, một dòng hàng được chấp nhận, một review. Core Galaxy có 12 dimension và 3 fact; các bảng phụ trợ phục vụ nhãn/nội dung review không thay grain nghiệp vụ.
+
+API/DSS dùng các read views trong migration040; nội dung review đã che thông tin dùng bảng phụ trợ migration050. Các nguồn không được sửa hoặc re-save. Tiền đơn không cộng lặp theo dòng SKU.
+
+Chạy ETL và ứng dụng: [README chính](../README.md). Quy tắc chỉ số: [KPI Contract](../docs/KPI_CONTRACT.md). Kiểm định và test: [TESTING](../docs/TESTING.md).

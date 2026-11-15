@@ -11,13 +11,12 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--portable', action='store_true', help='Exclude three checks requiring private source/profiling artifacts; keep their original tests unchanged.')
+parser.add_argument('--portable', action='store_true', help='Exclude two checks requiring native source files.')
 args = parser.parse_args()
 suite = unittest.defaultTestLoader.discover(str(root/'tests'))
 excluded = []
 if args.portable:
-    private_checks = {'ProfilingTests.test_source_discovery_contract', 'ProfilingTests.test_xlsx_stream_header',
-                      'ProfilingTests.test_report_generation_outputs'}
+    private_checks = {'ProfilingTests.test_source_discovery_contract', 'ProfilingTests.test_xlsx_stream_header'}
     def cases(node):
         for test in node:
             if isinstance(test, unittest.TestSuite):
@@ -31,7 +30,7 @@ if args.portable:
         else:
             included.append(test)
     if len(excluded) != len(private_checks):
-        raise RuntimeError('Portable profile does not match the three original private-data checks')
+        raise RuntimeError('Portable profile does not match the two native-source checks')
     suite = unittest.TestSuite(included)
 started = time.perf_counter()
 stream = io.StringIO()

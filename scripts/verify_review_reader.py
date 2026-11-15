@@ -78,6 +78,7 @@ def main():
         'limits':['Automatic redaction is conservative and can remove useful words; no guarantee of human-verified anonymization.',
             'Star threshold and keyword mentions are not confirmed complaint causes. No original customer/order identifiers in responses.',
             'Local auxiliary projection only; original review workbook and business facts unchanged.']}
+    (ROOT/'reports').mkdir(exist_ok=True)
     (ROOT/'reports/review_reader.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,default=str)+'\n',encoding='utf8')
     print(json.dumps({'status':report['status'],'checks':checks,'cases':total,'prepared':prepared}))
     if report['status']!='PASS':raise SystemExit(1)

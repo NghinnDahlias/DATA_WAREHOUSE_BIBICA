@@ -47,12 +47,9 @@ Contract còn công bố M17growth và M18cross-platform discount ở unavailabl
 - Shopee thời gian hoàn thành là proxy ghi nhận giao. TikTok Delivered Time là ghi nhận giao. M13 tổng nhiều nguồn trả NULL, endpoint operations/delivery tách từng nguồn và cung cấp cả shipped→recorded durations.
 - Không đủ thông tin cho net revenue, quyết toán, margin, lợi nhuận, tồn kho thực, ROI quảng cáo hoặc causal uplift. Không xuất KPI thay thế có tên gây hiểu nhầm.
 
-Kiểm chứng mới trong `reports/phase2_tests.json`, `reports/phase2_verification.json`. Đối soát đã chạy cả fixture multi-line, cùng-dòng category/kho, NULL/empty/date, status, review cutoff và fingerprints toàn bộ dữ liệu.
+Kiểm thử grain và bộ lọc được tái lập theo [TESTING.md](TESTING.md). Review metrics là unavailable khi chỉ lọc Shopee, dù số record review quan sát bằng 0; không diễn giải thành không có khiếu nại. Customer identity liên thông và replacement lifecycle chưa có nguồn xác nhận.
 
-Kiểm toán bổ sung so68cohort/2108numeric measures với oracle độc lập trong reports/phase2_assessment/integrity.json. KPI envelope ghi rõ review_metricsUNAVAILABLE nếu chỉ lọc Shopee, dù count observed review records là0. Giá trị0đó không phải số khiếu nại0. Không có customer identity hoặc replacement lifecycle trong nguồn hợp đồng, meta công bố unavailable/null.
-
-
-## Dashboard liên kết (10/11/2026)
+## Dashboard liên kết
 
 /overview/dashboard sử dụng cùng cohort/order-line-review contract trong một REPEATABLE
 READ snapshot có serialSQLguard. TopSKU sắp theo completed_units, trả completed_item_value
@@ -64,7 +61,7 @@ sản lượng danh mục/tổng sản lượng đã lọc. Không có kỳ trư
 hoặc suy luận nguyên nhân. Danh mục NULL vẫn là trạng thái kiểm toán, không thêm business
 category thứ5. Cột/nhãn trục tỷ lệ dùng phần trăm, thời gian dùng ngày, tiền dùng VND.
 
-## Negative review case drilldown (15/11/2026)
+## Negative review case drilldown
 
 `/customer/review-cases` and `/customer/review-cases/{case_key}` reuse the review cohort
 above. Default stars_max=2; only 1/2/3 are accepted. Topic matches a current source-bound

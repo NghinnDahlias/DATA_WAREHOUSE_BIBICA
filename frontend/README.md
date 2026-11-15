@@ -38,4 +38,4 @@ npm --prefix frontend run e2e
 
 Review Shopee không có nguồn nên hiển thị unavailable. Nhãn review chưa xác minh; nội dung được che thông tin tự động. Tồn kho/HSD/năng lực DSS là giả định kịch bản. Production cần cấu hình reverse proxy `/api` tương ứng; Vite dev chỉ phục vụ local.
 
-Chi tiết vận hành: [Phase 3 runbook](../docs/PHASE3_RUNBOOK.md).
+Chi tiết vận hành: [BI runbook](../docs/BI_RUNBOOK.md).

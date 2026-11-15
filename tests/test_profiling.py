@@ -84,22 +84,36 @@ class ProfilingTests(unittest.TestCase):
                                  json.dumps(right[index],default=dict,sort_keys=True))
 
     def test_report_generation_outputs(self):
-        expected = ("source_inventory.json", "key_uniqueness.json", "data_quality.json",
-                    "schema_mapping.csv", "financial_reconciliation.json", "review_profile.json")
-        for name in expected:
-            self.assertTrue((Path("reports") / name).is_file(), name)
-        report = json.loads(Path("reports/source_inventory.json").read_text(encoding="utf-8"))
-        self.assertEqual(set(report["sources"]), set(SOURCES))
-        for item in report["sources"].values():
-            self.assertGreater(item["records"], 0)
-            self.assertGreater(item["columns_count"], 0)
-        docs = ("data/source_inventory.md", "data/grain_analysis.md", "data/data_quality_report.md",
-                "data/cross_platform_mapping.md", "data/review_feasibility.md",
-                "business/financial_definitions.md", "business/business_requirements.md",
-                "architecture/modeling_readiness.md", "progress.md", "decisions.md")
-        for name in docs:
-            path = Path("docs") / name
-            self.assertTrue(path.is_file() and path.stat().st_size > 100, name)
+        from tests.test_etl import rating, sales, write
+        from DW.etl.ratings import project_scraped_rating
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            raw, reports = root / "raw", root / "reports"
+            docs = reports / "profiling"
+            raw.mkdir()
+            complete = lambda kind, values: {**dict.fromkeys(FIELDS[kind].values(), ''), **values}
+            write(raw, "tiktok_bibica", [complete('tiktok', sales())])
+            write(raw, "shopee_bibica", [complete('shopee', sales(False))])
+            write(raw, "shopee_quasure", [complete('shopee', sales(False))])
+            write(raw, "ratings", [complete('review', {**rating(), **project_scraped_rating(rating())})])
+            self.assertEqual(main(["--data-dir", str(raw), "--output-dir", str(reports)]), 0)
+            self.assertFalse((root / "docs").exists())
+            expected = ("source_inventory.json", "key_uniqueness.json", "data_quality.json",
+                        "schema_mapping.csv", "financial_reconciliation.json", "review_profile.json")
+            for name in expected:
+                self.assertTrue((reports / name).is_file(), name)
+            report = json.loads((reports / "source_inventory.json").read_text(encoding="utf-8"))
+            self.assertEqual(set(report["sources"]), set(SOURCES))
+            for item in report["sources"].values():
+                self.assertGreater(item["records"], 0)
+                self.assertGreater(item["columns_count"], 0)
+            generated = ("data/source_inventory.md", "data/grain_analysis.md", "data/data_quality_report.md",
+                         "data/cross_platform_mapping.md", "data/review_feasibility.md",
+                         "business/financial_definitions.md", "business/business_requirements.md",
+                         "architecture/modeling_readiness.md", "progress.md", "decisions.md")
+            for name in generated:
+                path = docs / name
+                self.assertTrue(path.is_file() and path.stat().st_size > 100, name)
 
     def test_missing_sources_are_reported(self):
         with tempfile.TemporaryDirectory() as directory:

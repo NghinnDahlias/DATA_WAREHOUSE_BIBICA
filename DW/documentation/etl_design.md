@@ -24,7 +24,7 @@ python -m DW.etl.run --dry-run
 python -m DW.etl.run --process --dsn "$env:BIBICA_DSN"
 python -m DW.etl.verify --dsn "$env:BIBICA_DSN" --rerun
 $env:BIBICA_TEST_DSN='postgresql://warehouse@127.0.0.1:55432/postgres'
-python -m unittest discover -s tests -v
+python scripts/run_tests.py
 ```
 
 DSN phải trỏ DB riêng của repo. Xem README/.env.example. `--seed-silver` chỉ dành cache local đã kiểm chứng (xem DATA_LAYERS.md); mặc định đọc native files, chạy độc lập với project cha.

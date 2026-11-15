@@ -30,6 +30,7 @@ report={'status':'SERIAL_MITIGATION_VERIFIED' if all(not r['mismatch'] for r in 
         'serial_mismatches':sum(bool(r['mismatch']) for r in serial),
         'parallel_mismatches':sum(bool(r['mismatch']) for r in parallel),'results':results,
         'scope':'Session-only read-only experiments. Underlying PostgreSQL parallel plan cause is not yet established. API runs with per-gather parallel workers disabled.'}
+Path('reports/phase2_assessment').mkdir(parents=True,exist_ok=True)
 Path('reports/phase2_assessment/sql_parallel_diagnostic.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')
 print(json.dumps({k:v for k,v in report.items() if k!='results'},ensure_ascii=False))
 assert report['status']!='FAIL'

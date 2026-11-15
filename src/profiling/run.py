@@ -438,9 +438,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Profile Bibica/Quasure raw exports without modifying them")
     parser.add_argument("--data-dir", type=Path, default=Path("Data/Data_Source_Raw"))
     parser.add_argument("--output-dir", type=Path, default=Path("reports"))
-    parser.add_argument("--docs-dir", type=Path, default=Path("docs"))
+    parser.add_argument("--docs-dir", type=Path, help="Generated profiling notes; defaults to <output-dir>/profiling")
     args = parser.parse_args(argv)
-    data = args.data_dir.resolve(); out = args.output_dir.resolve(); docs = args.docs_dir.resolve()
+    data = args.data_dir.resolve(); out = args.output_dir.resolve(); docs = (args.docs_dir or args.output_dir/"profiling").resolve()
     out.mkdir(parents=True, exist_ok=True); docs.mkdir(parents=True, exist_ok=True)
     results = {}; missing = []
     for name,(filename,kind,store) in SOURCES.items():
