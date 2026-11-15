@@ -1,5 +1,18 @@
 # Bibica DW, API, DSS & React BI
 
+## 15/11/2026 — Source cleanup and packaging
+
+Read docs/QA/SOURCE_PACKAGE.md and latest PROJECT_STATE. Root/frontend README now describe
+standalone setup/test/package. Four root replay logs and old DB.png were archived privately
+then removed. All original tests and working API/DSS/ETL modules preserved. Three new package
+safety tests:128fullPython/46React/build PASS;125portable tests PASS from extracted ZIP.
+Portable profile excludes exactly3private source/report checks; originals remain unchanged.
+Source ZIP is dist/Bibica_DW_Source.zip, built by scripts/package_source.py using an explicit
+allowlist+SHA256+CRC, never raw Data/reviews/reports/private layers/runtime/dependencies/builds.
+Gitignore is not a sufficient packaging boundary: original raw files are historically tracked.
+Generated reports remain local for audit dependencies. No new push, E2E/nativeETL/Golden
+replay or PDF/slide regeneration in cleanup. Exact archive evidence: reports/source_package.json.
+
 ## 15/11/2026 — Source publication requested
 
 The user explicitly authorized pushing the latest verified UI/review-reader source.

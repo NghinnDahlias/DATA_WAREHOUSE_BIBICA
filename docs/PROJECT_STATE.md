@@ -1,5 +1,27 @@
 # Trạng thái DW, API, DSS và React BI
 
+## 15/11/2026 — Cleanup and source packaging
+
+Rewrote root/frontend README around current capabilities, standalone Windows setup, ETL,
+review preparation, test commands and packaging. Removed four obsolete replay logs and
+the old DB.png from source after hash-verified copies under .runtime/cleanup-20261115.
+Kept current DBML/SQL and all original test methods. Reports remain local for audit scripts;
+Git/Docker/source-archive rules exclude generated/private artifacts and future raw additions.
+
+Added scripts/package_source.py with an explicit file allowlist, required source/test
+checks, per-file SHA256 manifest and ZIP CRC/readback validation. Added three safety tests.
+scripts/run_tests.py --portable excludes exactly three existing private-source/report
+checks without editing their originals; all fixture tests remain. Standalone packages
+create their own reports directory when tests run.
+
+Fresh128Python/46React/build PASS; portable125tests PASS in a newly extracted source ZIP
+without Data or historical reports, using disposable test databases and installed dependencies.
+The existing frontend bundle-size warning remains. No UI/API/DSS/ETL business source changes,
+native ETL/Golden replay, E2E rerun, database deletion, cloud/CI/Docker or new Git publication.
+Artifact: dist/Bibica_DW_Source.zip; evidence: docs/QA/SOURCE_PACKAGE.md and local
+reports/source_package.json. Original raw sources and private layers remain unchanged.
+This is a source-only archive, not a preloaded DW or regenerated PDF/slide submission.
+
 ## 15/11/2026 — Publication of the review-reader source authorized
 
 The user explicitly requested pushing the preceding UI/review-reader changes. Prepare a

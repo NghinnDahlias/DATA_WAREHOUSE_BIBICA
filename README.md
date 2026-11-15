@@ -1,50 +1,126 @@
-# Bibica — PostgreSQL Galaxy DW, API, DSS & React BI
+# Bibica Data Warehouse & DSS
 
-Phase3 được cập nhật từ origin/main commit `96941fb` ngày09/11/2026, kèm sửa lỗi và kiểm chứng local. React gồm Overview, Sales, Warehouse, Customer Experience và DSS Simulation. Lệnh chạy, bộ lọc, refresh review themes và kiểm thử tại [Phase3 runbook](docs/PHASE3_RUNBOOK.md); kết quả thực tế tại [Phase3 acceptance](docs/QA/PHASE3_ACCEPTANCE.md). Các thay đổi kiểm thử/sửa lỗi hiện hành chưa commit/push.
+Kho dữ liệu bán hàng đa kênh cho Shopee Bibica, Shopee Quasure và TikTok Bibica, kèm đánh giá TikTok, dashboard BI và mô phỏng hỗ trợ quyết định.
 
-DW/ETL giữ constellation gốc **12 dimension + 3 fact, 56 FK**. Phase2 backend/DSS cập nhật05/11/2026 bổ sung API PostgreSQL, KPI Contract, phân bổ kho HN/HCM, mô phỏng hạn dùng, risk scoring và what-if. Dữ liệu gốc/Silver/Golden riêng tư giữ ở local.
+**Luồng dữ liệu:** nguồn → Raw → Silver → PostgreSQL Galaxy/Golden → FastAPI → React BI/DSS.
 
-Kiểm toán nghiệp vụ mới mở rộng114tests,90scenario oracle,68cohort KPI và phân tích rating đa chiều. Kết luận readiness có điều kiện cho DSS phân tích/mô phỏng được ghi trong [báo cáo nghiệm thu](docs/QA/PHASE2_ACCEPTANCE.md). Các snapshot61tests trước đó là lịch sử. Bánh ăn sáng mặc địnhHN, ngoại lệHCM cần xác nhận scenario scopedSKU/kho. Giữ guard truy vấn tuần tự theo API_RUNBOOK để tránh sai lệch đã tái hiện ở local parallel query mode.
+**Công nghệ:** Python, PostgreSQL, FastAPI, SciPy; React 18, Vite, Recharts và TanStack Table.
 
-Kết quả full-data: **127588 orders, 178517 accepted item lines, 5625 reviews**. Raw184529record:178832sales +5697rating. Quarantine315exact sales duplicates +66semantic repeated reviews +6invalid reviews. Các số này là snapshot đã chạy, không phải hằng số trong ETL.
+## Chức năng
 
-## Chạy độc lập
+- ETL có kiểm tra chất lượng, quarantine, incremental load và chống nạp trùng.
+- Galaxy Schema với 12 dimension và 3 fact; kho theo cửa hàng, tỉnh khách độc lập.
+- Dashboard tổng quan liên kết, phân tích doanh số, kho/giao hàng và trải nghiệm khách hàng.
+- Bộ lọc dùng chung; thống kê theo yêu cầu; đọc review tiêu cực đã che thông tin cá nhân.
+- DSS phân bổ kho, so sánh kịch bản và mô phỏng hạn dùng với giả định minh thị.
 
-Python3.12+ và PostgreSQL16+; install `python -m pip install -r requirements.txt`. Tạo database **riêng** `bibica_repo` bằng tài khoản có quyền phù hợp; không dùng database `warehouse` của dự án DSS cha. Không có lệnh drop database hiện hữu trong runbook.
+## Cấu trúc
+
+```text
+DW/           ETL, SQL, Galaxy Schema và tài liệu kho dữ liệu
+src/          API, DSS và profiling
+frontend/     React, component tests và browser tests
+tests/        Python unit/integration tests
+scripts/      Khởi chạy, kiểm định và đóng gói
+docs/         Kiến trúc, KPI, thuật toán và hướng dẫn vận hành
+```
+
+## Chạy local
+
+Yêu cầu: **Python 3.12+, Node.js 20+ và PostgreSQL 16+**. Các lệnh dưới đây chạy tại thư mục gốc repo bằng PowerShell.
+
+### 1. Cài đặt
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+npm --prefix frontend ci
+```
+
+Tạo database riêng `bibica_repo` trên PostgreSQL đang chạy. Ví dụ cấu hình local:
 
 ```powershell
 $env:BIBICA_DSN='postgresql://warehouse@127.0.0.1:55432/bibica_repo'
-python -m DW.etl.run --process --dsn "$env:BIBICA_DSN"
-python -m DW.etl.verify --dsn "$env:BIBICA_DSN" --rerun
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_api.ps1
 ```
 
-Trong workspace hiện tại có thể thay `python` bằng `..\.venv\Scripts\python.exe -X utf8`. Đó chỉ là interpreter; source code không import hoặc phụ thuộc project cha. Bản kiểm chứng local dùng database `bibica_repo` trên port55432.
+Đổi tài khoản/cổng theo môi trường của bạn. Biến môi trường phải được đặt trong phiên terminal; ứng dụng không tự đọc `.env`. Không dùng database `warehouse` của dự án tham chiếu.
 
-`--load` chỉ nạp DW; `--process` tạo cả `data process/Raw`, `Silver`, `Golden`. `--dry-run` đọc/kiểm source contract, không chứng nhận reconciliation database. Thiếu source/header hoặc lỗi ETL trả exit khác0; thay dữ liệu được rollback toàn transaction.
+### 2. Chuẩn bị dữ liệu và ETL
 
-Nguồn: `Shopee_Bibica.xlsx`, `Shopee_Quasure.xlsx`, `Tiktokshop_Bibica.csv`, **`Tiktok_Rating_Bibica.xlsx`**, sheet Ratings. Sheet Nguon không phải review. Không sửa/re-save source; không float-cast identifier. `data process/` chứa dữ liệu riêng tư và bị loại khỏi Git.
+Nguồn được cung cấp riêng, không nằm trong gói source. Đặt bốn file vào `Data/Data_Source_Raw/`:
 
-## Quy ước nghiệp vụ
+```text
+Shopee_Bibica.xlsx
+Shopee_Quasure.xlsx
+Tiktokshop_Bibica.csv
+Tiktok_Rating_Bibica.xlsx
+```
 
-- Cùng hàm tên sản phẩm cho cả3sales sources: Quà tặng → Bánh → Kẹo → Ngũ cốc. Native TikTok category chỉ metadata; Unmapped NULL + audit status.
-- SKU scoped theo shop, đổi tên cập nhật Type1; category của transaction theo tên dòng lịch sử. Không fuzzy merge SKU giữa sàn.
-- Kho theo source label, giữ6members theo shop, chuẩn khu vực Hà Nội/Hồ Chí Minh. Tỉnh khách là chiều riêng, chuẩn hóa chữ/tiền tố, không suy sáp nhập hành chính.
-- Fact một đơn / một accepted source line / một accepted review. Tiền đơn chỉ tổng hợp một lần ở lifecycle fact. Giá gốc và observed item payable không phải doanh thu thuần hay lợi nhuận.
-- Raw giữ đủ; quarantine không xóa source. Checksum là provenance; source+row locator là current-state key. Changed/deleted rows cập nhật/rút khỏi fact; replay cùng byte không nhân fact.
-- Review phải có sales order; SKU match bằng normalized historical name duy nhất trong cùng order, không dùng latest Product name hoặc product_id=SKU giả định.
-
-## Kiểm thử và tài liệu
+Giữ nguyên file nguồn; workbook rating dùng sheet `Ratings`. Nạp DW và tạo ba lớp dữ liệu riêng tư:
 
 ```powershell
-$env:BIBICA_TEST_DSN='postgresql://warehouse@127.0.0.1:55432/postgres'
-python -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -X utf8 -m DW.etl.run --process --dsn "$env:BIBICA_DSN"
+.\.venv\Scripts\python.exe -X utf8 scripts/migrate_api.py
+.\.venv\Scripts\python.exe -X utf8 scripts/build_review_theme_features.py
+.\.venv\Scripts\python.exe -X utf8 scripts/build_review_case_content.py
 ```
 
-13tests DW cũ được giữ nguyên, bổ sung unit DSS và API/integration. Chạy `python scripts/run_tests.py` để ghi report mới ở reports/phase2_tests.json/log. Thiếu BIBICA_TEST_DSN thì DB tests SKIP, report PARTIAL. Full ETL có16gates, private layer/reload verifier có11checks. Full API/DSS đối soát bằng `python scripts/verify_phase2.py`, đọc reports/phase2_verification.json và docs/DSS_EVALUATION.md.
+Nếu DW đã có dữ liệu, chạy migration khi nâng cấp và chuẩn bị lại review khi thay nguồn rating. File nguồn và `data process/Raw`, `Silver`, `Golden` giữ ở local.
 
-- [Kiến trúc](DW/architecture/architecture_overview.md), [Galaxy](DW/architecture/1_galaxy_schema/galaxy_schema_candidate.md), [DBML](DW/architecture/2_erd/galaxy_schema.dbml), [Dictionary](DW/architecture/data_dictionary/data_dictionary.md).
-- [ETL runbook](DW/documentation/etl_design.md), [Data layers](DW/documentation/DATA_LAYERS.md), [Category & Geography](DW/documentation/CANONICAL_GEOGRAPHY.md), [trạng thái nghiệm thu](DW/07_documentation/implementation_status.md).
-- [API runbook](docs/API_RUNBOOK.md), [KPI Contract](docs/KPI_CONTRACT.md), [Thuật toán DSS](docs/DSS_ALGORITHMS.md), [Đánh giá thực nghiệm](docs/DSS_EVALUATION.md), [trạng thái Phase2](docs/PROJECT_STATE.md).
+### 3. Mở ứng dụng
 
-API local tại http://127.0.0.1:8001/docs. Phase3 React BI chạy riêng tại http://127.0.0.1:5174, xem docs/PHASE3_RUNBOOK.md và docs/QA/PHASE3_ACCEPTANCE.md. Ghi chú Phase2 không có frontend là phạm vi lịch sử. DSS nhận nhu cầu/tồn kho/năng lực/HSD kịch bản và trả conditional assignments, không gọi tồn kho giả định là dữ liệu thực. Đọc API_RUNBOOK và DSS_ALGORITHMS để chạy demo và hiểu các giới hạn. Docker/cloud/remote CI chưa chạy. Các tài liệu Phase1 và ảnh DB.png cũ là lịch sử, không thay bằng chứng cho schema hiện hành.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_api.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_frontend.ps1
+```
+
+- **Dashboard:** http://127.0.0.1:5174
+- **API/OpenAPI:** http://127.0.0.1:8001/docs
+
+Dừng bằng `scripts/stop_api.ps1` và `scripts/stop_frontend.ps1`. Các script chỉ dừng tiến trình do repo quản lý.
+
+## Kiểm thử
+
+Test được giữ trong `tests/`, `frontend/tests/` và `frontend/e2e/`.
+
+```powershell
+# Python portable: fixture tổng hợp, không cần dữ liệu bán hàng riêng
+# Tài khoản DB cần quyền tạo database; test chỉ tạo/xóa DB ngẫu nhiên của chính nó.
+$env:BIBICA_TEST_DSN='postgresql://warehouse@127.0.0.1:55432/postgres'
+.\.venv\Scripts\python.exe -X utf8 scripts/run_tests.py --portable
+
+# React và production build
+npm --prefix frontend test
+npm --prefix frontend run build
+
+# E2E: cần frontend/API, DW đã nạp và Microsoft Edge
+npm --prefix frontend run e2e
+```
+
+`--portable` bỏ đúng ba kiểm tra cần file nguồn/báo cáo profiling riêng; các test gốc vẫn được giữ. Không đặt `BIBICA_TEST_DSN` thì nhóm DB bị SKIP và báo cáo là PARTIAL. Toàn bộ suite, gồm kiểm tra dữ liệu riêng: `python scripts/run_tests.py`.
+
+## Đóng gói source
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 scripts/package_source.py
+```
+
+Kết quả: **`dist/Bibica_DW_Source.zip`**, có source, SQL, tài liệu, test và manifest SHA-256. Script tự kiểm tra cấu trúc, nội dung và CRC của ZIP.
+
+Gói không chứa dữ liệu gốc, nội dung review, Raw/Silver/Golden, báo cáo sinh tự động, log, `.env`, database, `.git`, dependencies hoặc build. Đây là **gói source**, cần PostgreSQL và nguồn được cấp phép để dựng lại dữ liệu; không phải bản DW đã nạp sẵn hay gói báo cáo/slide môn học.
+
+## Quy ước dữ liệu
+
+- Một fact tương ứng một đơn, một dòng hàng được chấp nhận hoặc một review. Tiền đơn được tính một lần, không cộng lặp theo dòng SKU.
+- Cả ba nguồn dùng cùng bốn category: **Bánh, Kẹo, Ngũ cốc, Quà tặng**. Category TikTok gốc chỉ dùng truy vết.
+- SKU và kho giữ phạm vi cửa hàng; không gộp sản phẩm chỉ vì trùng tên. Không suy kho từ tỉnh khách.
+- Đánh giá chỉ có TikTok; thiếu nguồn không phải bằng 0. Nhãn chủ đề và che thông tin tự động cần được hiểu cùng giới hạn của chúng.
+- Tồn kho, năng lực và hạn dùng trong DSS là đầu vào kịch bản. Không suy lợi nhuận hoặc nguyên nhân lỗi từ dữ liệu chưa đủ.
+
+## Tài liệu
+
+- [Galaxy Schema](DW/architecture/1_galaxy_schema/galaxy_schema_candidate.md) · [DBML](DW/architecture/2_erd/galaxy_schema.dbml)
+- [ETL](DW/documentation/etl_design.md) · [Raw/Silver/Golden](DW/documentation/DATA_LAYERS.md)
+- [KPI Contract](docs/KPI_CONTRACT.md) · [API](docs/API_RUNBOOK.md)
+- [Thuật toán DSS](docs/DSS_ALGORITHMS.md) · [Đánh giá và giới hạn](docs/DSS_EVALUATION.md)
+- [Frontend và review reader](docs/PHASE3_RUNBOOK.md) · [Trạng thái kiểm chứng](docs/PROJECT_STATE.md)

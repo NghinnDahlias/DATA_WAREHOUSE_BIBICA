@@ -5,3 +5,13 @@ Data/Data_Source_Raw
 .env
 __pycache__
 .venv
+node_modules
+frontend/node_modules
+dist
+frontend/dist
+reports
+test-results
+frontend/test-results
+playwright-report
+*.pyc
+*.log

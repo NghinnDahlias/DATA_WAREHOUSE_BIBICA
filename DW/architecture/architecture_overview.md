@@ -24,7 +24,7 @@ Tiền cấp đơn chỉ ở lifecycle; tiền dòng là list value/observed ite
 
 5marts: order counts, item units monthly, ratings monthly, warehouse→province và category performance. Rebuild/refresh nằm cùng transaction ETL; gates dừng commit khi sai. Distinct orders giữa kho/category không cộng được.
 
-DDL và indices gốc được giữ; migration030 bổ sung. DBML và data dictionary lấy từ Golden schema JSON hiện thực. `DB.png` là ảnh thiết kế trước refinement và không phải sơ đồ hiện hành.
+DDL và indices gốc được giữ; migration030 bổ sung. DBML và data dictionary lấy từ Golden schema JSON hiện thực. Sơ đồ chuẩn nằm trong `DW/architecture/2_erd/galaxy_schema.dbml`; ảnh DB.png cũ đã được lưu riêng và loại khỏi source để tránh nhầm phiên bản.
 
 ## API và DSS Phase2 — 05/11/2026
 

@@ -1,5 +1,19 @@
 # Quyết định DW, API, DSS và React BI
 
+## 15/11/2026 — Package runnable source with explicit artifact boundaries
+
+Keep tests and working business modules. Archive only proven obsolete root replay logs
+and the superseded schema image; preserve historical evidence needed by audit scripts.
+Use a source allowlist for ZIP packaging instead of zipping the checkout or trusting only
+.gitignore, because native Data files were historically tracked. Never include raw data,
+review content, private layers, reports, runtime, credentials, dependencies or builds.
+
+Preserve the original profiling tests. Offer a portable test profile excluding precisely
+the three checks needing private files/reports; record exclusions separately from skips.
+Verify the actual extracted archive against disposable fixture databases. Rewrite README
+as current run/test/package instructions and keep historical progress in dedicated docs.
+Do not push cleanup or regenerate coursework PDFs unless separately requested.
+
 ## 15/11/2026 — Publish source following the user's request
 
 The user authorized publishing the statistics modal, tooltip fixes and negative-review
